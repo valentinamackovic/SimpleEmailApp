@@ -15,6 +15,11 @@
         <activity android:name=".CreateContactActivity" />
         <activity android:name=".ContactActivity" />
         <activity android:name=".ContactsActivity" />
+        android:theme="@style/AppTheme">
+        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".FolderActivity" />
+        <activity android:name=".FoldersActivity" />
+        <activity android:name=".CreateFolderActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
