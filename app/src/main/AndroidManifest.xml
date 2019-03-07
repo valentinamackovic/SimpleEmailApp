@@ -19,9 +19,9 @@
         <activity android:name=".FolderActivity" />
         <activity android:name=".FoldersActivity" />
         <activity android:name=".CreateFolderActivity" />
-        <activity android:name=".CreateEmailActivity" />
         <activity android:name=".EmailActivity" />
         <activity android:name=".EmailsActivity" />
+        <activity android:name=".CreateEmailActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
