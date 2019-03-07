@@ -45,14 +45,14 @@ public class EmailsActivity extends AppCompatActivity {
             }
         });
         Button btnEmail = findViewById(R.id.btnEmail);
-        btnCreateCOntact.setOnClickListener(new View.OnClickListener() {
+        btnEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(EmailsActivity.this, EmailActivity.class));
             }
         });
         Button btnCreateEmail = findViewById(R.id.btnCreateEmail);
-        btnCreateCOntact.setOnClickListener(new View.OnClickListener() {
+        btnCreateEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(EmailsActivity.this, CreateEmailActivity.class));
