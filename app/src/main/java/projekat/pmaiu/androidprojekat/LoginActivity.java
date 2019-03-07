@@ -3,14 +3,13 @@ package projekat.pmaiu.androidprojekat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
     }
-
 
     @Override
     protected void onStart() {
@@ -18,12 +17,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        Intent i = new Intent(MainActivity.this, LoginActivity.class  );
-        startActivity(i);
-    }
+    protected void onResume() { super.onResume(); }
 
     @Override
     protected void onPause() {
