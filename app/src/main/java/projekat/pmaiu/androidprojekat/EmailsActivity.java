@@ -58,6 +58,51 @@ public class EmailsActivity extends AppCompatActivity {
                 startActivity(new Intent(EmailsActivity.this, CreateEmailActivity.class));
             }
         });
+
+        Button btnSettingsActivity = findViewById(R.id.btnSettingsActivity);
+        btnSettingsActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(EmailsActivity.this, SettingsActivity.class));
+            }
+        });
+
+        Button btnCreateFolderActivity = findViewById(R.id.btnCreateFolderActivity);
+        btnCreateFolderActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(EmailsActivity.this, CreateFolderActivity.class));
+
+            }
+        });
+
+        Button btnFoldersActivity = findViewById(R.id.btnFoldersActivity);
+        btnFoldersActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(EmailsActivity.this, FoldersActivity.class));
+
+            }
+        });
+
+        Button btnFolderActivity = findViewById(R.id.btnFolderActivity);
+        btnFolderActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(EmailsActivity.this, FolderActivity.class));
+
+            }
+        });
+
+        Button btnProfileActivity = findViewById(R.id.btnProfileActivity);
+        btnProfileActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(EmailsActivity.this, ProfileActivity.class));
+
+            }
+        });
+
     }
 
     @Override

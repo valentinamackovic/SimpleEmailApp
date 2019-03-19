@@ -7,53 +7,123 @@
     tools:context=".EmailsActivity">
 
     <Button
-        android:id="@+id/btnContacts"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnProfileActivity"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Contacts"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorBtn"
+        android:textColor="@color/colorTxt"
+        android:textSize="8pt"
+        android:text="Profile"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnContact"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnContacts"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:background="@color/colorBtn"
+        android:textColor="@color/colorTxt"
+        android:textSize="8pt"
+        android:text="Contacts"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnProfileActivity" />
+
+    <Button
+        android:id="@+id/btnContact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorBtn"
+        android:textColor="@color/colorTxt"
+        android:textSize="8pt"
         android:text="Contact"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnContacts" />
 
     <Button
         android:id="@+id/btnCreateContact"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:background="@color/colorBtn"
+        android:textColor="@color/colorTxt"
+        android:textSize="8pt"
         android:text="Create contact"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnContact" />
 
     <Button
         android:id="@+id/btnEmail"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:background="@color/colorBtn"
+        android:textColor="@color/colorTxt"
+        android:textSize="8pt"
         android:text="Email"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnCreateContact" />
 
     <Button
         android:id="@+id/btnCreateEmail"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:background="@color/colorBtn"
+        android:textColor="@color/colorTxt"
+        android:textSize="8pt"
         android:text="Create email"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnEmail" />
+
+    <Button
+        android:id="@+id/btnCreateFolderActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorBtn"
+        android:textColor="@color/colorTxt"
+        android:textSize="8pt"
+        android:text="Create folder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCreateEmail" />
+
+    <Button
+        android:id="@+id/btnFoldersActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorBtn"
+        android:textColor="@color/colorTxt"
+        android:textSize="8pt"
+        android:text="Folders"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCreateFolderActivity" />
+
+    <Button
+        android:id="@+id/btnFolderActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorBtn"
+        android:textColor="@color/colorTxt"
+        android:textSize="8pt"
+        android:text="Folder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnFoldersActivity" />
+
+    <Button
+        android:id="@+id/btnSettingsActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorBtn"
+        android:textColor="@color/colorTxt"
+        android:textSize="8pt"
+        android:text="Settings"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnFolderActivity" />
 
 </android.support.constraint.ConstraintLayout>

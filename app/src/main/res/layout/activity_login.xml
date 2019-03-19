@@ -8,8 +8,11 @@
 
     <Button
         android:id="@+id/btnEmails"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorBtn"
+        android:textColor="@color/colorTxt"
+        android:textSize="10pt"
         android:text="Emails"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
