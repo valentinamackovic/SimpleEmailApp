@@ -1,4 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <resources>
     <string name="app_name">Email</string>
     <string name="title_activity_contacts">ContactsActivity</string>
+    <string name="preferences_category_title_general">General</string>
+    <string name="preferences_category_title_appearance">Appearance</string>
+    <string name="preference_list_title_refresh_rate">Refresh rate</string>
+    <string name="preference_list_title_sort_by_date">Sort by date</string>
+    <string name="preference_checkbox_dark">Dark Mode</string>
+    <string name="folder_name_label">Folder name</string>
+    <string name="create">Create</string>
+    <string name="back">Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="login">Login</string>
 </resources>

@@ -1,14 +1,27 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.content.Intent;
+import android.preference.CheckBoxPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.Transition;
+import android.util.Log;
+import android.widget.CheckBox;
 
-public class SettingsActivity extends AppCompatActivity {
+import java.util.Set;
+
+import static projekat.pmaiu.androidprojekat.R.xml.preferences;
+
+public class SettingsActivity extends PreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        //setContentView(R.layout.activity_settings);
+        addPreferencesFromResource(R.xml.preferences);
+
     }
 
     @Override
@@ -24,6 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
     }
 
     @Override

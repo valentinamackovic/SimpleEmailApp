@@ -2,6 +2,7 @@ package projekat.pmaiu.androidprojekat;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toolbar;
 
 public class CreateFolderActivity extends AppCompatActivity {
 
@@ -9,6 +10,7 @@ public class CreateFolderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_folder);
+
     }
 
     @Override
