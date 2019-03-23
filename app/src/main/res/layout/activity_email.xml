@@ -6,29 +6,117 @@
     android:layout_height="match_parent"
     tools:context=".EmailActivity">
 
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/email"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="8pt"
+        android:layout_marginStart="8pt" />
+
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/toolbar_email_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
         android:background="@color/colorPrimary"
         android:textAlignment="textStart"
-        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="9dp">
+        tools:layout_editor_absoluteX="4dp"
+        app:layout_constraintTop_toBottomOf="@id/textView5">
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/email"
-        android:textColor="@color/colorBlack"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:minHeight="30dp"
+            android:minWidth="30dp"
+            android:id="@+id/btnEmailBack"
+            android:text="@string/email_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@color/colorBtn"
+            android:textColor="@color/colorTxt"
+            android:textSize="6pt"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="15dp"
+            android:padding="3dp"/>
+
+        <Button
+            android:minHeight="30dp"
+            android:minWidth="60dp"
+            android:id="@+id/btnEmailForward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@color/colorBtn"
+            android:text="@string/email_forward"
+            android:textColor="@color/colorTxt"
+            android:textSize="6pt"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="15dp"
+            android:padding="3dp"/>
+        <Button
+            android:minHeight="30dp"
+            android:minWidth="30dp"
+            android:id="@+id/btnDeleteEmail"
+            android:text="@string/email_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@color/colorBtn"
+            android:textColor="@color/colorTxt"
+            android:textSize="6pt"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="15dp"
+            android:padding="3dp"/>
+        <Button
+            android:minHeight="30dp"
+            android:minWidth="30dp"
+            android:id="@+id/btnEmailReply"
+            android:text="@string/email_reply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@color/colorBtn"
+            android:textColor="@color/colorTxt"
+            android:textSize="6pt"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="15dp"
+            android:padding="3dp"/>
+        <Button
+            android:minHeight="30dp"
+            android:minWidth="30dp"
+            android:id="@+id/btnEmailReplyToAll"
+            android:text="@string/email_reply_to_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@color/colorBtn"
+            android:textColor="@color/colorTxt"
+            android:textSize="6pt"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="15dp"
+            android:padding="3dp"/>
+
+
 
     </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/email_content"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_email_activity"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="8pt"
+        android:paddingTop="15pt"
+        android:layout_marginEnd="15pt"
+        android:layout_marginTop="3pt"
+        android:layout_marginStart="8pt"/>
+
+
 </android.support.constraint.ConstraintLayout>
