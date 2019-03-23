@@ -38,7 +38,7 @@
         android:background="@color/colorBtn"
         android:textColor="@color/colorTxt"
         android:textSize="10pt"
-        android:text="Emails"
+        android:text="@string/emails"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
