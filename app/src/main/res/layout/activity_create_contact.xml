@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".CreateContactActivity">
 
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbar_create_contact_activity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:background="@color/colorPrimary"
+        android:textAlignment="textStart"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="9dp">
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -15,4 +26,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.v7.widget.Toolbar>
 </android.support.constraint.ConstraintLayout>
