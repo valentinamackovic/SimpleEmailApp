@@ -34,4 +34,6 @@
     <string name="email_reply">Reply</string>
     <string name="email_reply_to_all">Reply to all</string>
     <string name="email_content">Sadrzaj emaila</string>
+    <string name="email_send">Send</string>
+    <string name="email_cancel">Cancel</string>
 </resources>
