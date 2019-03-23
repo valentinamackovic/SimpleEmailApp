@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ContactActivity">
 
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
@@ -16,7 +15,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textSize="12pt"/>
+        android:textSize="12pt"
+        android:layout_marginStart="8pt"/>
 
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/toolbar_contact_activity"
@@ -37,11 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:background="@color/colorPrimary"
-            android:text="<"
             android:textColor="@color/colorTxt"
             android:textSize="6pt"
-            app:layout_constraintEnd_toENdOf="parent"
-            app:layout_contstraintLeft_toRightOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <Button
             android:minHeight="30dp"
@@ -54,8 +52,7 @@
             android:text="@string/contact_save"
             android:textColor="@color/colorTxt"
             android:textSize="6pt"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_contstraintLeft_toRightOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"/>
 
     </android.support.v7.widget.Toolbar>
 
@@ -68,7 +65,8 @@
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="8pt"
         android:paddingTop="15pt"
-        android:layout_marginTop="3pt"/>
+        android:layout_marginTop="3pt"
+        android:layout_marginStart="8pt"/>
     <TextView
         android:id="@+id/textViewLast"
         android:layout_width="wrap_content"
@@ -78,7 +76,8 @@
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="8pt"
         android:paddingTop="5pt"
-        android:layout_marginTop="3pt"/>
+        android:layout_marginTop="3pt"
+        android:layout_marginStart="8pt"/>
     <TextView
         android:id="@+id/textViewEmail"
         android:layout_width="wrap_content"
@@ -88,7 +87,8 @@
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="8pt"
         android:paddingTop="5pt"
-        android:layout_marginTop="3pt"/>
+        android:layout_marginTop="3pt"
+        android:layout_marginStart="8pt"/>
 
     <EditText
         android:inputType="text"
