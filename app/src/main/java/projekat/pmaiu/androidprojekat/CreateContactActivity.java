@@ -2,6 +2,7 @@ package projekat.pmaiu.androidprojekat;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 public class CreateContactActivity extends AppCompatActivity {
 
@@ -9,6 +10,11 @@ public class CreateContactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_contact);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_create_contact_activity);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
@@ -39,5 +45,11 @@ public class CreateContactActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
