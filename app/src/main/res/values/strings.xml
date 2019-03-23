@@ -24,4 +24,8 @@
     <string name="profile">Profile</string>
     <string name="create_email">Create email</string>
     <string name="create_contact">Create contact</string>
+    <string name="contact_save">Save</string>
+    <string name="contact_first">First name</string>
+    <string name="contact_last">Last name</string>
+    <string name="contact_email">Email</string>
 </resources>
