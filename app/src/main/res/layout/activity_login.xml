@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    android:padding="50dp">
 
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/toolbar"
@@ -15,7 +16,7 @@
         android:textAlignment="textStart"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="9dp">
+        android:layout_marginBottom="200dp">
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -31,6 +32,27 @@
 
     </android.support.v7.widget.Toolbar>
 
+    <EditText
+        android:hint="@string/username"
+        android:id="@+id/txtUsername"
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:textSize="8pt"
+        android:layout_marginTop="50dp"
+        />
+    <EditText
+        android:hint="@string/password"
+        android:id="@+id/txtPassword"
+        android:inputType="textPassword"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtUsername"
+        android:textSize="8pt"
+        />
     <Button
         android:id="@+id/btnEmails"
         android:layout_width="match_parent"
@@ -38,10 +60,7 @@
         android:background="@color/colorBtn"
         android:textColor="@color/colorTxt"
         android:textSize="10pt"
-        android:text="@string/emails"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/login"
+        app:layout_constraintTop_toBottomOf="@id/txtPassword"
+        android:layout_marginTop="30dp"/>
 </android.support.constraint.ConstraintLayout>
