@@ -4,9 +4,10 @@
     <color name="colorPrimaryDark">#303030</color>
     <color name="colorAccent">#F9AA33</color>
     <color name="colorBackground">#303030</color>
-    <color name="colorTxt">#fff</color>
+    <color name="colorTxt">#eeeeee</color>
     <color name="colorBtn">#f9aa33</color>
     <color name="colorBlack">#000</color>
+    <color name="colorTxtSecondary">#9E9E9E</color>
 
 
 

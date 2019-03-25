@@ -22,6 +22,7 @@
             android:title="@string/preference_list_title_refresh_rate" />
 
         <ListPreference
+            
             android:defaultValue="0"
             android:summary="%s"
             android:entries="@array/sort_by_date_entries"

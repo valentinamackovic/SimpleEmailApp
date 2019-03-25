@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(MainActivity.this, LoginActivity.class  );
                 startActivity(i);
             }
-        }, 1000L
+        }, 5000L
         );
     }
 
