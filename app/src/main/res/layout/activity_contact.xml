@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/contact"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/colorTxt"
                 android:textSize="25sp"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
@@ -83,6 +83,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewFirst"
+        android:textColor="@color/colorTxt"
+        android:textColorHint="@color/colorTxt"
         android:textSize="8pt"
         />
 
@@ -93,6 +95,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewLast"
+        android:textColor="@color/colorTxt"
+        android:textColorHint="@color/colorTxt"
         android:textSize="8pt"/>
 
     <EditText
@@ -100,6 +104,8 @@
         android:inputType="textEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/colorTxt"
+        android:textColorHint="@color/colorTxt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewEmail"
         android:textSize="8pt"/>

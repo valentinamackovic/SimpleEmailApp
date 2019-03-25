@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/folder"
-            android:textColor="@color/colorBlack"
+            android:textColor="@color/colorTxt"
             android:textSize="30sp"
             android:textStyle="bold"
             tools:layout_editor_absoluteX="155dp"

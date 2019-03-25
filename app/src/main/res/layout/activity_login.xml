@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/login"
-            android:textColor="@color/colorBlack"
+
             android:textSize="30sp"
             android:textStyle="bold"
             tools:layout_editor_absoluteX="155dp"
@@ -39,6 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
+        android:textColorHint="@color/colorTxt"
+        android:textColor="@color/colorTxt"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         android:textSize="8pt"
         android:layout_marginTop="50dp"
@@ -46,6 +48,8 @@
     <EditText
         android:hint="@string/password"
         android:id="@+id/txtPassword"
+        android:textColorHint="@color/colorTxt"
+        android:textColor="@color/colorTxt"
         android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="65dp"

@@ -8,6 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="android:button">@color/colorBtn</item>
+        <item name="editTextColor">@color/colorTxt</item>
+        <item name="android:textColor">@color/colorTxt</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">
