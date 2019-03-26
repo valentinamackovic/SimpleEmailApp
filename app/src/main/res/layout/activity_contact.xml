@@ -48,12 +48,18 @@
 
     </android.support.v7.widget.Toolbar>
 
+    <ImageView
+        android:id="@+id/imgContact"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_contact_activity"
+        android:background="@color/colorAccent" />
     <TextView
         android:id="@+id/textViewFirst"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/contact_first"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_contact_activity"
+        app:layout_constraintTop_toBottomOf="@id/imgContact"
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="18sp"
         android:layout_marginTop="10pt"/>
