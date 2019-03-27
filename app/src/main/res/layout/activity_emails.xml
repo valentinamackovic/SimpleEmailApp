@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +18,7 @@
     android:padding="20dp">
 
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/activities_toolbar"
+        android:id="@+id/toolbar_emails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
@@ -22,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/activities"
+            android:text="@string/emails"
             android:textColor="@color/colorTxt"
             android:textSize="30sp"
             android:textStyle="bold"
@@ -31,17 +41,6 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <Button
-        android:id="@+id/btnProfileActivity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@color/colorBtn"
-        android:text="@string/profile"
-        android:textColor="@color/colorTxt"
-        android:textSize="8pt"
-        app:layout_constraintStart_toStartOf="@id/activities_toolbar"
-        app:layout_constraintTop_toBottomOf="@+id/activities_toolbar" />
 
     <Button
         android:id="@+id/btnContacts"
@@ -52,8 +51,8 @@
         android:textColor="@color/colorTxt"
         android:textSize="8pt"
         android:text="@string/contacts"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnProfileActivity" />
+        app:layout_constraintStart_toStartOf="@id/toolbar_emails"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_emails"/>
 
     <Button
         android:id="@+id/btnContact"
@@ -115,17 +114,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnCreateEmail" />
 
-    <Button
-        android:id="@+id/btnFoldersActivity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorBtn"
-        android:textColor="@color/colorTxt"
-        android:textSize="8pt"
-        android:text="@string/folders"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnCreateFolderActivity" />
+
 
     <Button
         android:id="@+id/btnFolderActivity"
@@ -137,18 +126,18 @@
         android:textSize="8pt"
         android:text="@string/folder"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnFoldersActivity" />
+        app:layout_constraintTop_toBottomOf="@id/btnCreateEmail" />
 
-    <Button
-        android:id="@+id/btnSettingsActivity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorBtn"
-        android:textColor="@color/colorTxt"
-        android:textSize="8pt"
-        android:text="@string/settings"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnFolderActivity" />
 
 </android.support.constraint.ConstraintLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu" />
+
+</android.support.v4.widget.DrawerLayout>

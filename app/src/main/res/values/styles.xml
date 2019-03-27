@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- Base application theme. -->
@@ -10,7 +11,13 @@
         <item name="android:button">@color/colorBtn</item>
         <item name="editTextColor">@color/colorTxt</item>
         <item name="android:textColor">@color/colorTxt</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:textColorSecondary">@color/colorTxtSecondary</item>
+        <item name="actionMenuTextColor">@color/colorTxt</item>
+        <item name="textAppearanceListItem">@color/colorTxt</item>
+        <item name="actionBarItemBackground">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorTxt</item>
+        <item name="colorControlHighlight">@color/colorTxtSecondary</item>
 
     </style>
 
@@ -22,7 +29,6 @@
     <style name="AppThemeDark.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppThemeDark.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
 
 
 </resources>

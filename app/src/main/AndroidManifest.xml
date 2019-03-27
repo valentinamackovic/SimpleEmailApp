@@ -11,12 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".LoginActivity"/>
+        <activity android:name=".LoginActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".CreateContactActivity"/>
+        <activity android:name=".CreateContactActivity" />
         <activity android:name=".ContactActivity" />
         <activity android:name=".ContactsActivity" />
-        <activity android:name=".SettingsActivity"/>
+        <activity android:name=".SettingsActivity" />
         <activity android:name=".FolderActivity" />
         <activity android:name=".FoldersActivity" />
         <activity android:name=".CreateFolderActivity" />
