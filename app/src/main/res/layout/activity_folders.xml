@@ -38,9 +38,9 @@
             tools:layout_editor_absoluteX="155dp"
             tools:layout_editor_absoluteY="18dp" />
 
+
+
     </android.support.v7.widget.Toolbar>
-
-
 
 
 </android.support.constraint.ConstraintLayout>

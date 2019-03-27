@@ -42,6 +42,7 @@
     <string name="compose">Compose</string>
     <string name="password">Password</string>
     <string name="username">Username</string>
+    <string name="folder_name">Folder name</string>
     <string name="title_activity_navigation_drawer">navigationDrawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

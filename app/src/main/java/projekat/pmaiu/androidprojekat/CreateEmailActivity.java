@@ -3,6 +3,7 @@ package projekat.pmaiu.androidprojekat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 
 public class CreateEmailActivity extends AppCompatActivity {
 
@@ -16,6 +17,7 @@ public class CreateEmailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
+
 
     @Override
     protected void onStart() {

@@ -1,8 +1,12 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 public class CreateFolderActivity extends AppCompatActivity {
 
@@ -50,6 +54,27 @@ public class CreateFolderActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.create_folder_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_save_folder){
+            Toast toast = Toast.makeText(getApplicationContext(), "Save folder", Toast.LENGTH_SHORT);
+            toast.show();
+        }else if(item.getItemId() == R.id.action_cancel_creating_folder){
+            Toast toast = Toast.makeText(getApplicationContext(), "Cancel", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+
         return true;
     }
 }
