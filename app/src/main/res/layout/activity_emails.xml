@@ -14,8 +14,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EmailsActivity"
-    android:padding="20dp">
+    tools:context=".EmailsActivity">
 
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/toolbar_emails"
@@ -40,96 +39,22 @@
             tools:layout_editor_absoluteY="18dp" />
 
     </android.support.v7.widget.Toolbar>
-
-
-    <Button
-        android:id="@+id/btnContacts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorBtn"
-        android:textColor="@color/colorTxt"
-        android:textSize="8pt"
-        android:text="@string/contacts"
-        app:layout_constraintStart_toStartOf="@id/toolbar_emails"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_emails"/>
-
-    <Button
-        android:id="@+id/btnContact"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorBtn"
-        android:textColor="@color/colorTxt"
-        android:textSize="8pt"
-        android:text="@string/contact"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnContacts" />
-
-    <Button
-        android:id="@+id/btnCreateContact"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorBtn"
-        android:textColor="@color/colorTxt"
-        android:textSize="8pt"
-        android:text="@string/create_contact"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnContact" />
-
-    <Button
-        android:id="@+id/btnEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorBtn"
-        android:textColor="@color/colorTxt"
-        android:textSize="8pt"
-        android:text="@string/email"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnCreateContact" />
-
-    <Button
-        android:id="@+id/btnCreateEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorBtn"
-        android:textColor="@color/colorTxt"
-        android:textSize="8pt"
-        android:text="@string/create_email"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnEmail" />
-
-    <Button
-        android:id="@+id/btnCreateFolderActivity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorBtn"
-        android:textColor="@color/colorTxt"
-        android:textSize="8pt"
-        android:text="@string/create_folder"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnCreateEmail" />
-
-
-
-    <Button
-        android:id="@+id/btnFolderActivity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorBtn"
-        android:textColor="@color/colorTxt"
-        android:textSize="8pt"
-        android:text="@string/folder"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnCreateEmail" />
-
-
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnCreateEmailAction"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:foregroundGravity="bottom"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:backgroundTint="@color/colorBackground"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/icon_create_email"
+        android:elevation="0dp"
+        app:elevation="0dp"
+        />
 </android.support.constraint.ConstraintLayout>
+
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
