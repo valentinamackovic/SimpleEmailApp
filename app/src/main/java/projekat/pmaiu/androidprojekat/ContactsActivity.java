@@ -1,6 +1,7 @@
 package projekat.pmaiu.androidprojekat;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,6 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import model.Contact;
 
 public class ContactsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
@@ -52,6 +55,22 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(ContactsActivity.this, ProfileActivity.class));
+            }
+        });
+
+        Button btnView = findViewById(R.id.btnPrikazi);
+        btnView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ContactsActivity.this, ContactActivity.class));
+            }
+        });
+
+        FloatingActionButton btnCreateContact = findViewById(R.id.btnCreateContactAction);
+        btnCreateContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ContactsActivity.this, CreateContactActivity.class));
             }
         });
     }
@@ -110,18 +129,18 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
         return true;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.contacts_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_new_contact)
-            startActivity(new Intent(ContactsActivity.this, CreateContactActivity.class));
-
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.contacts_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if(item.getItemId() == R.id.action_new_contact)
+//            startActivity(new Intent(ContactsActivity.this, CreateContactActivity.class));
+//
+//        return true;
+//    }
 }
