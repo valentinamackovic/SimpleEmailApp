@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import model.Contact;
@@ -35,7 +38,7 @@ public class EmailActivity extends AppCompatActivity {
         m.setContent("Ovo je sadrzaj nekog maila.");
         m.setDateTime(new Date());
         message.setFrom(contact);
-        //message.getTo().add(contact);
+        message.setTo(new ArrayList<Contact>(Arrays.asList(contact)));
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +82,7 @@ public class EmailActivity extends AppCompatActivity {
         TextView txtContent = findViewById(R.id.textView6);
 
         txtFrom.setText(message.getFrom().getEmail());
-        //txtTo.setText(message.getTo().get(0).getEmail());
+        txtTo.setText(message.getTo().get(0).getEmail());
         txtSubject.setText(message.getSubject());
         txtContent.setText(message.getContent());
     }
