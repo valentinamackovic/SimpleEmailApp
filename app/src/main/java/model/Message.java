@@ -12,8 +12,8 @@ public class Message {
     private Date dateTime;
     private String subject;
     private String content;
-    private boolean cc;
-    private boolean bcc;
+    private List<Contact> cc;
+    private List<Contact> bcc;
     private ArrayList<Attachment> attachments;
     private ArrayList<Tag> tags;
 
@@ -21,7 +21,8 @@ public class Message {
         super();
     }
 
-    public Message(int id, Contact from, List<Contact> to, Date dateTime, String subject, String content, boolean cc, boolean bcc, ArrayList<Attachment> attachments, ArrayList<Tag> tags) {
+    public Message(int id, Contact from, List<Contact> to, Date dateTime, String subject, String content,
+                   List<Contact> cc, List<Contact> bcc, ArrayList<Attachment> attachments, ArrayList<Tag> tags) {
         this.id = id;
         this.from = from;
         this.to = to;
@@ -98,19 +99,19 @@ public class Message {
         this.content = content;
     }
 
-    public boolean isCc() {
+    public List<Contact> getCc() {
         return cc;
     }
 
-    public void setCc(boolean cc) {
+    public void setCc(List<Contact> cc) {
         this.cc = cc;
     }
 
-    public boolean isBcc() {
+    public List<Contact> getBcc() {
         return bcc;
     }
 
-    public void setBcc(boolean bcc) {
+    public void setBcc(List<Contact> bcc) {
         this.bcc = bcc;
     }
 }
