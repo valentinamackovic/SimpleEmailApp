@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class EmailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
@@ -61,6 +62,14 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(EmailsActivity.this, ProfileActivity.class));
+            }
+        });
+
+        Button btnEmail = findViewById(R.id.btnOneEmail);
+        btnEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(EmailsActivity.this, EmailActivity.class));
             }
         });
 

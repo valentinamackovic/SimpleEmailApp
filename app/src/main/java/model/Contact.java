@@ -9,8 +9,8 @@ public class Contact {
     private String lastName;
     private String email;
     private Photo photo;
-    private ArrayList<Message> messagesTo;
-    private ArrayList<Message> messagesFrom;
+    private ArrayList<Message> messagesTo = new ArrayList<>();
+    private ArrayList<Message> messagesFrom =  new ArrayList<>();
 
     public Contact() {
         super();

@@ -26,7 +26,7 @@ public class ContactActivity extends AppCompatActivity {
         Message m=new Message();
         m.setId(0);
         m.setSubject("Subject ");
-        m.setContent("Ubicu se koliko me smara ovaj odel podataka, nista ne kontam, boze pomozi.");
+        m.setContent("Sadrzaj nekog maila.");
         m.setDateTime(new Date());
 //        m.getTo().add(contact);
 //        m.setFrom(contact);
