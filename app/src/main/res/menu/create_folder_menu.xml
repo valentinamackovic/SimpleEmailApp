@@ -5,12 +5,12 @@
         android:id="@+id/action_save_folder"
         android:orderInCategory="100"
         android:icon="@drawable/ic_save"
-        android:title="@string/settings"
+        android:title="@string/contact_save"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_cancel_creating_folder"
         android:orderInCategory="200"
         android:icon="@drawable/icon_cancel"
-        android:title="@string/settings"
+        android:title="@string/cancel"
         app:showAsAction="ifRoom" />
 </menu>

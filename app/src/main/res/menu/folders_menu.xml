@@ -5,6 +5,6 @@
         android:id="@+id/action_new_folder"
         android:orderInCategory="100"
         android:icon="@drawable/ic_create_new_folder_black_24dp"
-        android:title="@string/settings"
+        android:title="@string/contact_save"
         app:showAsAction="ifRoom" />
 </menu>

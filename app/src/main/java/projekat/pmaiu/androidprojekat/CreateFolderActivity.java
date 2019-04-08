@@ -16,9 +16,8 @@ public class CreateFolderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_folder);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_create_folder);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
     }
 
     @Override
@@ -52,12 +51,6 @@ public class CreateFolderActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.create_folder_menu, menu);
@@ -70,8 +63,7 @@ public class CreateFolderActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(getApplicationContext(), "Save folder", Toast.LENGTH_SHORT);
             toast.show();
         }else if(item.getItemId() == R.id.action_cancel_creating_folder){
-            Toast toast = Toast.makeText(getApplicationContext(), "Cancel", Toast.LENGTH_SHORT);
-            toast.show();
+            onBackPressed();
         }
 
 

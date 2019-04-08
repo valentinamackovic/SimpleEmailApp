@@ -16,13 +16,14 @@ public class Message {
     private List<Contact> bcc;
     private ArrayList<Attachment> attachments;
     private ArrayList<Tag> tags;
+    private Account account;
+    private Folder folder;
 
     public Message(){
         super();
     }
 
-    public Message(int id, Contact from, List<Contact> to, Date dateTime, String subject, String content,
-                   List<Contact> cc, List<Contact> bcc, ArrayList<Attachment> attachments, ArrayList<Tag> tags) {
+    public Message(int id, Contact from, List<Contact> to, Date dateTime, String subject, String content, List<Contact> cc, List<Contact> bcc, ArrayList<Attachment> attachments, ArrayList<Tag> tags, Account account, Folder folder) {
         this.id = id;
         this.from = from;
         this.to = to;
@@ -33,6 +34,8 @@ public class Message {
         this.bcc = bcc;
         this.attachments = attachments;
         this.tags = tags;
+        this.account = account;
+        this.folder = folder;
     }
 
     public ArrayList<Tag> getTags() {
@@ -113,5 +116,21 @@ public class Message {
 
     public void setBcc(List<Contact> bcc) {
         this.bcc = bcc;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public Folder getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Folder folder) {
+        this.folder = folder;
     }
 }
