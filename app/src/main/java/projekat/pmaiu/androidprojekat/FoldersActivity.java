@@ -1,6 +1,7 @@
 package projekat.pmaiu.androidprojekat;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,6 +11,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+
+import model.Folder;
 
 public class FoldersActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
@@ -49,6 +54,22 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onResume() {
         super.onResume();
+
+        Button btnShowFolder = findViewById(R.id.btnShowFolderActivity);
+        btnShowFolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FoldersActivity.this, FolderActivity.class));
+            }
+        });
+
+        FloatingActionButton btnCreateFolder = findViewById(R.id.btnCreateFolder);
+        btnCreateFolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FoldersActivity.this, CreateFolderActivity.class));
+            }
+        });
     }
 
     @Override
