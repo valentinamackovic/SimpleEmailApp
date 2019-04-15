@@ -127,7 +127,7 @@ public class EmailActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Deleted!", Toast.LENGTH_SHORT).show();
         if(item.getItemId() == R.id.btnEmailForward)
             Toast.makeText(getApplicationContext(), "Forwarded!", Toast.LENGTH_SHORT).show();
-
-       return true;
+        onBackPressed();
+        return true;
     }
 }
