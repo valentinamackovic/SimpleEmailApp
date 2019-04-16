@@ -125,9 +125,10 @@ public class EmailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.btnDeleteEmail)
             Toast.makeText(getApplicationContext(), "Deleted!", Toast.LENGTH_SHORT).show();
-        if(item.getItemId() == R.id.btnEmailForward)
+        else if(item.getItemId() == R.id.btnEmailForward)
             Toast.makeText(getApplicationContext(), "Forwarded!", Toast.LENGTH_SHORT).show();
-        onBackPressed();
+        else
+            onBackPressed();
         return true;
     }
 }

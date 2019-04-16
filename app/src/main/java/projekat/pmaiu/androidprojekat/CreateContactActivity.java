@@ -3,6 +3,9 @@ package projekat.pmaiu.androidprojekat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 public class CreateContactActivity extends AppCompatActivity {
 
@@ -50,6 +53,22 @@ public class CreateContactActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.create_contact_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.btnSaveNewContact)
+            Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
+        else
+            onBackPressed();
         return true;
     }
 }

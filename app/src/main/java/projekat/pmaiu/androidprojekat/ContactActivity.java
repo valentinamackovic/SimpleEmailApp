@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,15 +64,6 @@ public class ContactActivity extends AppCompatActivity {
         txtLast.setText(contact.getLastName());
         txtEmail.setText((contact.getEmail()));
 
-        Button btnContactSave = findViewById(R.id.btnContactSave);
-        btnContactSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"Saved",Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
     }
 
     @Override
@@ -96,6 +89,22 @@ public class ContactActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.contact_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.btnSaveContact)
+            Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
+        else
+            onBackPressed();
         return true;
     }
 }

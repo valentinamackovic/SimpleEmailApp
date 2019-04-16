@@ -76,7 +76,8 @@ public class FolderActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT);
             toast.show();
         }
-
+        else
+            onBackPressed();
 
         return true;
     }

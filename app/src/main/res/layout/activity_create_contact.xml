@@ -31,7 +31,7 @@
                 android:paddingBottom="8dp"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <Button
+         <!--   <Button
                 android:minHeight="40dp"
                 android:minWidth="60dp"
                 android:id="@+id/btnContactSave"
@@ -42,7 +42,7 @@
                 android:text="@string/contact_save"
                 android:textColor="@color/colorTxt"
                 android:textSize="6pt"
-                app:layout_constraintRight_toRightOf="parent"/>
+                app:layout_constraintRight_toRightOf="parent"/> -->
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.Toolbar>
