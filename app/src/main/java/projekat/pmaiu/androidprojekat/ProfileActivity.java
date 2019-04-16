@@ -2,6 +2,7 @@ package projekat.pmaiu.androidprojekat;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,8 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import model.Account;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
@@ -49,6 +52,13 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onResume() {
         super.onResume();
+        Account acc = new Account();
+        acc.username = "My username";
+        acc.password = "My password";
+        TextView username = findViewById(R.id.acc_username);
+        TextView password = findViewById(R.id.acc_password);
+        username.setText(acc.username);
+        password.setText(acc.password);
     }
 
     @Override
