@@ -39,45 +39,55 @@
     </android.support.v7.widget.Toolbar>
 
 
-    <TextView
-        android:id="@+id/textFrom"
+    <!--<TextView-->
+        <!--android:id="@+id/textFrom"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/from"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/toolbar_email_activity"     -->
+        <!--android:textSize="8pt"-->
+        <!--android:paddingTop="15pt"-->
+        <!--android:paddingLeft="8pt"-->
+        <!--android:layout_marginEnd="15pt"-->
+        <!--android:layout_marginLeft="80pt"-->
+        <!--android:layout_marginTop="3pt"-->
+        <!--android:layout_marginStart="7pt"/>-->
+    <ImageView
+        android:id="@+id/imgPhotoEmail"
+        android:src="@mipmap/profile_ico"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/from"
+        android:layout_height="67dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="11dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_email_activity"
-        app:layout_constraintStart_toEndOf="@id/textFrom1"
-        android:textSize="8pt"
-        android:paddingTop="15pt"
-        android:paddingLeft="8pt"
-        android:layout_marginEnd="15pt"
-        android:layout_marginLeft="80pt"
-        android:layout_marginTop="3pt"
-        android:layout_marginStart="7pt"/>
+        app:layout_constraintRight_toLeftOf="@id/textFrom1"
+        android:background="@color/colorBackground"
+        />
+
     <TextView
         android:id="@+id/textFrom1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/from"
         app:layout_constraintTop_toBottomOf="@id/toolbar_email_activity"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/textFrom"
+        app:layout_constraintLeft_toRightOf="@id/imgPhotoEmail"
         android:textSize="8pt"
         android:paddingTop="15pt"
         android:layout_marginEnd="15pt"
-        android:layout_marginLeft="15pt"
-        android:layout_marginTop="3pt"
-        android:layout_marginStart="7pt"/>
+        android:layout_marginLeft="10pt"
+        android:layout_marginTop="3pt"/>
 
     <TextView
         android:id="@+id/textTo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/to"
-        app:layout_constraintTop_toBottomOf="@id/textFrom"
+        app:layout_constraintTop_toBottomOf="@id/textFrom1"
         app:layout_constraintLeft_toRightOf="@id/textTo1"
         android:textSize="8pt"
-        android:paddingTop="15pt"
-        android:paddingLeft="17pt"
+        android:paddingTop="22pt"
+        android:paddingLeft="30pt"
         android:layout_marginEnd="15pt"
         android:layout_marginLeft="80pt"
         android:layout_marginTop="3pt"
@@ -87,7 +97,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/to"
-        app:layout_constraintTop_toBottomOf="@id/textFrom1"
+        app:layout_constraintTop_toBottomOf="@id/imgPhotoEmail"
         app:layout_constraintLeft_toLeftOf="parent"
         android:textSize="8pt"
         android:paddingTop="15pt"
@@ -117,8 +127,36 @@
         app:layout_constraintLeft_toRightOf="@id/textSubject"
         android:textSize="8pt"
         android:paddingTop="15pt"
+        android:paddingLeft="12pt"
         android:layout_marginEnd="15pt"
-        android:layout_marginLeft="15pt"
+        android:layout_marginLeft="20pt"
+        android:layout_marginTop="3pt"
+        android:layout_marginStart="7pt"/>
+    <TextView
+        android:id="@+id/textFolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/folder"
+        app:layout_constraintTop_toBottomOf="@id/textSubject"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="8pt"
+        android:paddingTop="15pt"
+        android:layout_marginEnd="15pt"
+        android:layout_marginLeft="80pt"
+        android:layout_marginTop="3pt"
+        android:layout_marginStart="7pt"/>
+    <TextView
+        android:id="@+id/textFolder1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/folder"
+        app:layout_constraintTop_toBottomOf="@id/textSubject"
+        app:layout_constraintLeft_toRightOf="@id/textFolder"
+        android:textSize="8pt"
+        android:paddingLeft="16pt"
+        android:paddingTop="15pt"
+        android:layout_marginEnd="15pt"
+        android:layout_marginLeft="20pt"
         android:layout_marginTop="3pt"
         android:layout_marginStart="7pt"/>
 
@@ -128,13 +166,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/email_content"
-        app:layout_constraintTop_toBottomOf="@id/textSubject"
+        app:layout_constraintTop_toBottomOf="@id/textFolder"
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="8pt"
         android:paddingTop="15pt"
         android:layout_marginEnd="15pt"
         android:layout_marginTop="3pt"
-        android:layout_marginStart="7pt"/>
+        android:layout_marginStart="7pt" />
+    <ImageView
+        android:id="@+id/imgAttachment"
+        android:layout_width="wrap_content"
+        android:layout_height="67dp"
+        android:src="@drawable/icon_attachment"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView6"
+        android:background="@color/colorBackground"
+        />
+
+    <TextView
+        android:id="@+id/textAttachment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/attachment"
+        app:layout_constraintTop_toBottomOf="@id/textView6"
+        app:layout_constraintLeft_toRightOf="@id/imgAttachment"
+        android:textSize="8pt"
+        android:paddingTop="20pt"
+        android:layout_marginEnd="15pt"
+        android:layout_marginLeft="5pt"
+        android:layout_marginTop="3pt"/>
 
    <Button
        android:id="@+id/btnReply"

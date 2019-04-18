@@ -39,15 +39,7 @@
             tools:layout_editor_absoluteY="18dp" />
 
     </android.support.v7.widget.Toolbar>
-    <Button
-        android:id="@+id/btnOneEmail"
-        android:text="@string/email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_emails"
-        app:layout_constraintLeft_toLeftOf="parent"
-        
-        />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnCreateEmailAction"
         android:layout_width="90dp"
@@ -63,6 +55,13 @@
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
         />
+
+    <ListView
+        android:id="@+id/listView_emails"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_emails"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </android.support.constraint.ConstraintLayout>
 
 

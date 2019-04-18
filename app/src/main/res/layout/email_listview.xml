@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/imgListViewContact"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="start"
+        android:layout_marginTop="7dp"
+        android:layout_marginStart="5dp"
+        android:src="@mipmap/profile_ico"
+        />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp">
+
+    <TextView
+        android:id="@+id/txtListViewFrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:textColor="@color/colorTxt"
+        android:layout_marginBottom="10dp"/>
+    <!--<TextView-->
+        <!--android:id="@+id/txtListViewTo"-->
+        <!--android:layout_width="250dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:layout_gravity="end"-->
+        <!--android:layout_marginStart="10dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:textColor="@color/colorTxt"-->
+        <!--android:textSize="16dp"-->
+        <!--android:layout_constraintStart_toStartOf="parent"-->
+        <!--android:layout_constraintTop_toBottomOf="@id/txtListViewFrom"-->
+        <!--android:layout_constraintLeft_toRightOf="@id/imgListViewContact"/>-->
+
+    <TextView
+        android:id="@+id/txtListViewSubject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTxt"
+        android:textStyle="bold"
+        android:gravity="bottom"
+        />
+    </LinearLayout>
+
+    <!--<TextView-->
+        <!--android:id="@+id/txtListViewFolder"-->
+        <!--android:layout_width="250dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:layout_gravity="end"-->
+        <!--android:layout_marginStart="10dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:textColor="@color/colorTxt"-->
+        <!--android:textSize="16dp"-->
+        <!--android:layout_constraintStart_toStartOf="parent"-->
+        <!--android:layout_constraintTop_toBottomOf="@id/txtListViewSubject"/>-->
+    <!--<TextView-->
+        <!--android:id="@+id/txtListViewContent"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="end"-->
+        <!--android:layout_marginStart="10dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:textColor="@color/colorTxt"-->
+        <!--android:textSize="16dp"-->
+        <!--android:layout_constraintStart_toStartOf="parent"-->
+        <!--android:layout_constraintTop_toBottomOf="@id/txtListViewFolder"/>-->
+
+    <!--<ImageView-->
+        <!--android:id="@+id/imgListViewAttachment"-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:layout_gravity="start"-->
+        <!--android:layout_marginTop="7dp"-->
+        <!--android:layout_marginStart="5dp"-->
+        <!--android:layout_constraintStart_toStartOf="parent"-->
+        <!--android:layout_constraintTop_toBottomOf="@id/txtListViewContent"-->
+        <!--/>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/txtListViewTextAttachment"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/email"-->
+        <!--android:textColor="@color/colorTxt"-->
+        <!--android:textSize="25sp"-->
+        <!--android:textStyle="bold"-->
+        <!--android:paddingBottom="8dp"-->
+        <!--android:layout_constraintTop_toBottomOf="@id/txtListViewContent"-->
+        <!--android:layout_constraintLeft_toRightOf="@id/txtListViewTextAttachment"/>-->
+
+</LinearLayout>
+
+
+

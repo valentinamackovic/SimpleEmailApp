@@ -1,5 +1,6 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,30 +17,31 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+import model.Attachment;
 import model.Contact;
 import model.Message;
 
 public class EmailActivity extends AppCompatActivity {
 
-    public static Message message = null;
-    static{
-        message = new Message();
-        message.setId(0);
-        message.setContent("Ovo je neki sadrzaj nekog maila :)");
-        message.setSubject("Subject nekog maila");
-        Contact contact=new Contact();
-        contact.setId(0);
-        contact.setFirstName("Marko");
-        contact.setLastName("Markovic");
-        contact.setEmail("adasd@gmail.com");
-        Message m=new Message();
-        m.setId(0);
-        m.setSubject("Subject ");
-        m.setContent("Ovo je sadrzaj nekog maila.");
-        m.setDateTime(new Date());
-        message.setFrom(contact);
-        message.setTo(new ArrayList<Contact>(Arrays.asList(contact)));
-    }
+//    public static Message message = null;
+//    static{
+//        message = new Message();
+//        message.setId(0);
+//        message.setContent("Ovo je neki sadrzaj nekog maila :)");
+//        message.setSubject("Subject nekog maila");
+//        Contact contact=new Contact();
+//        contact.setId(0);
+//        contact.setFirstName("Marko");
+//        contact.setLastName("Markovic");
+//        contact.setEmail("adasd@gmail.com");
+//        Message m=new Message();
+//        m.setId(0);
+//        m.setSubject("Subject ");
+//        m.setContent("Ovo je sadrzaj nekog maila.");
+//        m.setDateTime(new Date());
+//        message.setFrom(contact);
+//        message.setTo(new ArrayList<Contact>(Arrays.asList(contact)));
+//    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +62,9 @@ public class EmailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        Intent i = getIntent();
+        Message message = (Message)i.getSerializableExtra("message");
+
         Button btnReply = findViewById(R.id.btnReply);
         btnReply.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,15 +81,17 @@ public class EmailActivity extends AppCompatActivity {
             }
         });
 
-        TextView txtFrom = findViewById(R.id.textFrom);
+        TextView txtFrom = findViewById(R.id.textFrom1);
         TextView txtTo = findViewById(R.id.textTo);
         TextView txtSubject = findViewById(R.id.textSubject1);
         TextView txtContent = findViewById(R.id.textView6);
+        TextView txtAttachment = findViewById(R.id.textAttachment);
 
         txtFrom.setText(message.getFrom().getEmail());
         txtTo.setText(message.getTo().get(0).getEmail());
         txtSubject.setText(message.getSubject());
         txtContent.setText(message.getContent());
+        txtAttachment.setText(message.getAttachments().get(0).getName());
     }
 
     @Override

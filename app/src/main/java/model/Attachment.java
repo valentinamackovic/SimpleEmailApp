@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Base64;
 
-public class Attachment {
+public class Attachment implements Serializable {
 
     private int id;
     private Base64 data;
