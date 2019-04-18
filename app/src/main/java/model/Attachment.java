@@ -1,9 +1,11 @@
 package model;
 
+import java.util.Base64;
+
 public class Attachment {
 
     private int id;
-    private byte[] data;
+    private Base64 data;
     private String type;
     private String name;
     private Message message;
@@ -11,7 +13,7 @@ public class Attachment {
         super();
     }
 
-    public Attachment(int id, byte[] data, String type, String name, Message message) {
+    public Attachment(int id, Base64 data, String type, String name, Message message) {
         this.id = id;
         this.data = data;
         this.type = type;
@@ -35,11 +37,11 @@ public class Attachment {
         this.id = id;
     }
 
-    public byte[] getData() {
+    public Base64 getData() {
         return data;
     }
 
-    public void setData(byte[] data) {
+    public void setData(Base64 data) {
         this.data = data;
     }
 
