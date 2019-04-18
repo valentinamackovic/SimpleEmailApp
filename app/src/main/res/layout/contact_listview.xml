@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/imgListViewContact"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="start"/>
+
+    <TextView
+        android:id="@+id/txtListViewContact"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="end"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:textColor="@color/colorTxt" />
+
+</LinearLayout>

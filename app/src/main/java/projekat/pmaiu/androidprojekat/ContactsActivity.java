@@ -12,17 +12,40 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 
 import model.Contact;
 
 public class ContactsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
+    ListView listView ;
+
+    static {
+        for(int i=0; i<3; i++){
+            Contact c=new Contact();
+            c.setEmail("email " + i);
+            c.setLastName("prezime "+ i);
+            c.setFirstName("ime "+ i);
+            c.setId(i);
+
+        }
+    }
+
+//    ArrayAdapter<Contact> contacts = new ArrayAdapter<Contact>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
+        listView = (ListView) findViewById(R.id.listView_contacts);
+
+//        ArrayAdapter<Contact> adapter = new ArrayAdapter<Contact>(this,
+//                R.layout.contact_listview, R.id.imgListViewContact, contacts);
+
+//        listView.setAdapter(adapter);
 
         Toolbar toolbar =  findViewById(R.id.toolbar_contacts);
         setSupportActionBar(toolbar);
@@ -58,13 +81,13 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
             }
         });
 
-        Button btnView = findViewById(R.id.btnPrikazi);
-        btnView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(ContactsActivity.this, ContactActivity.class));
-            }
-        });
+//        Button btnView = findViewById(R.id.btnPrikazi);
+//        btnView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(ContactsActivity.this, ContactActivity.class));
+//            }
+//        });
 
         FloatingActionButton btnCreateContact = findViewById(R.id.btnCreateContactAction);
         btnCreateContact.setOnClickListener(new View.OnClickListener() {
