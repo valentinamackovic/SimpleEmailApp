@@ -159,14 +159,63 @@
         android:layout_marginLeft="20pt"
         android:layout_marginTop="3pt"
         android:layout_marginStart="7pt"/>
-
+    <TextView
+        android:id="@+id/textEmailCc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cc"
+        app:layout_constraintTop_toBottomOf="@id/textFolder"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="8pt"
+        android:paddingTop="15pt"
+        android:layout_marginEnd="15pt"
+        android:layout_marginLeft="80pt"
+        android:layout_marginTop="3pt"
+        android:layout_marginStart="7pt"/>
+    <TextView
+        android:id="@+id/textEmailCc1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cc"
+        app:layout_constraintTop_toBottomOf="@id/textFolder1"
+        app:layout_constraintLeft_toRightOf="@id/textEmailCc"
+        android:textSize="8pt"
+        android:paddingTop="15pt"
+        android:layout_marginEnd="15pt"
+        android:layout_marginTop="3pt"
+        android:layout_marginStart="35pt"/>
+    <TextView
+        android:id="@+id/textEmailBcc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bcc"
+        app:layout_constraintTop_toBottomOf="@id/textEmailCc"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="8pt"
+        android:paddingTop="15pt"
+        android:layout_marginEnd="15pt"
+        android:layout_marginTop="3pt"
+        android:layout_marginStart="7pt"/>
+    <TextView
+        android:id="@+id/textEmailBcc1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bcc"
+        app:layout_constraintTop_toBottomOf="@id/textEmailCc1"
+        app:layout_constraintLeft_toRightOf="@id/textEmailBcc"
+        android:textSize="8pt"
+        android:paddingLeft="19pt"
+        android:paddingTop="15pt"
+        android:layout_marginEnd="15pt"
+        android:layout_marginTop="3pt"
+        android:layout_marginStart="12pt"/>
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/email_content"
-        app:layout_constraintTop_toBottomOf="@id/textFolder"
+        app:layout_constraintTop_toBottomOf="@id/textEmailBcc"
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="8pt"
         android:paddingTop="15pt"

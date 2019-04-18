@@ -68,12 +68,42 @@
         android:layout_marginTop="3pt"
         android:layout_marginEnd="10pt"
         android:layout_marginStart="5pt"/>
+    <EditText
+        android:id="@+id/editTextCc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editText1"
+        android:hint="@string/cc"
+        android:inputType="textEmailAddress"
+        android:textSize="8pt"
+        android:textColor="@color/colorTxt"
+        android:textColorHint="@color/colorTxt"
+        android:paddingTop="11pt"
+        android:layout_marginTop="3pt"
+        android:layout_marginEnd="10pt"
+        android:layout_marginStart="5pt"/>
+    <EditText
+        android:id="@+id/editTextBcc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextCc"
+        android:hint="@string/bcc"
+        android:inputType="text"
+        android:textSize="8pt"
+        android:textColor="@color/colorTxt"
+        android:textColorHint="@color/colorTxt"
+        android:paddingTop="11pt"
+        android:layout_marginTop="3pt"
+        android:layout_marginEnd="10pt"
+        android:layout_marginStart="5pt"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
-        app:layout_constraintTop_toBottomOf="@id/editText1"
+        app:layout_constraintTop_toBottomOf="@id/editTextBcc"
         android:gravity="top|left"
         android:hint="@string/compose_email"
         android:lines="15"

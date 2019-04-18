@@ -53,4 +53,6 @@
     <string name="edit">Edit</string>
     <string name="from">From</string>
     <string name="attachment">Attachment</string>
+    <string name="cc">Cc</string>
+    <string name="bcc">Bcc</string>
 </resources>

@@ -70,6 +70,8 @@ public class CreateEmailActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_SHORT).show();
         else if(item.getItemId() == R.id.btnCreateEmailCancel)
             Toast.makeText(getApplicationContext(), "Canceled!", Toast.LENGTH_SHORT).show();
+        else if(item.getItemId() == R.id.btnCreateEmailAttachment)
+            Toast.makeText(getApplicationContext(), "Attachment added!", Toast.LENGTH_SHORT).show();
         else
             onBackPressed();
         return true;

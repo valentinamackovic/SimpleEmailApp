@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 import model.Message;
@@ -43,14 +42,11 @@ public class CustomListAdapterEmails extends BaseAdapter {
 
         Message currentMessage = (Message) getItem(position);
 
-//        ImageView photo =
-//                convertView.findViewById(R.id.imgPhotoEmail);
         TextView textViewFrom =
                 convertView.findViewById(R.id.txtListViewFrom);
         TextView textViewSubject =
                 convertView.findViewById(R.id.txtListViewSubject);
 
-       // photo.setImageResource(R.mipmap.profile_ico);
         String from = (String) currentMessage.getFrom().getFirstName();
         textViewFrom.setText(from);
         String subject = (String) currentMessage.getSubject();

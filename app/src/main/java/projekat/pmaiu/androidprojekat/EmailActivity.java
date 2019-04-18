@@ -23,25 +23,6 @@ import model.Message;
 
 public class EmailActivity extends AppCompatActivity {
 
-//    public static Message message = null;
-//    static{
-//        message = new Message();
-//        message.setId(0);
-//        message.setContent("Ovo je neki sadrzaj nekog maila :)");
-//        message.setSubject("Subject nekog maila");
-//        Contact contact=new Contact();
-//        contact.setId(0);
-//        contact.setFirstName("Marko");
-//        contact.setLastName("Markovic");
-//        contact.setEmail("adasd@gmail.com");
-//        Message m=new Message();
-//        m.setId(0);
-//        m.setSubject("Subject ");
-//        m.setContent("Ovo je sadrzaj nekog maila.");
-//        m.setDateTime(new Date());
-//        message.setFrom(contact);
-//        message.setTo(new ArrayList<Contact>(Arrays.asList(contact)));
-//    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,9 +67,13 @@ public class EmailActivity extends AppCompatActivity {
         TextView txtSubject = findViewById(R.id.textSubject1);
         TextView txtContent = findViewById(R.id.textView6);
         TextView txtAttachment = findViewById(R.id.textAttachment);
+        TextView txtCc = findViewById(R.id.textEmailCc1);
+        TextView txtBcc = findViewById(R.id.textEmailBcc1);
 
         txtFrom.setText(message.getFrom().getEmail());
-        txtTo.setText(message.getTo().get(0).getEmail());
+        txtTo.setText(message.getTo().get(0).getFirstName());
+        //txtCc.setText(message.getCc().get(0).getEmail());
+       // txtBcc.setText(message.getBcc().get(0).getEmail());
         txtSubject.setText(message.getSubject());
         txtContent.setText(message.getContent());
         txtAttachment.setText(message.getAttachments().get(0).getName());
