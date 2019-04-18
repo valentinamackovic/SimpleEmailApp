@@ -9,38 +9,41 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.ListView;
+
+import java.util.ArrayList;
 
 import model.Contact;
 
 public class ContactsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
     ListView listView ;
+    CustomListAdapterContacts adapter = new CustomListAdapterContacts(this, contacts);
+    public static ArrayList<Contact> contacts = new ArrayList<>();
 
     static {
-        for(int i=0; i<3; i++){
+        for(int i=0; i<10; i++){
             Contact c=new Contact();
             c.setEmail("email " + i);
             c.setLastName("prezime "+ i);
             c.setFirstName("ime "+ i);
             c.setId(i);
-
+            contacts.add(c);
         }
     }
-
-//    ArrayAdapter<Contact> contacts = new ArrayAdapter<Contact>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
-        listView = (ListView) findViewById(R.id.listView_contacts);
+
+        listView = findViewById(R.id.listView_contacts);
+
+        listView.setAdapter(adapter);
 
 //        ArrayAdapter<Contact> adapter = new ArrayAdapter<Contact>(this,
 //                R.layout.contact_listview, R.id.imgListViewContact, contacts);
@@ -81,13 +84,17 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
             }
         });
 
-//        Button btnView = findViewById(R.id.btnPrikazi);
-//        btnView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(new Intent(ContactsActivity.this, ContactActivity.class));
-//            }
-//        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                // TODO Auto-generated method stub
+                Log.w("position------------", Integer.toString(position));
+                Contact value=(Contact) adapter.getItem(position);
+                Intent i = new Intent(ContactsActivity.this, ContactActivity.class);
+                i.putExtra("contact", value);
+                startActivity(i);
+            }
+        });
 
         FloatingActionButton btnCreateContact = findViewById(R.id.btnCreateContactAction);
         btnCreateContact.setOnClickListener(new View.OnClickListener() {

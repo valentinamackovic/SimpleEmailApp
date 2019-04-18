@@ -18,23 +18,24 @@ import model.Message;
 
 public class ContactActivity extends AppCompatActivity {
 
-    public static Contact contact= null;
-    static {
-        contact=new Contact();
-        contact.setId(0);
-        contact.setFirstName("Marko");
-        contact.setLastName("Markovic");
-        contact.setEmail("adasd@gmail.com");
-        Message m=new Message();
-        m.setId(0);
-        m.setSubject("Subject ");
-        m.setContent("Sadrzaj nekog maila.");
-        m.setDateTime(new Date());
-//        m.getTo().add(contact);
-//        m.setFrom(contact);
-//        contact.getMessagesFrom().add(m);
-//        contact.getMessagesTo().add(m);
-    }
+
+
+    //    static {
+//        contact=new Contact();
+//        contact.setId(0);
+//        contact.setFirstName("Marko");
+//        contact.setLastName("Markovic");
+//        contact.setEmail("adasd@gmail.com");
+//        Message m=new Message();
+//        m.setId(0);
+//        m.setSubject("Subject ");
+//        m.setContent("Sadrzaj nekog maila.");
+//        m.setDateTime(new Date());
+////        m.getTo().add(contact);
+////        m.setFrom(contact);
+////        contact.getMessagesFrom().add(m);
+////        contact.getMessagesTo().add(m);
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,9 @@ public class ContactActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        Intent i = getIntent();
+        Contact contact = (Contact)i.getSerializableExtra("contact");
 
         EditText txtFirst = findViewById(R.id.txtFirst);
         EditText txtLast = findViewById(R.id.txtLast);

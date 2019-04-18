@@ -3,20 +3,26 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/imgListViewContact"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_gravity="start"/>
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="start"
+        android:layout_marginTop="7dp"
+        android:layout_marginStart="5dp"/>
 
     <TextView
         android:id="@+id/txtListViewContact"
-        android:layout_width="fill_parent"
-        android:layout_height="200dp"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
         android:layout_gravity="end"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:textColor="@color/colorTxt" />
+        android:layout_marginStart="10dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:textColor="@color/colorTxt"
+        android:textSize="16dp"/>
 
 </LinearLayout>
