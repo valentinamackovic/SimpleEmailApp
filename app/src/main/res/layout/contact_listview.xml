@@ -8,16 +8,14 @@
 
     <ImageView
         android:id="@+id/imgListViewContact"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="start"
-        android:layout_marginTop="7dp"
         android:layout_marginStart="5dp"/>
-
     <TextView
         android:id="@+id/txtListViewContact"
         android:layout_width="250dp"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_gravity="end"
         android:layout_marginStart="10dp"
         android:orientation="horizontal"

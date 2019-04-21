@@ -26,7 +26,7 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
     public static ArrayList<Contact> contacts = new ArrayList<>();
 
     static {
-        for(int i=0; i<10; i++){
+        for(int i=0; i<9; i++){
             Contact c=new Contact();
             c.setEmail("email " + i);
             c.setLastName("prezime "+ i);
