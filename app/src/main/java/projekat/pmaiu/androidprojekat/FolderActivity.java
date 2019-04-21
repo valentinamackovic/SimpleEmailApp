@@ -1,16 +1,31 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import model.Folder;
+import model.Message;
 
 public class FolderActivity extends AppCompatActivity {
+
+    ListView listView;
+    CustomListAdapterEmails adapter = new CustomListAdapterEmails(this, messages);
+    public static ArrayList<Message> messages = new ArrayList<>();
+    static {
+        messages = EmailsActivity.messages;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +36,10 @@ public class FolderActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-            }
+
+        listView = findViewById(R.id.folder_list_view);
+        listView.setAdapter(adapter);
+    }
 
     @Override
     protected void onStart(){
@@ -36,10 +54,21 @@ public class FolderActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Folder folder = new Folder();
-        folder.name = "Test folder";
-        TextView tv = findViewById(R.id.toolbar_folder_activity_title);
-        tv.setText(folder.name);
+        Intent i = getIntent();
+        Folder folder = (Folder) i.getSerializableExtra("folder");
+        TextView folderTitle = findViewById(R.id.toolbar_folder_activity_title);
+
+        folderTitle.setText(folder.getName());
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Message value=(Message) adapter.getItem(position);
+                Intent i = new Intent(FolderActivity.this, EmailActivity.class);
+                i.putExtra("message", value);
+                startActivity(i);
+            }
+        });
     }
 
     @Override

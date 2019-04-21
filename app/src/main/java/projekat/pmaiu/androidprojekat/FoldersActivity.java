@@ -1,6 +1,7 @@
 package projekat.pmaiu.androidprojekat;
 
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -8,16 +9,40 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import model.Contact;
 import model.Folder;
+import model.Message;
 
 public class FoldersActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
+    ListView listView;
+    FoldersAdapter adapter = new FoldersAdapter(this, folders);
+    public static ArrayList<Folder> folders = new ArrayList<>();
+
+    static {
+
+        String[] folderNames = {"Inbox", "Sent", "Social", "Promotions","Starred" ,"Snoozed", "Important","Drafts","Scheduled","Outbox","Spam","Trash"};
+        for(int i = 0; i < folderNames.length; i++){
+            Folder f = new Folder();
+            f.setMessages(EmailsActivity.messages);
+            f.setName(folderNames[i]);
+            folders.add(f);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +64,11 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        listView = findViewById(R.id.folders_list_view);
+        listView.setAdapter(adapter);
+
+
     }
 
     @Override
@@ -55,13 +85,13 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     protected void onResume() {
         super.onResume();
 
-        Button btnShowFolder = findViewById(R.id.btnShowFolderActivity);
-        btnShowFolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(FoldersActivity.this, FolderActivity.class));
-            }
-        });
+       // Button btnShowFolder = findViewById(R.id.btnShowFolderActivity);
+       // btnShowFolder.setOnClickListener(new View.OnClickListener() {
+       //     @Override
+       //     public void onClick(View v) {
+       //         startActivity(new Intent(FoldersActivity.this, FolderActivity.class));
+       //     }
+       // });
 
         FloatingActionButton btnCreateFolder = findViewById(R.id.btnCreateFolder);
         btnCreateFolder.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +100,19 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
                 startActivity(new Intent(FoldersActivity.this, CreateFolderActivity.class));
             }
         });
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                Folder value=(Folder) adapter.getItem(position);
+                Intent i = new Intent(FoldersActivity.this, FolderActivity.class);
+                i.putExtra("folder", value);
+                startActivity(i);
+            }
+        });
+
     }
 
     @Override
