@@ -45,11 +45,6 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
 
         listView.setAdapter(adapter);
 
-//        ArrayAdapter<Contact> adapter = new ArrayAdapter<Contact>(this,
-//                R.layout.contact_listview, R.id.imgListViewContact, contacts);
-
-//        listView.setAdapter(adapter);
-
         Toolbar toolbar =  findViewById(R.id.toolbar_contacts);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");

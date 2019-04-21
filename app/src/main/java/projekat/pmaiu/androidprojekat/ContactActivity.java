@@ -1,6 +1,7 @@
 package projekat.pmaiu.androidprojekat;
 
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,38 +10,71 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
+import model.Attachment;
 import model.Contact;
 import model.Message;
 
 public class ContactActivity extends AppCompatActivity {
 
+//    sve ovo ----------------------------------
+    ListView listViewTo ;
+    ListView listViewFrom ;
+    ListView listViewCc ;
+    ListView listViewBcc ;
+    CustomListAdapterEmails adapterTo = new CustomListAdapterEmails(this, messagesTo);
+    public static ArrayList<Message> messagesTo = new ArrayList<>();
+    CustomListAdapterEmails adapterFrom = new CustomListAdapterEmails(this, messagesFrom);
+    public static ArrayList<Message> messagesFrom = new ArrayList<>();
+    CustomListAdapterEmails adapterCc = new CustomListAdapterEmails(this, messagesCc);
+    public static ArrayList<Message> messagesCc = new ArrayList<>();
+    CustomListAdapterEmails adapterBcc = new CustomListAdapterEmails(this, messagesBcc);
+    public static ArrayList<Message> messagesBcc = new ArrayList<>();
 
+    static {
+        for(int i=0; i<1; i++){
+            Message message = new Message();
+            message.setId(i);
+            message.setSubject("Subject " + i);
+            Contact contact=new Contact();
+            contact.setId(i);
+            contact.setFirstName("Ime "+ i);
+            contact.setLastName("Markovic");
+            contact.setEmail("adasd@gmail.com");
+            message.setFrom(contact);
+            messagesTo.add(message);
+            messagesFrom.add(message);
+            messagesCc.add(message);
+            messagesBcc.add(message);
+        }
+    }
 
-    //    static {
-//        contact=new Contact();
-//        contact.setId(0);
-//        contact.setFirstName("Marko");
-//        contact.setLastName("Markovic");
-//        contact.setEmail("adasd@gmail.com");
-//        Message m=new Message();
-//        m.setId(0);
-//        m.setSubject("Subject ");
-//        m.setContent("Sadrzaj nekog maila.");
-//        m.setDateTime(new Date());
-////        m.getTo().add(contact);
-////        m.setFrom(contact);
-////        contact.getMessagesFrom().add(m);
-////        contact.getMessagesTo().add(m);
-//    }
+//    ------------------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
+
+//        ------------------------------------------------------------------------------------------------
+        listViewTo = findViewById(R.id.listView_contact_messagesTo);
+        listViewTo.setAdapter(adapterTo);
+
+        listViewFrom = findViewById(R.id.listView_contact_messagesFrom);
+        listViewFrom.setAdapter(adapterFrom);
+
+        listViewCc = findViewById(R.id.listView_contact_messagesCc);
+        listViewCc.setAdapter(adapterCc);
+
+        listViewBcc = findViewById(R.id.listView_contact_messagesBcc);
+        listViewBcc.setAdapter(adapterBcc);
+//         --------------------------------------------------------------------------------------------------
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_contact_activity);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
