@@ -22,9 +22,22 @@ public class FolderActivity extends AppCompatActivity {
     ListView listView;
     CustomListAdapterEmails adapter = new CustomListAdapterEmails(this, messages);
     public static ArrayList<Message> messages = new ArrayList<>();
+
+    ListView listViewFolders;
+    FoldersAdapter foldersAdapter = new FoldersAdapter(this, folders);
+    public static ArrayList<Folder> folders = new ArrayList<>();
+
     static {
         messages = EmailsActivity.messages;
+
+        Folder f = new Folder();
+        f.setMessages(EmailsActivity.messages);
+        f.setName("Inner folder");
+        folders.add(f);
     }
+
+
+
 
 
     @Override
@@ -37,8 +50,11 @@ public class FolderActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        listView = findViewById(R.id.folder_list_view);
+        listView = findViewById(R.id.folder_list_view_emails);
         listView.setAdapter(adapter);
+
+        listViewFolders = findViewById(R.id.folder_list_view_folders);
+        listViewFolders.setAdapter(foldersAdapter);
     }
 
     @Override
@@ -69,6 +85,8 @@ public class FolderActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+
     }
 
     @Override

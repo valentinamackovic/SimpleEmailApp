@@ -68,7 +68,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         listView = findViewById(R.id.folders_list_view);
         listView.setAdapter(adapter);
 
-
     }
 
     @Override
