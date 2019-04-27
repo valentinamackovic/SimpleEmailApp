@@ -10,14 +10,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import model.Folder;
+import retrofit2.Callback;
 
 public class FoldersAdapter extends BaseAdapter {
     private Context context;
-    private ArrayList<Folder> folders;
+    private List<Folder> folders;
 
-    public FoldersAdapter(Context context, ArrayList<Folder> folders) {
+    public FoldersAdapter(Context context, List<Folder> folders) {
         this.context = context;
         this.folders = folders;
     }

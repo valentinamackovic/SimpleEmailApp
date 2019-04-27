@@ -1,7 +1,6 @@
 package projekat.pmaiu.androidprojekat;
 
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -9,40 +8,29 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
-import model.Contact;
 import model.Folder;
-import model.Message;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.IMailService;
+import service.MailService;
 
 public class FoldersActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
     ListView listView;
-    FoldersAdapter adapter = new FoldersAdapter(this, folders);
-    public static ArrayList<Folder> folders = new ArrayList<>();
-
-    static {
-
-        String[] folderNames = {"Inbox", "Sent", "Social", "Promotions","Starred" ,"Snoozed", "Important","Drafts","Scheduled","Outbox","Spam","Trash"};
-        for(int i = 0; i < folderNames.length; i++){
-            Folder f = new Folder();
-            f.setMessages(EmailsActivity.messages);
-            f.setName(folderNames[i]);
-            folders.add(f);
-        }
-    }
+    FoldersAdapter adapter ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +53,11 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        listView = findViewById(R.id.folders_list_view);
-        listView.setAdapter(adapter);
+
 
     }
+
+
 
     @Override
     protected void onStart(){
@@ -101,17 +90,47 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         });
 
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //Getting data from service
+        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+        Call<List<Folder>> call = service.getAllFolders();
+        call.enqueue(new Callback<List<Folder>>() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            public void onResponse(Call<List<Folder>> call, Response<List<Folder>> response) {
+                generateFoldersList(response.body());
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-                Folder value=(Folder) adapter.getItem(position);
-                Intent i = new Intent(FoldersActivity.this, FolderActivity.class);
-                i.putExtra("folder", value);
-                startActivity(i);
+                        if(adapter.getCount() > 0){
+                            Folder value=(Folder) adapter.getItem(position);
+                            Intent i = new Intent(FoldersActivity.this, FolderActivity.class);
+                            i.putExtra("folder", value);
+                            startActivity(i);
+                        }else{
+                            Toast toast = Toast.makeText(getApplicationContext(), "Empty folder-adapter", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+
+
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<List<Folder>> call, Throwable t) {
+
+                Toast.makeText(FoldersActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
             }
         });
 
+
+
+    }
+
+    public void generateFoldersList(List<Folder> folders){
+        listView = findViewById(R.id.folders_list_view);
+        adapter = new FoldersAdapter(this, folders);
+        listView.setAdapter(adapter);
     }
 
     @Override

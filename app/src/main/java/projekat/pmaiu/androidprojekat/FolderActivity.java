@@ -8,35 +8,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.MalformedParameterizedTypeException;
 import java.util.ArrayList;
+import java.util.List;
 
 import model.Folder;
 import model.Message;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.IMailService;
+import service.MailService;
 
 public class FolderActivity extends AppCompatActivity {
 
     ListView listView;
-    CustomListAdapterEmails adapter = new CustomListAdapterEmails(this, messages);
-    public static ArrayList<Message> messages = new ArrayList<>();
+    CustomListAdapterEmails adapter;
 
     ListView listViewFolders;
-    FoldersAdapter foldersAdapter = new FoldersAdapter(this, folders);
-    public static ArrayList<Folder> folders = new ArrayList<>();
-
-    static {
-        messages = EmailsActivity.messages;
-
-        Folder f = new Folder();
-        f.setMessages(EmailsActivity.messages);
-        f.setName("Inner folder");
-        folders.add(f);
-    }
-
-
+    FoldersAdapter foldersAdapter;
 
 
 
@@ -50,9 +45,14 @@ public class FolderActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        Intent i = getIntent();
+        Folder folder = (Folder) i.getSerializableExtra("folder");
+
+        adapter = new CustomListAdapterEmails(this, folder.getMessages());
         listView = findViewById(R.id.folder_list_view_emails);
         listView.setAdapter(adapter);
 
+        foldersAdapter = new FoldersAdapter(this, folder.getChildFolders());
         listViewFolders = findViewById(R.id.folder_list_view_folders);
         listViewFolders.setAdapter(foldersAdapter);
     }
