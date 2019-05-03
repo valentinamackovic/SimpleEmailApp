@@ -2,6 +2,7 @@ package projekat.pmaiu.androidprojekat;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -52,13 +53,13 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onResume() {
         super.onResume();
-        Account acc = new Account();
-        acc.username = "My username";
-        acc.password = "My password";
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0);
+
         TextView username = findViewById(R.id.acc_username);
         TextView password = findViewById(R.id.acc_password);
-        username.setText(acc.username);
-        password.setText(acc.password);
+        username.setText(pref.getString("username", "emptyVal"));
+        password.setText(pref.getString("password","emptyVal"));
+
     }
 
     @Override
@@ -127,6 +128,14 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             startActivity(new Intent(ProfileActivity.this, SettingsActivity.class));
         } else if (id == R.id.nav_folders) {
             startActivity(new Intent(ProfileActivity.this, FoldersActivity.class));
+        }else if(id == R.id.nav_logout){
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0); // 0 - for private mode
+            SharedPreferences.Editor editor = pref.edit();
+            editor.remove("username");
+            editor.remove("password");
+            editor.commit();
+            startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

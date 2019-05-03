@@ -23,6 +23,14 @@
             android:icon="@drawable/ic_settings_"
             android:title="@string/settings"/>
 
+
+
+    </group>
+
+    <group android:id="@+id/bottom">
+        <item android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_exit"
+            android:title="@string/logout"/>
     </group>
 
 </menu>

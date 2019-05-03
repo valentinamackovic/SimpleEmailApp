@@ -1,6 +1,7 @@
 package projekat.pmaiu.androidprojekat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -178,6 +179,14 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
             startActivity(new Intent(FoldersActivity.this, SettingsActivity.class));
         } else if (id == R.id.nav_folders) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if(id == R.id.nav_logout){
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0); // 0 - for private mode
+            SharedPreferences.Editor editor = pref.edit();
+            editor.remove("username");
+            editor.remove("password");
+            editor.commit();
+            startActivity(new Intent(FoldersActivity.this, LoginActivity.class));
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
