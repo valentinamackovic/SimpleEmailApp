@@ -15,36 +15,40 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import model.Contact;
+import model.Folder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.IMailService;
+import service.MailService;
 
 public class ContactsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
     ListView listView ;
-    CustomListAdapterContacts adapter = new CustomListAdapterContacts(this, contacts);
-    public static ArrayList<Contact> contacts = new ArrayList<>();
-
-    static {
-        for(int i=0; i<9; i++){
-            Contact c=new Contact();
-            c.setEmail("email " + i);
-            c.setLastName("prezime "+ i);
-            c.setFirstName("ime "+ i);
-            c.setId(i);
-            contacts.add(c);
-        }
-    }
+    CustomListAdapterContacts adapter;
+//    public static ArrayList<Contact> contactsList = new ArrayList<>();
+//
+//    static {
+//        for(int i=0; i<9; i++){
+//            Contact c=new Contact();
+//            c.setEmail("email " + i);
+//            c.setLastName("prezime "+ i);
+//            c.setFirstName("ime "+ i);
+//            c.setId(i);
+//            contactsList.add(c);
+//        }
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
-
-        listView = findViewById(R.id.listView_contacts);
-
-        listView.setAdapter(adapter);
 
         Toolbar toolbar =  findViewById(R.id.toolbar_contacts);
         setSupportActionBar(toolbar);
@@ -80,17 +84,46 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+        Call<ArrayList<Contact>> call = service.getAllContacts();
+        call.enqueue(new Callback<ArrayList<Contact>>() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                // TODO Auto-generated method stub
-                Log.w("position------------", Integer.toString(position));
-                Contact value=(Contact) adapter.getItem(position);
-                Intent i = new Intent(ContactsActivity.this, ContactActivity.class);
-                i.putExtra("contact", value);
-                startActivity(i);
+            public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
+                generateContactsList(response.body());
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                        if(adapter.getCount() > 0){
+                            Contact value=(Contact) adapter.getItem(position);
+                            Intent i = new Intent(ContactsActivity.this, ContactActivity.class);
+                            i.putExtra("contact", value);
+                            startActivity(i);
+                        }else{
+                            Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Contact>> call, Throwable t) {
+                Toast.makeText(ContactsActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
             }
         });
+
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                // TODO Auto-generated method stub
+//                Log.w("position------------", Integer.toString(position));
+//                Contact value=(Contact) adapter.getItem(position);
+//                Intent i = new Intent(ContactsActivity.this, ContactActivity.class);
+//                i.putExtra("contact", value);
+//                startActivity(i);
+//            }
+//        });
 
         FloatingActionButton btnCreateContact = findViewById(R.id.btnCreateContactAction);
         btnCreateContact.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +132,11 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
                 startActivity(new Intent(ContactsActivity.this, CreateContactActivity.class));
             }
         });
+    }
+    public void generateContactsList(ArrayList<Contact> contacts){
+        listView = findViewById(R.id.listView_contacts);
+        adapter = new CustomListAdapterContacts(this, contacts);
+        listView.setAdapter(adapter);
     }
 
     @Override

@@ -54,11 +54,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
     }
-
-
 
     @Override
     protected void onStart(){
@@ -111,8 +107,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
                             Toast toast = Toast.makeText(getApplicationContext(), "Empty folder-adapter", Toast.LENGTH_SHORT);
                             toast.show();
                         }
-
-
                     }
                 });
             }
@@ -123,8 +117,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
                 Toast.makeText(FoldersActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
             }
         });
-
-
 
     }
 

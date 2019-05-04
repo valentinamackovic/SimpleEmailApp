@@ -1,8 +1,10 @@
 package service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.Account;
+import model.Contact;
 import model.Folder;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -25,4 +27,7 @@ public interface IMailService {
         @FormUrlEncoded
         @POST("/login")
         Call<Account> login(@Field("username") String username, @Field("password") String password);
+
+        @GET("/contacts")
+        Call<ArrayList<Contact>> getAllContacts();
 }
