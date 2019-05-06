@@ -1,14 +1,14 @@
 package service;
 
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
 import model.Account;
 import model.Contact;
 import model.Folder;
-import okhttp3.ResponseBody;
+import model.Message;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -30,4 +30,8 @@ public interface IMailService {
 
         @GET("/contacts")
         Call<ArrayList<Contact>> getAllContacts();
+
+        @GET("/messages")
+        Call<ArrayList<Message>> getAllMessages();
+
 }
