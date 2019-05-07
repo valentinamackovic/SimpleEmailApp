@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,8 @@ public class ProfileUpdateActivity extends AppCompatActivity {
     EditText txtUsername;
     EditText txtPassword;
     int id;
+    private RadioGroup radioProtocolGroup;
+    private RadioButton radioProtocolButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +49,11 @@ public class ProfileUpdateActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        radioProtocolGroup =  findViewById(R.id.radio_group_protocol);
         txtUsername = findViewById(R.id.update_profile_username);
         txtPassword = findViewById(R.id.update_profile_password);
+        RadioButton rbPop3=findViewById(R.id.radio_pop3);
+        RadioButton rbImap=findViewById(R.id.radio_imap);
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0);
 
@@ -54,6 +61,10 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         txtPassword.setText(pref.getString("password","emptyVal"));
         id = pref.getInt("loggedInUserId",-1);
 
+        if(LoginActivity.loggedInUser.pop3imap.toLowerCase().equals("pop3"))
+            rbPop3.setChecked(true);
+        else
+            rbImap.setChecked(true);
     }
 
     @Override
@@ -100,6 +111,10 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             EditText txtPassword = findViewById(R.id.update_profile_password);
             String password= txtPassword.getText().toString();
 
+            int selectedId = radioProtocolGroup.getCheckedRadioButtonId();
+            radioProtocolButton = findViewById(selectedId);
+            String protocol=radioProtocolButton.getText().toString();
+
             if(username.equals("")){
                 Toast.makeText(ProfileUpdateActivity.this, "Please enter your username!", Toast.LENGTH_SHORT).show();
 
@@ -108,7 +123,7 @@ public class ProfileUpdateActivity extends AppCompatActivity {
 
             }else{
                 IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-                Call<Account> update = service.updateProfile(id,username, password);
+                Call<Account> update = service.updateProfile(id,username, password, protocol);
                 update.enqueue(new Callback<Account>() {
                     @Override
                     public void onResponse(Call<Account> call, Response<Account> response) {

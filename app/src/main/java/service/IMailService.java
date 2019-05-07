@@ -33,7 +33,7 @@ public interface IMailService {
 
         @FormUrlEncoded
         @POST("/update_profile")
-        Call<Account> updateProfile(@Field("id") int id,@Field("username") String username, @Field("password") String password);
+        Call<Account> updateProfile(@Field("id") int id,@Field("username") String username, @Field("password") String password,@Field("protocol") String protocol);
 
         @GET("/messages")
         Call<ArrayList<Message>> getAllMessages();

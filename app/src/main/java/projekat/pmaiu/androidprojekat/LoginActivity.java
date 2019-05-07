@@ -25,6 +25,8 @@ import service.MailService;
 
 public class LoginActivity extends AppCompatActivity {
 
+    public static Account loggedInUser;
+
 //    public static ArrayList<Contact> contacts=new ArrayList<>();
 //    public static Contact user=null;
 //
@@ -111,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("username", user.username);
                             editor.putString("password", user.password);
                             editor.putInt("loggedInUserId",user.id);
+                            loggedInUser=user;
                             editor.commit();
 
                             Toast.makeText(LoginActivity.this, user.username, Toast.LENGTH_SHORT).show();

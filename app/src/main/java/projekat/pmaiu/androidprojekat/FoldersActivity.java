@@ -211,8 +211,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         return true;
     }
 
-
-
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
