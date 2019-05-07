@@ -23,58 +23,11 @@ import model.Message;
 
 public class ContactActivity extends AppCompatActivity {
 
-//    sve ovo ----------------------------------
-    ListView listViewTo ;
-    ListView listViewFrom ;
-    ListView listViewCc ;
-    ListView listViewBcc ;
-    CustomListAdapterEmails adapterTo = new CustomListAdapterEmails(this, messagesTo);
-    public static ArrayList<Message> messagesTo = new ArrayList<>();
-    CustomListAdapterEmails adapterFrom = new CustomListAdapterEmails(this, messagesFrom);
-    public static ArrayList<Message> messagesFrom = new ArrayList<>();
-    CustomListAdapterEmails adapterCc = new CustomListAdapterEmails(this, messagesCc);
-    public static ArrayList<Message> messagesCc = new ArrayList<>();
-    CustomListAdapterEmails adapterBcc = new CustomListAdapterEmails(this, messagesBcc);
-    public static ArrayList<Message> messagesBcc = new ArrayList<>();
-
-    static {
-        for(int i=0; i<1; i++){
-            Message message = new Message();
-            message.setId(i);
-            message.setSubject("Subject " + i);
-            Contact contact=new Contact();
-            contact.setId(i);
-            contact.setFirstName("Ime "+ i);
-            contact.setLastName("Markovic");
-            contact.setEmail("adasd@gmail.com");
-            message.setFrom(contact);
-            messagesTo.add(message);
-            messagesFrom.add(message);
-            messagesCc.add(message);
-            messagesBcc.add(message);
-        }
-    }
-
-//    ------------------------------------------------------------------------------------
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-//        ------------------------------------------------------------------------------------------------
-        listViewTo = findViewById(R.id.listView_contact_messagesTo);
-        listViewTo.setAdapter(adapterTo);
-
-        listViewFrom = findViewById(R.id.listView_contact_messagesFrom);
-        listViewFrom.setAdapter(adapterFrom);
-
-        listViewCc = findViewById(R.id.listView_contact_messagesCc);
-        listViewCc.setAdapter(adapterCc);
-
-        listViewBcc = findViewById(R.id.listView_contact_messagesBcc);
-        listViewBcc.setAdapter(adapterBcc);
-//         --------------------------------------------------------------------------------------------------
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_contact_activity);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");

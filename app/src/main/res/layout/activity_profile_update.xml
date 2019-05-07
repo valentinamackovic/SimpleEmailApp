@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbar_update_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:background="@color/colorPrimary"
+        android:textAlignment="textStart"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            android:id="@+id/toolbar_title_update_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/profile"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="155dp"
+            tools:layout_editor_absoluteY="18dp" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/username"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_update_profile"
+        android:paddingTop="10pt"/>
+
+    <EditText
+        android:id="@+id/update_profile_username"
+        android:layout_width="250sp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/textView"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_update_profile"
+        android:layout_marginTop="3pt"/>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/password"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        android:paddingTop="10pt"/>
+
+    <EditText
+        android:id="@+id/update_profile_password"
+        android:layout_width="250sp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/textView1"
+        app:layout_constraintTop_toBottomOf="@id/update_profile_username"
+        android:layout_marginTop="3pt"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/protocol"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView1"
+        android:paddingTop="17pt"/>
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/textView2"
+        app:layout_constraintTop_toBottomOf="@id/update_profile_password"
+        android:paddingTop="11pt"
+        android:layout_marginStart="10pt">
+        <RadioButton android:id="@+id/radio_pop3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pop3"
+            android:textColor="@color/colorTxt"/>
+        <RadioButton android:id="@+id/radio_imap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/imap"
+            android:textColor="@color/colorTxt"/>
+    </RadioGroup>
+
+</android.support.constraint.ConstraintLayout>

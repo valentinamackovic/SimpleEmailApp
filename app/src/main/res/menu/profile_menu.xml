@@ -9,4 +9,11 @@
         android:title="@string/edit"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_update_profile"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_update_profile"
+        android:title="@string/edit"
+        app:showAsAction="ifRoom" />
+
 </menu>

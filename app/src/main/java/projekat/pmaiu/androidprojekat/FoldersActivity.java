@@ -2,6 +2,8 @@ package projekat.pmaiu.androidprojekat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,7 +22,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import model.Contact;
 import model.Folder;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,11 +36,14 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     private DrawerLayout drawer;
     ListView listView;
     FoldersAdapter adapter ;
+    private long mInterval = 0;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_folders);
+        mHandler = new Handler();
 
         Toolbar toolbar =  findViewById(R.id.toolbar_folders);
         setSupportActionBar(toolbar);
@@ -56,6 +63,59 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
     }
 
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                String syncTimeStr = pref.getString("refresh_rate", "0");
+                mInterval= TimeUnit.MINUTES.toMillis(Integer.parseInt(syncTimeStr));
+
+                Toast toast = Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT);
+                toast.show();
+
+                IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+                Call<List<Folder>> call = service.getAllFolders();
+                call.enqueue(new Callback<List<Folder>>() {
+                    @Override
+                    public void onResponse(Call<List<Folder>> call, Response<List<Folder>> response) {
+                        generateFoldersList(response.body());
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                                if (adapter.getCount() > 0) {
+                                    Contact value = (Contact) adapter.getItem(position);
+                                    Intent i = new Intent(FoldersActivity.this, FolderActivity.class);
+                                    i.putExtra("folder", value);
+                                    startActivity(i);
+                                } else {
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Folder>> call, Throwable t) {
+                        Toast.makeText(FoldersActivity.this, "Empty folder-adapter", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } finally {
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
+    }
+
     @Override
     protected void onStart(){
         super.onStart();
@@ -70,14 +130,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     protected void onResume() {
         super.onResume();
 
-       // Button btnShowFolder = findViewById(R.id.btnShowFolderActivity);
-       // btnShowFolder.setOnClickListener(new View.OnClickListener() {
-       //     @Override
-       //     public void onClick(View v) {
-       //         startActivity(new Intent(FoldersActivity.this, FolderActivity.class));
-       //     }
-       // });
-
         FloatingActionButton btnCreateFolder = findViewById(R.id.btnCreateFolder);
         btnCreateFolder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,37 +138,38 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
             }
         });
 
+        startRepeatingTask();
 
         //Getting data from service
-        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-        Call<List<Folder>> call = service.getAllFolders();
-        call.enqueue(new Callback<List<Folder>>() {
-            @Override
-            public void onResponse(Call<List<Folder>> call, Response<List<Folder>> response) {
-                generateFoldersList(response.body());
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                        if(adapter.getCount() > 0){
-                            Folder value=(Folder) adapter.getItem(position);
-                            Intent i = new Intent(FoldersActivity.this, FolderActivity.class);
-                            i.putExtra("folder", value);
-                            startActivity(i);
-                        }else{
-                            Toast toast = Toast.makeText(getApplicationContext(), "Empty folder-adapter", Toast.LENGTH_SHORT);
-                            toast.show();
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(Call<List<Folder>> call, Throwable t) {
-
-                Toast.makeText(FoldersActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+//        Call<List<Folder>> call = service.getAllFolders();
+//        call.enqueue(new Callback<List<Folder>>() {
+//            @Override
+//            public void onResponse(Call<List<Folder>> call, Response<List<Folder>> response) {
+//                generateFoldersList(response.body());
+//                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//
+//                        if(adapter.getCount() > 0){
+//                            Folder value=(Folder) adapter.getItem(position);
+//                            Intent i = new Intent(FoldersActivity.this, FolderActivity.class);
+//                            i.putExtra("folder", value);
+//                            startActivity(i);
+//                        }else{
+//                            Toast toast = Toast.makeText(getApplicationContext(), "Empty folder-adapter", Toast.LENGTH_SHORT);
+//                            toast.show();
+//                        }
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Folder>> call, Throwable t) {
+//
+//                Toast.makeText(FoldersActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
     }
 
@@ -129,6 +182,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onPause() {
         super.onPause();
+        stopRepeatingTask();
     }
 
     @Override

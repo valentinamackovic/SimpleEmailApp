@@ -30,4 +30,8 @@ public interface IMailService {
 
         @GET("/contacts")
         Call<ArrayList<Contact>> getAllContacts();
+
+        @FormUrlEncoded
+        @POST("/update_profile")
+        Call<Account> updateProfile(@Field("id") int id,@Field("username") String username, @Field("password") String password);
 }

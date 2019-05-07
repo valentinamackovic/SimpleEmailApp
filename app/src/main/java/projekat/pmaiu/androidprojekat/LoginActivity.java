@@ -110,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                             Account user = response.body();
                             editor.putString("username", user.username);
                             editor.putString("password", user.password);
+                            editor.putInt("loggedInUserId",user.id);
                             editor.commit();
 
                             Toast.makeText(LoginActivity.this, user.username, Toast.LENGTH_SHORT).show();

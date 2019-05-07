@@ -2,6 +2,8 @@ package projekat.pmaiu.androidprojekat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import model.Contact;
 import model.Folder;
@@ -32,23 +35,14 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
     private DrawerLayout drawer;
     ListView listView ;
     CustomListAdapterContacts adapter;
-//    public static ArrayList<Contact> contactsList = new ArrayList<>();
-//
-//    static {
-//        for(int i=0; i<9; i++){
-//            Contact c=new Contact();
-//            c.setEmail("email " + i);
-//            c.setLastName("prezime "+ i);
-//            c.setFirstName("ime "+ i);
-//            c.setId(i);
-//            contactsList.add(c);
-//        }
-//    }
+    private long mInterval = 0;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
+        mHandler = new Handler();
 
         Toolbar toolbar =  findViewById(R.id.toolbar_contacts);
         setSupportActionBar(toolbar);
@@ -62,6 +56,59 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                String syncTimeStr = pref.getString("refresh_rate", "0");
+                mInterval= TimeUnit.MINUTES.toMillis(Integer.parseInt(syncTimeStr));
+
+                Toast toast = Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT);
+                toast.show();
+
+                IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+                Call<ArrayList<Contact>> call = service.getAllContacts();
+                call.enqueue(new Callback<ArrayList<Contact>>() {
+                    @Override
+                    public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
+                        generateContactsList(response.body());
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                                if (adapter.getCount() > 0) {
+                                    Contact value = (Contact) adapter.getItem(position);
+                                    Intent i = new Intent(ContactsActivity.this, ContactActivity.class);
+                                    i.putExtra("contact", value);
+                                    startActivity(i);
+                                } else {
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<ArrayList<Contact>> call, Throwable t) {
+                        Toast.makeText(ContactsActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } finally {
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
     }
 
     @Override
@@ -83,47 +130,7 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
                 startActivity(new Intent(ContactsActivity.this, ProfileActivity.class));
             }
         });
-
-        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-        Call<ArrayList<Contact>> call = service.getAllContacts();
-        call.enqueue(new Callback<ArrayList<Contact>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
-                generateContactsList(response.body());
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                        if(adapter.getCount() > 0){
-                            Contact value=(Contact) adapter.getItem(position);
-                            Intent i = new Intent(ContactsActivity.this, ContactActivity.class);
-                            i.putExtra("contact", value);
-                            startActivity(i);
-                        }else{
-                            Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
-                            toast.show();
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Contact>> call, Throwable t) {
-                Toast.makeText(ContactsActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//                // TODO Auto-generated method stub
-//                Log.w("position------------", Integer.toString(position));
-//                Contact value=(Contact) adapter.getItem(position);
-//                Intent i = new Intent(ContactsActivity.this, ContactActivity.class);
-//                i.putExtra("contact", value);
-//                startActivity(i);
-//            }
-//        });
+        startRepeatingTask();
 
         FloatingActionButton btnCreateContact = findViewById(R.id.btnCreateContactAction);
         btnCreateContact.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +149,7 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
     @Override
     protected void onPause() {
         super.onPause();
+        stopRepeatingTask();
     }
 
     @Override
@@ -201,18 +209,4 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
         return true;
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.contacts_menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if(item.getItemId() == R.id.action_new_contact)
-//            startActivity(new Intent(ContactsActivity.this, CreateContactActivity.class));
-//
-//        return true;
-//    }
 }

@@ -89,7 +89,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         } else{
             super.onBackPressed();
         }
-
     }
 
     @Override
@@ -111,7 +110,9 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             Toast toast = Toast.makeText(getApplicationContext(), "Logout", Toast.LENGTH_SHORT);
             toast.show();
         }
-
+        else if(item.getItemId() == R.id.action_update_profile){
+            startActivity(new Intent(ProfileActivity.this, ProfileUpdateActivity.class));
+        }
 
         return true;
     }
