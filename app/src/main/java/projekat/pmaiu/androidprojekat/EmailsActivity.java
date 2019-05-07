@@ -1,8 +1,10 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -11,6 +13,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,12 +31,15 @@ import java.util.Date;
 import model.Attachment;
 import model.Contact;
 import model.Message;
+import service.IMailService;
+import service.MailService;
 
 public class EmailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
     ListView listView ;
-    CustomListAdapterEmails adapter = new CustomListAdapterEmails(this, messages);
-    public static ArrayList<Message> messages = new ArrayList<>();
+    CustomListAdapterEmails adapter;
+    //CustomListAdapterEmails adapter = new CustomListAdapterEmails(this, messages);
+   /* public static ArrayList<Message> messages = new ArrayList<>();
 
     static{
         Message message = new Message();
@@ -85,7 +93,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         message2.setDateTime(new Date());
         message2.setTo(new ArrayList<Contact>(Arrays.asList(contact)));
         messages.add(message2);
-    }
+    }*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,7 +144,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Message value=(Message) adapter.getItem(position);
@@ -144,8 +152,42 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 i.putExtra("message", value);
                 startActivity(i);
             }
-        });
+        });*/
 
+        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+        Call<ArrayList<Message>> call = service.getAllMessages();
+        call.enqueue(new Callback<ArrayList<Message>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+                generateEmailsList(response.body());
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                        if(adapter.getCount() > 0){
+                            Message value=(Message) adapter.getItem(position);
+                            Intent i = new Intent(EmailsActivity.this, EmailActivity.class);
+                            i.putExtra("message", value);
+                            startActivity(i);
+                        }else{
+                            Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+                Toast.makeText(EmailsActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void generateEmailsList(ArrayList<Message> messages){
+        listView = findViewById(R.id.listView_emails);
+        adapter = new CustomListAdapterEmails(this, messages);
+        listView.setAdapter(adapter);
     }
 
     @Override

@@ -57,6 +57,7 @@
     <string name="bcc">Bcc</string>
     <string name="messages">Messages</string>
     <string name="logout">Logout</string>
+    <string name="date">Date</string>
     <string name="protocol">Protocol</string>
     <string name="pop3">POP3</string>
     <string name="imap">IMAP</string>

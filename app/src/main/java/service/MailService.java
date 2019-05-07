@@ -7,6 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MailService {
 
     private static Retrofit retrofit;
+    //private static final String BASE_URL = "http://192.168.1.7:8080";
     private static final String BASE_URL = "http://192.168.0.12:8080";
 
     public static Retrofit getRetrofitInstance() {

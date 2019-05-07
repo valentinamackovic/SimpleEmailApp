@@ -13,9 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import model.Attachment;
 import model.Contact;
@@ -68,15 +71,17 @@ public class EmailActivity extends AppCompatActivity {
         TextView txtContent = findViewById(R.id.textView6);
         TextView txtAttachment = findViewById(R.id.textAttachment);
         TextView txtCc = findViewById(R.id.textEmailCc1);
-        TextView txtBcc = findViewById(R.id.textEmailBcc1);
+        TextView txtDate = findViewById(R.id.textDate1);
 
         txtFrom.setText(message.getFrom().getEmail());
         txtTo.setText(message.getTo().get(0).getFirstName());
-        //txtCc.setText(message.getCc().get(0).getEmail());
-       // txtBcc.setText(message.getBcc().get(0).getEmail());
+        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+        Date datum = (Date) message.getDateTime();
+        txtDate.setText(df.format(datum));
         txtSubject.setText(message.getSubject());
         txtContent.setText(message.getContent());
         txtAttachment.setText(message.getAttachments().get(0).getName());
+
     }
 
     @Override
