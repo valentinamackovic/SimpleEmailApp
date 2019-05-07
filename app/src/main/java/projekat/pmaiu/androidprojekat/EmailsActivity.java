@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import model.Attachment;
 import model.Contact;
@@ -38,67 +40,15 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     private DrawerLayout drawer;
     ListView listView ;
     CustomListAdapterEmails adapter;
-    //CustomListAdapterEmails adapter = new CustomListAdapterEmails(this, messages);
-   /* public static ArrayList<Message> messages = new ArrayList<>();
+    private long mInterval = 0;
+    private Handler mHandler;
 
-    static{
-        Message message = new Message();
-        message.setId(0);
-        message.setContent("Ovo je neki sadrzaj nekog maila :)");
-        message.setSubject("Subject nekog maila");
-        Contact contact=new Contact();
-        contact.setId(0);
-        contact.setFirstName("Marko");
-        contact.setLastName("Markovic");
-        contact.setEmail("adasd@gmail.com");
-        Attachment a = new Attachment();
-        a.setId(0);
-        a.setName("Attachment 1");
-        message.setAttachments(new ArrayList<Attachment>(Arrays.asList(a)));
-        message.setFrom(contact);
-        message.setDateTime(new Date());
-        message.setTo(new ArrayList<Contact>(Arrays.asList(contact)));
-        messages.add(message);
-        Message message1 = new Message();
-        message1.setId(1);
-        message1.setContent("Ovo je neki sadrzaj nekog maila od Ane :)");
-        message1.setSubject("Subject maila");
-        Contact contact1=new Contact();
-        contact1.setId(1);
-        contact1.setFirstName("Ana");
-        contact1.setLastName("Anic");
-        contact1.setEmail("anaa@gmail.com");
-        Attachment a1 = new Attachment();
-        a1.setId(1);
-        a1.setName("Attachment 2");
-        message1.setAttachments(new ArrayList<Attachment>(Arrays.asList(a)));
-        message1.setFrom(contact1);
-        message1.setDateTime(new Date());
-        message1.setTo(new ArrayList<Contact>(Arrays.asList(contact)));
-        messages.add(message1);
-        Message message2 = new Message();
-        message2.setId(2);
-        message2.setContent("Ovo je neki sadrzaj nekog maila od Petra :)");
-        message2.setSubject("Subject maila");
-        Contact contact2=new Contact();
-        contact2.setId(2);
-        contact2.setFirstName("Petar");
-        contact2.setLastName("Petrovic");
-        contact2.setEmail("petar@gmail.com");
-        Attachment a2 = new Attachment();
-        a2.setId(2);
-        a2.setName("Attachment 3");
-        message2.setAttachments(new ArrayList<Attachment>(Arrays.asList(a)));
-        message2.setFrom(contact2);
-        message2.setDateTime(new Date());
-        message2.setTo(new ArrayList<Contact>(Arrays.asList(contact)));
-        messages.add(message2);
-    }*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emails);
         listView = findViewById(R.id.listView_emails);
+        mHandler = new Handler();
 
         listView.setAdapter(adapter);
 
@@ -114,6 +64,59 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                String syncTimeStr = pref.getString("refresh_rate", "0");
+                mInterval= TimeUnit.MINUTES.toMillis(Integer.parseInt(syncTimeStr));
+
+                Toast toast = Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT);
+                toast.show();
+
+                IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+                Call<ArrayList<Message>> call = service.getAllMessages();
+                call.enqueue(new Callback<ArrayList<Message>>() {
+                    @Override
+                    public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+                        generateEmailsList(response.body());
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                                if(adapter.getCount() > 0){
+                                    Message value=(Message) adapter.getItem(position);
+                                    Intent i = new Intent(EmailsActivity.this, EmailActivity.class);
+                                    i.putExtra("message", value);
+                                    startActivity(i);
+                                }else{
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+                        Toast.makeText(EmailsActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } finally {
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
     }
 
     @Override
@@ -144,44 +147,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             }
         });
 
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Message value=(Message) adapter.getItem(position);
-                Intent i = new Intent(EmailsActivity.this, EmailActivity.class);
-                i.putExtra("message", value);
-                startActivity(i);
-            }
-        });*/
-
-        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-        Call<ArrayList<Message>> call = service.getAllMessages();
-        call.enqueue(new Callback<ArrayList<Message>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
-                generateEmailsList(response.body());
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                        if(adapter.getCount() > 0){
-                            Message value=(Message) adapter.getItem(position);
-                            Intent i = new Intent(EmailsActivity.this, EmailActivity.class);
-                            i.putExtra("message", value);
-                            startActivity(i);
-                        }else{
-                            Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
-                            toast.show();
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
-                Toast.makeText(EmailsActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
-            }
-        });
+        startRepeatingTask();
     }
 
     public void generateEmailsList(ArrayList<Message> messages){
@@ -193,6 +159,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onPause() {
         super.onPause();
+        stopRepeatingTask();
     }
 
     @Override
@@ -217,7 +184,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         } else{
             super.onBackPressed();
         }
-
     }
 
     @Override
@@ -225,8 +191,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         onBackPressed();
         return true;
     }
-
-
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
