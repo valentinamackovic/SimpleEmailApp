@@ -185,10 +185,10 @@
         android:layout_marginTop="3pt"
         android:layout_marginStart="35pt"/>
     <TextView
-        android:id="@+id/textEmailBcc"
+        android:id="@+id/textDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/bcc"
+        android:text="@string/date"
         app:layout_constraintTop_toBottomOf="@id/textEmailCc"
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="8pt"
@@ -197,12 +197,11 @@
         android:layout_marginTop="3pt"
         android:layout_marginStart="7pt"/>
     <TextView
-        android:id="@+id/textEmailBcc1"
+        android:id="@+id/textDate1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/bcc"
         app:layout_constraintTop_toBottomOf="@id/textEmailCc1"
-        app:layout_constraintLeft_toRightOf="@id/textEmailBcc"
+        app:layout_constraintLeft_toRightOf="@id/textDate"
         android:textSize="8pt"
         android:paddingLeft="19pt"
         android:paddingTop="15pt"
@@ -215,7 +214,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/email_content"
-        app:layout_constraintTop_toBottomOf="@id/textEmailBcc"
+        app:layout_constraintTop_toBottomOf="@id/textDate"
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="8pt"
         android:paddingTop="15pt"

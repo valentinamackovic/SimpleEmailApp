@@ -8,7 +8,7 @@
     <ImageView
         android:id="@+id/imgListViewContact"
         android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_height="70dp"
         android:layout_gravity="start"
         android:layout_marginTop="7dp"
         android:layout_marginStart="5dp"
@@ -16,7 +16,7 @@
         />
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="70dp"
         android:orientation="vertical"
         android:layout_marginLeft="10dp">
 
@@ -47,9 +47,17 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorTxt"
         android:textStyle="bold"
-        android:gravity="bottom"
+        android:gravity="center"
         />
+        <TextView
+            android:id="@+id/txtListViewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTxt"
+            android:gravity="bottom"
+            />
     </LinearLayout>
+
 
     <!--<TextView-->
         <!--android:id="@+id/txtListViewFolder"-->
@@ -98,6 +106,7 @@
         <!--android:paddingBottom="8dp"-->
         <!--android:layout_constraintTop_toBottomOf="@id/txtListViewContent"-->
         <!--android:layout_constraintLeft_toRightOf="@id/txtListViewTextAttachment"/>-->
+
 
 </LinearLayout>
 
