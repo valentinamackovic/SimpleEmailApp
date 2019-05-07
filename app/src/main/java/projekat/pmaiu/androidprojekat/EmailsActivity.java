@@ -27,6 +27,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -151,6 +153,30 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     }
 
     public void generateEmailsList(ArrayList<Message> messages){
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String sort = pref.getString("sort_by_date", "0");
+
+        if(!sort.equals("0")){
+            if(sort.equals("Asceding")){
+                Collections.sort(messages, new Comparator<Message>() {
+                    public int compare(Message o1, Message o2) {
+                        return o1.getDateTime().compareTo(o2.getDateTime());
+                    }
+                });
+            }
+            else if(sort.equals(("Desceding"))){
+                //opadajuce
+                Collections.sort(messages, new Comparator<Message>() {
+                    public int compare(Message o1, Message o2) {
+                        if (o1.getDateTime().after(o2.getDateTime())) {return -1;}
+                        if (o1.getDateTime().before(o2.getDateTime())) {return 0;}
+                        else {return 0;}
+                    }
+                });
+
+            }
+        }
+        
         listView = findViewById(R.id.listView_emails);
         adapter = new CustomListAdapterEmails(this, messages);
         listView.setAdapter(adapter);
