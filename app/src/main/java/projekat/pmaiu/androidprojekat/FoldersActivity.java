@@ -85,7 +85,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
                             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                                 if (adapter.getCount() > 0) {
-                                    Contact value = (Contact) adapter.getItem(position);
+                                    Folder value = (Folder) adapter.getItem(position);
                                     Intent i = new Intent(FoldersActivity.this, FolderActivity.class);
                                     i.putExtra("folder", value);
                                     startActivity(i);
