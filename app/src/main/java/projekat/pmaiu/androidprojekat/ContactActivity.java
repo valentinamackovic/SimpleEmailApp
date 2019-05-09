@@ -1,6 +1,7 @@
 package projekat.pmaiu.androidprojekat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,11 +18,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+import model.Account;
 import model.Attachment;
 import model.Contact;
 import model.Message;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.IMailService;
+import service.MailService;
 
 public class ContactActivity extends AppCompatActivity {
+    static Contact contact;
+
+    EditText txtFirst;
+    EditText txtLast;
+    EditText txtEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +57,11 @@ public class ContactActivity extends AppCompatActivity {
         super.onResume();
 
         Intent i = getIntent();
-        Contact contact = (Contact)i.getSerializableExtra("contact");
+        contact = (Contact)i.getSerializableExtra("contact");
 
-        EditText txtFirst = findViewById(R.id.txtFirst);
-        EditText txtLast = findViewById(R.id.txtLast);
-        EditText txtEmail = findViewById(R.id.txtEmail);
+        txtFirst = findViewById(R.id.txtFirst);
+        txtLast = findViewById(R.id.txtLast);
+        txtEmail = findViewById(R.id.txtEmail);
 
         txtFirst.setText(contact.getFirstName());
         txtLast.setText(contact.getLastName());
@@ -92,10 +104,67 @@ public class ContactActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.btnSaveContact)
-            Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
+        if(item.getItemId() == R.id.btnSaveContact) {
+            if(validation()) {
+                contact.setFirstName(txtFirst.getText().toString());
+                contact.setLastName(txtLast.getText().toString());
+//            contact.setPhoto();
+                contact.setEmail(txtEmail.getText().toString());
+
+                IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+                Call<Contact> update = service.updateContact(contact);
+                update.enqueue(new Callback<Contact>() {
+                    @Override
+                    public void onResponse(Call<Contact> call, Response<Contact> response) {
+                        Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
+//                        SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0); // 0 - for private mode
+//                        SharedPreferences.Editor editor = pref.edit();
+//                        editor.remove("username");
+//                        editor.remove("password");
+//                        editor.commit();
+                        startActivity(new Intent(ContactActivity.this, ContactsActivity.class));
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Contact> call, Throwable t) {
+                        Toast.makeText(ContactActivity.this, "Something went wrong, please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
         else
-            onBackPressed();
+            super.onBackPressed();
         return true;
+    }
+
+    public boolean validation(){
+        boolean pass=true;
+        String message="";
+
+        if(txtFirst.getText().equals("")){
+            pass=false;
+            message+="Field first name is required! \n";
+        }
+        else if(txtLast.getText().equals("")){
+            pass=false;
+            message+="Field last name is required! \n";
+        }
+        else if(txtEmail.getText().equals("")){
+            pass=false;
+            message+="Field email is required! \n";
+        }
+        else if(!txtEmail.getText().toString().contains("@")){
+            pass=false;
+            message+="Email is not valid! \n";
+        }
+        else if(!txtEmail.getText().toString().contains(".")){
+            pass=false;
+            message+="Email is not valid! \n";
+        }
+
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+
+        return  pass;
     }
 }

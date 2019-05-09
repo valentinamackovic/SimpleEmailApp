@@ -9,6 +9,8 @@ import model.Contact;
 import model.Folder;
 import model.Message;
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -31,11 +33,20 @@ public interface IMailService {
         @GET("/contacts")
         Call<ArrayList<Contact>> getAllContacts();
 
+        @POST("/contacts/update")
+        Call<Contact> updateContact(@Body() Contact contact);
+
+        @FormUrlEncoded
+        @DELETE("/contacts/delete")
+        Call<Contact> deleteContact(@Field("contactId") int id);
+
         @FormUrlEncoded
         @POST("/update_profile")
         Call<Account> updateProfile(@Field("id") int id,@Field("username") String username, @Field("password") String password,@Field("protocol") String protocol);
 
         @GET("/messages")
         Call<ArrayList<Message>> getAllMessages();
+
+
 
 }
