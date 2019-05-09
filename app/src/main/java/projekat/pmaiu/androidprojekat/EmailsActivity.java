@@ -176,7 +176,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
             }
         }
-        
+
         listView = findViewById(R.id.listView_emails);
         adapter = new CustomListAdapterEmails(this, messages);
         listView.setAdapter(adapter);
