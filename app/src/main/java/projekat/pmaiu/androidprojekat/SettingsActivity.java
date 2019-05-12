@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.support.v4.media.MediaBrowserCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Transition;
@@ -43,8 +44,14 @@ public class SettingsActivity extends PreferenceActivity {
                 editor.remove("dark_mode");
                 editor.putBoolean("dark_mode", (Boolean) newValue);
                 editor.commit();
+
+                startActivity(new Intent(SettingsActivity.this, EmailsActivity.class));
+
                 startActivity(new Intent(SettingsActivity.this, SettingsActivity.class));
                 finish();
+                finishAffinity();
+
+
                 return true;
             }
         });
