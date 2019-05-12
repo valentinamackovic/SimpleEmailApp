@@ -25,7 +25,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="top"
-        android:textColor="@color/colorTxt"
         android:layout_marginBottom="10dp"/>
     <!--<TextView-->
         <!--android:id="@+id/txtListViewTo"-->
@@ -45,7 +44,6 @@
         android:id="@+id/txtListViewSubject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorTxt"
         android:textStyle="bold"
         android:gravity="center"
         />
@@ -53,7 +51,6 @@
             android:id="@+id/txtListViewDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorTxt"
             android:gravity="bottom"
             />
     </LinearLayout>

@@ -24,6 +24,12 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefTheme = getApplicationContext().getSharedPreferences("ThemePref", 0);
+        if(!prefTheme.getBoolean("dark_mode", false)){
+            setTheme(R.style.AppThemeLight);
+        }else{
+            setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 

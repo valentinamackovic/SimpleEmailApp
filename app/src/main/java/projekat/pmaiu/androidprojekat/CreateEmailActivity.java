@@ -1,5 +1,6 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +12,12 @@ public class CreateEmailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefTheme = getApplicationContext().getSharedPreferences("ThemePref", 0);
+        if(!prefTheme.getBoolean("dark_mode", false)){
+            setTheme(R.style.AppThemeLight);
+        }else{
+            setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_email);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_create_email_activity);

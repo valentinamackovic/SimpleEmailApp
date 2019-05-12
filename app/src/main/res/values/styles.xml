@@ -18,7 +18,29 @@
         <item name="actionBarItemBackground">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorTxt</item>
         <item name="colorControlHighlight">@color/colorTxtSecondary</item>
+        <item name="android:textColorHint">@color/colorTxt</item>
 
+    </style>
+
+    <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorBackgroundLightTheme</item>
+        <item name="colorPrimaryDark">@color/colorTxt</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/colorBackgroundLightTheme</item>
+        <item name="android:button">@color/colorBtn</item>
+        <item name="editTextColor">@color/colorTxtLightTheme</item>
+        <item name="android:textColor">@color/colorTxtLightTheme</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:textColorSecondary">@color/colorTxtSecondary</item>
+        <item name="actionMenuTextColor">@color/colorTxtLightTheme</item>
+        <item name="textAppearanceListItem">@color/colorTxtLightTheme</item>
+        <item name="actionBarItemBackground">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorTxtLightTheme</item>
+        <item name="colorControlHighlight">@color/colorTxtSecondary</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:itemBackground">@color/colorTxt</item>
+        <item name="android:textColorHint">@color/colorTxtLightTheme</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

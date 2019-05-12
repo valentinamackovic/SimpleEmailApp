@@ -40,6 +40,12 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefTheme = getApplicationContext().getSharedPreferences("ThemePref", 0);
+        if(!prefTheme.getBoolean("dark_mode", false)){
+            setTheme(R.style.AppThemeLight);
+        }else{
+            setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
         mHandler = new Handler();
@@ -141,9 +147,11 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
         });
     }
     public void generateContactsList(ArrayList<Contact> contacts){
+
         listView = findViewById(R.id.listView_contacts);
         adapter = new CustomListAdapterContacts(this, contacts);
         listView.setAdapter(adapter);
+        listView.setDivider(null);
     }
 
     @Override

@@ -47,6 +47,12 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefTheme = getApplicationContext().getSharedPreferences("ThemePref", 0);
+        if(!prefTheme.getBoolean("dark_mode", false)){
+            setTheme(R.style.AppThemeLight);
+        }else{
+            setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emails);
         listView = findViewById(R.id.listView_emails);
@@ -180,6 +186,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         listView = findViewById(R.id.listView_emails);
         adapter = new CustomListAdapterEmails(this, messages);
         listView.setAdapter(adapter);
+        listView.setDivider(null);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package projekat.pmaiu.androidprojekat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,12 @@ public class ContactActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefTheme = getApplicationContext().getSharedPreferences("ThemePref", 0);
+        if(!prefTheme.getBoolean("dark_mode", false)){
+            setTheme(R.style.AppThemeLight);
+        }else{
+            setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 

@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
-        android:background="@color/colorPrimary"
         android:textAlignment="textStart"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
@@ -89,13 +88,11 @@
         <RadioButton android:id="@+id/radio_pop3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pop3"
-            android:textColor="@color/colorTxt"/>
+            android:text="@string/pop3"/>
         <RadioButton android:id="@+id/radio_imap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/imap"
-            android:textColor="@color/colorTxt"/>
+            android:text="@string/imap"/>
     </RadioGroup>
 
 </android.support.constraint.ConstraintLayout>

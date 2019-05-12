@@ -11,7 +11,6 @@
         android:id="@+id/toolbar_email_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
         android:textAlignment="textStart"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="4dp"
@@ -25,7 +24,7 @@
                 android:id="@+id/textView5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/email"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +61,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_email_activity"
         app:layout_constraintRight_toLeftOf="@id/textFrom1"
-        android:background="@color/colorBackground"
         />
 
     <TextView
@@ -231,7 +229,6 @@
         android:layout_marginLeft="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView6"
-        android:background="@color/colorBackground"
         />
 
     <TextView
@@ -250,7 +247,7 @@
    <Button
        android:id="@+id/btnReply"
        android:drawableStart="@drawable/icon_reply"
-       android:background="@color/colorBackground"
+       android:background="@android:color/transparent"
        android:text="@string/email_reply"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
@@ -264,7 +261,7 @@
     <Button
         android:id="@+id/btnReplyToAll"
         android:drawableStart="@drawable/icon_reply_all"
-        android:background="@color/colorBackground"
+        android:background="@android:color/transparent"
         android:text="@string/email_reply_to_all"
         android:layout_width="150dp"
         android:layout_height="wrap_content"

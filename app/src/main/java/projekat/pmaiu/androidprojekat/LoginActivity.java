@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,8 +71,17 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefTheme = getApplicationContext().getSharedPreferences("ThemePref", 0);
+        if(!prefTheme.getBoolean("dark_mode", false)){
+            setTheme(R.style.AppThemeLight);
+        }else{
+            setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+
     }
 
     @Override
@@ -116,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                             loggedInUser=user;
                             editor.commit();
 
-                            Toast.makeText(LoginActivity.this, user.username, Toast.LENGTH_SHORT).show();
+
                             startActivity(new Intent(LoginActivity.this, EmailsActivity.class));
                             finish();
 
@@ -133,6 +145,9 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+
+
+
     }
 
     @Override

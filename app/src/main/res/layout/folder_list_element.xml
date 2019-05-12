@@ -28,7 +28,6 @@
         android:layout_toRightOf="@+id/folder_list_item_icon"
         android:gravity="center_vertical"
         android:text="Line 1"
-        android:textColor="@color/colorTxt"
         android:textSize="20sp"
         android:textStyle="normal" />
 

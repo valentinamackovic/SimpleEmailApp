@@ -11,5 +11,8 @@
     <color name="colorTxtSecondary">#9E9E9E</color>
 
 
+    <color name="colorTxtLightTheme">#303030</color>
+    <color name="colorBackgroundLightTheme">#FAFAFA</color>
+
 
 </resources>
