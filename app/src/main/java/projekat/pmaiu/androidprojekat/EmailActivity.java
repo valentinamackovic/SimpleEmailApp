@@ -1,5 +1,6 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
@@ -7,11 +8,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +27,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import model.Attachment;
 import model.Contact;
@@ -78,7 +84,6 @@ public class EmailActivity extends AppCompatActivity {
         TextView txtTo = findViewById(R.id.textTo);
         TextView txtSubject = findViewById(R.id.textSubject1);
         TextView txtContent = findViewById(R.id.textView6);
-        TextView txtAttachment = findViewById(R.id.textAttachment);
         TextView txtCc = findViewById(R.id.textEmailCc1);
         TextView txtDate = findViewById(R.id.textDate1);
 
@@ -89,8 +94,28 @@ public class EmailActivity extends AppCompatActivity {
         txtDate.setText(df.format(datum));
         txtSubject.setText(message.getSubject());
         txtContent.setText(message.getContent());
-        txtAttachment.setText(message.getAttachments().get(0).getName());
 
+        //attachments
+        LinearLayout ly=findViewById(R.id.linear_layout_attachment);
+
+        LayoutInflater layoutInflator = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        List views = new ArrayList();
+        for(Attachment a : message.getAttachments()){
+            View view = layoutInflator.inflate(R.layout.attacment_row, null);
+
+            ImageView imgView=view.findViewById(R.id.icon_attachment);
+            imgView.setImageResource(R.drawable.icon_attachment);
+            TextView textView=view.findViewById(R.id.txt_attachment);
+
+            textView.setText(a.getName());
+
+            views.add(view);
+        }
+        for(int z = 0; z<views.size(); z++) {
+            ly.addView((View) views.get(z));
+        }
+        btnReply.setVisibility(View.VISIBLE);
+        btnReplyAll.setVisibility(View.VISIBLE);
     }
 
     @Override
