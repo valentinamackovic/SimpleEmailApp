@@ -47,6 +47,16 @@ public interface IMailService {
         @GET("/messages")
         Call<ArrayList<Message>> getAllMessages();
 
+        @POST("/contacts")
+        Call<Contact> createContact(@Body() Contact contact);
+
+        @POST("/folders")
+        Call<Contact> createFolder(@Body() Folder folder);
+
+        @FormUrlEncoded
+        @DELETE("/folders/delete")
+        Call<Folder> deleteFolder(@Field("folderId") int id);
+
 
 
 }

@@ -1,12 +1,20 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import model.Contact;
 
 public class CreateContactActivity extends AppCompatActivity {
 
@@ -33,9 +41,7 @@ public class CreateContactActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
+    protected void onResume() { super.onResume(); }
 
     @Override
     protected void onPause() {
@@ -72,7 +78,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.btnSaveNewContact)
+        if(item.getItemId() == R.id.btnSaveNewContact) 
             Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
         else
             onBackPressed();
