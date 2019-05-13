@@ -67,10 +67,10 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         txtPassword.setText(pref.getString("password","emptyVal"));
         id = pref.getInt("loggedInUserId",-1);
 
-        if(LoginActivity.loggedInUser.pop3imap.toLowerCase().equals("pop3"))
-            rbPop3.setChecked(true);
-        else
-            rbImap.setChecked(true);
+       // if(LoginActivity.loggedInUser.pop3imap.toLowerCase().equals("pop3"))
+        //    rbPop3.setChecked(true);
+       // else
+        //    rbImap.setChecked(true);
     }
 
     @Override

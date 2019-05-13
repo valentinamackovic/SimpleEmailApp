@@ -112,11 +112,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_logout){
-            Toast toast = Toast.makeText(getApplicationContext(), "Logout", Toast.LENGTH_SHORT);
-            toast.show();
-        }
-        else if(item.getItemId() == R.id.action_update_profile){
+        if(item.getItemId() == R.id.action_update_profile){
             startActivity(new Intent(ProfileActivity.this, ProfileUpdateActivity.class));
         }
 

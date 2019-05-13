@@ -32,10 +32,10 @@ public class CreateFolderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_folder);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_create_folder);
+        toolbar.setTitle(getIntent().getStringExtra("action") + " folder");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
-
 
     }
 
@@ -56,6 +56,7 @@ public class CreateFolderActivity extends AppCompatActivity {
         Folder folder = (Folder) getIntent().getSerializableExtra("folder");
         if(action.equals("update")){
             if(folder != null){
+
                 EditText folderName = findViewById(R.id.folder_name_create_folder_activity);
                 folderName.setText(folder.getName(), TextView.BufferType.EDITABLE);
             }

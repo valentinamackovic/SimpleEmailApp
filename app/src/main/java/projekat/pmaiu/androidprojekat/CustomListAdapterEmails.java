@@ -44,6 +44,8 @@ public class CustomListAdapterEmails extends BaseAdapter {
                     inflate(R.layout.email_listview, parent, false);
         }
 
+        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
         Message currentMessage = (Message) getItem(position);
 
         TextView textViewFrom =
@@ -52,14 +54,19 @@ public class CustomListAdapterEmails extends BaseAdapter {
                 convertView.findViewById(R.id.txtListViewSubject);
         TextView textViewDate =
                 convertView.findViewById(R.id.txtListViewDate);
+        TextView txtContactLetter = convertView.findViewById(R.id.contact_letter_on_mail);
 
         String from = (String) currentMessage.getFrom().getFirstName();
         textViewFrom.setText(from);
+        txtContactLetter.setText(String.valueOf(from.charAt(0)));
         String subject = (String) currentMessage.getSubject();
         textViewSubject.setText(subject);
+
+
         SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
         Date datum = (Date) currentMessage.getDateTime();
-        textViewDate.setText(df.format(datum));
+        int month = datum.getMonth();
+        textViewDate.setText(months[month] + " "+String.valueOf(datum.getDay()));
         return convertView;
     }
 }
