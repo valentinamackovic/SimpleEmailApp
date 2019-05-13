@@ -14,6 +14,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
@@ -37,8 +38,9 @@ public interface IMailService {
         Call<Contact> updateContact(@Body() Contact contact);
 
         @FormUrlEncoded
-        @DELETE("/contacts/delete")
-        Call<Contact> deleteContact(@Field("contactId") int id);
+        @HTTP(method = "DELETE", path = MailService.BASE_URL + "/contacts/delete", hasBody = true)
+//        @DELETE("/contacts/delete")
+        Call<ArrayList<Contact>> deleteContact(@Field("contactId") int id);
 
         @FormUrlEncoded
         @POST("/update_profile")
