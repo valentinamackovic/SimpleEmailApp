@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import model.Contact;
@@ -37,6 +39,7 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
     CustomListAdapterContacts adapter;
     private long mInterval = 0;
     private Handler mHandler;
+    private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,9 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     Runnable mStatusChecker = new Runnable() {
@@ -152,6 +158,7 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
         adapter = new CustomListAdapterContacts(this, contacts);
         listView.setAdapter(adapter);
         listView.setDivider(null);
+        registerForContextMenu(listView);
     }
 
     @Override
@@ -214,6 +221,47 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        ListView lv = (ListView) v;
+        AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        Contact contact = (Contact) lv.getItemAtPosition(acmi.position);
+
+//        menu.add("Update");
+        menu.add("Delete");
+        menu.setHeaderTitle(contact.getFirstName());
+        id=contact.getId();
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if(item.getTitle() == "Update"){
+            Toast.makeText(getApplicationContext(),"Update",Toast.LENGTH_SHORT).show();
+
+        }else if(item.getTitle() == "Delete"){
+
+            IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+            Call<ArrayList<Contact>> update = service.deleteContact(id);
+            update.enqueue(new Callback<ArrayList<Contact>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
+                    Toast.makeText(getApplicationContext(),"Delete",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(ContactsActivity.this, ContactsActivity.class));
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Contact>> call, Throwable t) {
+                    Toast.makeText(ContactsActivity.this, "Something went wrong, please try again.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else{
+            return false;
+        }
         return true;
     }
 
