@@ -14,7 +14,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import model.Account;
 import model.Contact;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.IMailService;
+import service.MailService;
 
 public class CreateContactActivity extends AppCompatActivity {
 
@@ -78,8 +84,52 @@ public class CreateContactActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.btnSaveNewContact) 
-            Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
+        if(item.getItemId() == R.id.btnSaveNewContact) {
+            EditText txtFirstName = findViewById(R.id.txtFirstNew);
+            final String firstName= txtFirstName.getText().toString();
+            EditText txtLastName = findViewById(R.id.txtLastNew);
+            final String lastName= txtLastName.getText().toString();
+            EditText txtEmail = findViewById(R.id.txtEmailNew);
+            final String email= txtEmail.getText().toString();
+
+            Contact c = new Contact();
+            c.setFirstName(txtFirstName.getText().toString());
+            c.setLastName(txtLastName.getText().toString());
+            c.setEmail(txtEmail.getText().toString());
+
+            if(firstName.equals("")){
+                Toast.makeText(CreateContactActivity.this, "Please enter first name!", Toast.LENGTH_SHORT).show();
+
+            }else if(lastName.equals("")){
+                Toast.makeText(CreateContactActivity.this, "Please enter last name!", Toast.LENGTH_SHORT).show();
+
+            }else if(email.equals("")){
+                 Toast.makeText(CreateContactActivity.this, "Please enter email!", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+                Call<Contact> createContact = service.createContact(c);
+                createContact.enqueue(new Callback<Contact>() {
+                    @Override
+                    public void onResponse(Call<Contact> call, Response<Contact> response) {
+                        Toast.makeText(CreateContactActivity.this, "Created new contact!", Toast.LENGTH_SHORT).show();
+                        SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0); // 0 - for private mode
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("firstName", firstName);
+                        editor.putString("lastName",lastName);
+                        editor.commit();
+                        startActivity(new Intent(CreateContactActivity.this, ContactsActivity.class));
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Contact> call, Throwable t) {
+                        Toast.makeText(CreateContactActivity.this, "Something went wrong, please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+
         else
             onBackPressed();
         return true;
