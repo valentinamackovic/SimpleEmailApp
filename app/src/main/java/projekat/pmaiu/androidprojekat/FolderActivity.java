@@ -58,10 +58,12 @@ public class FolderActivity extends AppCompatActivity {
         adapter = new CustomListAdapterEmails(this, folder.getMessages());
         listView = findViewById(R.id.folder_list_view_emails);
         listView.setAdapter(adapter);
+        listView.setDivider(null);
 
         foldersAdapter = new FoldersAdapter(this, folder.getChildFolders());
         listViewFolders = findViewById(R.id.folder_list_view_folders);
         listViewFolders.setAdapter(foldersAdapter);
+        listViewFolders.setDivider(null);
     }
 
     @Override
