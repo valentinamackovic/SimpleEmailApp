@@ -29,4 +29,10 @@
         <item>Edit</item>
         <item>Delete</item>
     </string-array>
+    
+    <string-array name="folder_operations">
+        <item>MOVE</item>
+        <item>DELETE</item>
+        <item>COPY</item>
+    </string-array>
 </resources>

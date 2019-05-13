@@ -18,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,6 +71,8 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
 
     }
 
@@ -143,7 +147,9 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         btnCreateFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(FoldersActivity.this, CreateFolderActivity.class));
+                Intent i = new Intent(new Intent(FoldersActivity.this, CreateFolderActivity.class));
+                i.putExtra("action", "create");
+                startActivity(i);
             }
         });
 
@@ -249,6 +255,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         return true;
     }
 
+    private Folder selected_folder;
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -256,15 +263,21 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
         Folder folder = (Folder) lv.getItemAtPosition(acmi.position);
 
+        selected_folder = folder;
         menu.add("Update");
         menu.add("Delete");
         menu.setHeaderTitle(folder.getName());
+
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if(item.getTitle() == "Update"){
-            Toast.makeText(getApplicationContext(),"Update",Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(FoldersActivity.this, CreateFolderActivity.class);
+            i.putExtra("action", "update");
+
+            i.putExtra("folder", selected_folder);
+            startActivity(i);
 
         }else if(item.getTitle() == "Delete"){
             Toast.makeText(getApplicationContext(),"Delete",Toast.LENGTH_SHORT).show();
