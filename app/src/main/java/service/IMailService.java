@@ -53,7 +53,7 @@ public interface IMailService {
         Call<Contact> createContact(@Body() Contact contact);
 
         @POST("/folders")
-        Call<Contact> createFolder(@Body() Folder folder);
+        Call<Folder> createFolder(@Body() Folder folder);
 
         @FormUrlEncoded
         @HTTP(method = "DELETE", path = MailService.BASE_URL + "/folders/delete", hasBody = true)
