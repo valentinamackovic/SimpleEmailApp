@@ -56,8 +56,8 @@ public interface IMailService {
         Call<Contact> createFolder(@Body() Folder folder);
 
         @FormUrlEncoded
-        @DELETE("/folders/delete")
-        Call<Folder> deleteFolder(@Field("folderId") int id);
+        @HTTP(method = "DELETE", path = MailService.BASE_URL + "/folders/delete", hasBody = true)
+        Call<ArrayList<Folder>> deleteFolder(@Field("folderId") int id);
 
 
 
