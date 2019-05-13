@@ -7,7 +7,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import model.Folder;
 
 public class CreateFolderActivity extends AppCompatActivity {
 
@@ -19,12 +23,20 @@ public class CreateFolderActivity extends AppCompatActivity {
         }else{
             setTheme(R.style.AppTheme);
         }
+
+
+
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_folder);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_create_folder);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
+
+
     }
 
     @Override
@@ -40,6 +52,18 @@ public class CreateFolderActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        String action = getIntent().getStringExtra("action");
+        Folder folder = (Folder) getIntent().getSerializableExtra("folder");
+        if(action.equals("update")){
+            if(folder != null){
+                EditText folderName = findViewById(R.id.folder_name_create_folder_activity);
+                folderName.setText(folder.getName(), TextView.BufferType.EDITABLE);
+            }
+        }else if(action.equals("create")){
+
+        }
+
+
     }
 
     @Override
