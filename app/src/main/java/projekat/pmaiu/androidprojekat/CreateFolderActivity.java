@@ -11,7 +11,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import model.Contact;
 import model.Folder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.IMailService;
+import service.MailService;
 
 public class CreateFolderActivity extends AppCompatActivity {
 
@@ -92,8 +98,36 @@ public class CreateFolderActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_save_folder){
-            Toast toast = Toast.makeText(getApplicationContext(), "Save folder", Toast.LENGTH_SHORT);
-            toast.show();
+            EditText txtFolderName = findViewById(R.id.folder_name_create_folder_activity);
+            final String folderName= txtFolderName.getText().toString();
+
+            Folder f = new Folder();
+            f.setName(txtFolderName.getText().toString());
+
+            if(folderName.equals(""))
+                Toast.makeText(CreateFolderActivity.this, "Please enter folder name!", Toast.LENGTH_SHORT).show();
+
+            else{
+                IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+                Call<Folder> createFolder = service.createFolder(f);
+                createFolder.enqueue(new Callback<Folder>() {
+                    @Override
+                    public void onResponse(Call<Folder> call, Response<Folder> response) {
+                        Toast.makeText(CreateFolderActivity.this, "Created new folder!", Toast.LENGTH_SHORT).show();
+                        SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0); // 0 - for private mode
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("name", folderName);
+                        editor.commit();
+                        startActivity(new Intent(CreateFolderActivity.this, FoldersActivity.class));
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Folder> call, Throwable t) {
+                        Toast.makeText(CreateFolderActivity.this, "Something went wrong, please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }else if(item.getItemId() == R.id.action_cancel_creating_folder){
             onBackPressed();
         }

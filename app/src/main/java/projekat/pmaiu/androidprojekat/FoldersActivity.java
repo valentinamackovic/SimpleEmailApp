@@ -42,6 +42,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     FoldersAdapter adapter ;
     private long mInterval = 0;
     private Handler mHandler;
+    private int id;
 
 
     @Override
@@ -267,6 +268,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         menu.add("Update");
         menu.add("Delete");
         menu.setHeaderTitle(folder.getName());
+        id=folder.getId();
 
     }
 
@@ -280,7 +282,21 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
             startActivity(i);
 
         }else if(item.getTitle() == "Delete"){
-            Toast.makeText(getApplicationContext(),"Delete",Toast.LENGTH_SHORT).show();
+            IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+            Call<ArrayList<Folder>> delete = service.deleteFolder(id);
+            delete.enqueue(new Callback<ArrayList<Folder>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Folder>> call, Response<ArrayList<Folder>> response) {
+                    Toast.makeText(getApplicationContext(),"Deleted!",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(FoldersActivity.this, FoldersActivity.class));
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Folder>> call, Throwable t) {
+                    Toast.makeText(FoldersActivity.this, "Something went wrong, please try again.", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
         else{
             return false;
