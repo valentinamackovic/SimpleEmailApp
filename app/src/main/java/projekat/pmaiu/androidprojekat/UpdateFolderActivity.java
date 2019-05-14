@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -48,7 +49,9 @@ public class UpdateFolderActivity extends AppCompatActivity {
     private Folder folder;
 
     @Override
-    protected void onResume() {
+    protected void onResume(
+
+    ) {
         super.onResume();
 
         Button save = findViewById(R.id.btn_save_folder_update);
@@ -56,24 +59,30 @@ public class UpdateFolderActivity extends AppCompatActivity {
         folder = (Folder) getIntent().getSerializableExtra("folder");
         final EditText folderName = findViewById(R.id.folder_name_update_folder_activity);
         folderName.setText(folder.getName(), TextView.BufferType.EDITABLE);
-
+        folderName.setSelection(folderName.getText().length());
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-                Call<ArrayList<Folder>> update = service.updateFolder(folder.getId(), folderName.getText().toString());
-                update.enqueue(new Callback<ArrayList<Folder>>() {
-                    @Override
-                    public void onResponse(Call<ArrayList<Folder>> call, Response<ArrayList<Folder>> response) {
-                        startActivity(new Intent(UpdateFolderActivity.this, FoldersActivity.class));
-                    }
+                if(!folderName.getText().toString().equals("")){
+                    IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+                    Call<ArrayList<Folder>> update = service.updateFolder(folder.getId(), folderName.getText().toString());
+                    update.enqueue(new Callback<ArrayList<Folder>>() {
+                        @Override
+                        public void onResponse(Call<ArrayList<Folder>> call, Response<ArrayList<Folder>> response) {
+                            startActivity(new Intent(UpdateFolderActivity.this, FoldersActivity.class));
+                            finish();
+                        }
 
-                    @Override
-                    public void onFailure(Call<ArrayList<Folder>> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<ArrayList<Folder>> call, Throwable t) {
 
-                    }
-                });
+                        }
+                    });
+                }else{
+                    Toast.makeText(getApplicationContext(), "Please enter folder name", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 

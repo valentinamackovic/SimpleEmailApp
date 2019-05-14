@@ -266,7 +266,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         Folder folder = (Folder) lv.getItemAtPosition(acmi.position);
 
         selected_folder = folder;
-        menu.add("Update");
+        menu.add("Edit");
         menu.add("Delete");
         menu.setHeaderTitle(folder.getName());
         id=folder.getId();
@@ -275,10 +275,8 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if(item.getTitle() == "Update"){
+        if(item.getTitle() == "Edit"){
             Intent i = new Intent(FoldersActivity.this, UpdateFolderActivity.class);
-            i.putExtra("action", "update");
-
             i.putExtra("folder", selected_folder);
             startActivity(i);
 

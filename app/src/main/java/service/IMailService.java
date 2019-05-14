@@ -35,7 +35,7 @@ public interface IMailService {
         @GET("/contacts")
         Call<ArrayList<Contact>> getAllContacts();
 
-        @POST("/contacts/update")
+        @PUT("/contacts")
         Call<Contact> updateContact(@Body() Contact contact);
 
         @FormUrlEncoded

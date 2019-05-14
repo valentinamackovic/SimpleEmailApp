@@ -35,42 +35,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_create_folder" />
 
-    <RadioGroup
-        android:layout_width="107dp"
-        android:layout_height="149dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="60dp"
+    <Spinner
+        android:id="@+id/spinnerOperation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawSelectorOnTop="true"
+        android:entries="@array/operation"
+        app:layout_constraintTop_toBottomOf="@+id/folder_name_create_folder_activity"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/folder_name_create_folder_activity">
+        />
+    <Spinner
+        android:id="@+id/spinnerCondition"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawSelectorOnTop="true"
+        android:entries="@array/condition"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerOperation"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Operation" />
-
-        <RadioButton
-            android:id="@+id/radioButtonMove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Move" />
-
-        <RadioButton
-            android:id="@+id/radioButtonCopy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Copy" />
-
-        <RadioButton
-            android:id="@+id/radioButtonDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Delete" />
-    </RadioGroup>
 
 
 </android.support.constraint.ConstraintLayout>

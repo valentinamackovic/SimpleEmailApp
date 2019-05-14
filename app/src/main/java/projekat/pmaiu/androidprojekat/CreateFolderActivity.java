@@ -8,11 +8,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import enums.Condition;
+import enums.Operation;
 import model.Contact;
 import model.Folder;
+import model.Rule;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -86,9 +90,21 @@ public class CreateFolderActivity extends AppCompatActivity {
 
             EditText txtFolderName = findViewById(R.id.folder_name_create_folder_activity);
             final String folderName= txtFolderName.getText().toString();
+            Spinner spinner = (Spinner)findViewById(R.id.spinnerCondition);
+            String selectedCondition = spinner.getSelectedItem().toString();
+            Spinner spinner1 = (Spinner)findViewById(R.id.spinnerOperation);
+            String selectedOperation = spinner1.getSelectedItem().toString();
+
+            Rule r = new Rule();
+            r.id = hashCode();
+            Condition e = Condition.valueOf(selectedCondition);
+            r.condition = e;
+            Operation o = Operation.valueOf(selectedOperation);
+            r.operation = o;
 
             Folder f = new Folder();
             f.setName(txtFolderName.getText().toString());
+            f.setRule(r);
 
             if(folderName.equals("")){
                 Toast.makeText(CreateFolderActivity.this, "Please enter folder name!", Toast.LENGTH_SHORT).show();
