@@ -1,13 +1,19 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Picture;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.net.Uri;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -25,8 +31,11 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import model.Contact;
 import model.Message;
@@ -45,7 +54,7 @@ public class ContactActivity extends AppCompatActivity {
     EditText txtLast;
     EditText txtEmail;
     ImageView imgView;
-
+    public static final int PICK_IMAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +72,20 @@ public class ContactActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        Intent i = getIntent();
+        contact = (Contact)i.getSerializableExtra("contact");
+        imgView = findViewById(R.id.imgContact);
+
+        if(contact.getPhoto()!=null) {
+            Picasso.with(this).load(contact.getPhoto().getPath()).into(picassoImageTarget(getApplicationContext(), "imageDir", "imageFromCOntact" + contact.getId()));
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            Log.e("dir", "directory: " + directory.getAbsolutePath());
+            File myImageFile = new File(directory, "imageFromCOntact" + contact.getId());
+            Log.e("image", "myImageFile" + myImageFile.getAbsolutePath());
+            Picasso.with(this).load(myImageFile).into(imgView);
+        }
     }
 
     @Override
@@ -74,28 +97,44 @@ public class ContactActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        Intent i = getIntent();
-        contact = (Contact)i.getSerializableExtra("contact");
-
         txtFirst = findViewById(R.id.txtFirst);
         txtLast = findViewById(R.id.txtLast);
         txtEmail = findViewById(R.id.txtEmail);
 
-        imgView = findViewById(R.id.imgContact);
-
-        Picasso.with(this).load(contact.getPhoto().getPath()).into(picassoImageTarget(getApplicationContext(), "imageDir", "imageFromCOntact" + contact.getId()));
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        Log.e("dir", "directory: " + directory.getAbsolutePath());
-        File myImageFile = new File(directory, "imageFromCOntact" + contact.getId());
-        Log.e("image", "myImageFile" + myImageFile.getAbsolutePath());
-        Picasso.with(this).load(myImageFile).into(imgView);
-
+        imgView.setClickable(true);
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(
+                        Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(Intent.createChooser(i, "Select Picture"), PICK_IMAGE);
+            }
+        });
 
         txtFirst.setText(contact.getFirstName());
         txtLast.setText(contact.getLastName());
         txtEmail.setText((contact.getEmail()));
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && null != data) {
+            try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                final Bitmap img=Bitmap.createScaledBitmap(selectedImage, 280, 250, true);
+//                selectedImage = getResizedBitmap(selectedImage, 400);
+                contact.getPhoto().setPath(imageUri.toString());
+                imgView.setImageBitmap(img);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
