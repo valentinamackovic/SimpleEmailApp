@@ -8,11 +8,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import enums.Condition;
 import model.Folder;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -61,12 +63,36 @@ public class UpdateFolderActivity extends AppCompatActivity {
         folderName.setText(folder.getName(), TextView.BufferType.EDITABLE);
         folderName.setSelection(folderName.getText().length());
 
+        final Spinner condition = findViewById(R.id.spinnerConditionUpdate);
+        final Spinner operation = findViewById(R.id.spinnerOperationUpdate);
+
+        if(folder.getRule().condition.toString().toLowerCase().equals("to")){
+            condition.setSelection(0);
+        }else if(folder.getRule().condition.toString().toLowerCase().equals("from")){
+            condition.setSelection(1);
+        }else if(folder.getRule().condition.toString().toLowerCase().equals("cc")){
+            condition.setSelection(2);
+        }else if(folder.getRule().condition.toString().toLowerCase().equals("subject")){
+            condition.setSelection(3);
+        }
+
+        if(folder.getRule().operation.toString().toLowerCase().equals("move")){
+            operation.setSelection(0);
+        }else if(folder.getRule().operation.toString().toLowerCase().equals("copy")){
+            operation.setSelection(1);
+        }else if(folder.getRule().operation.toString().toLowerCase().equals("delete")){
+            operation.setSelection(2);
+        }
+
+
+
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!folderName.getText().toString().equals("")){
                     IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-                    Call<ArrayList<Folder>> update = service.updateFolder(folder.getId(), folderName.getText().toString());
+                    Call<ArrayList<Folder>> update = service.updateFolder(folder.getId(), folderName.getText().toString(), operation.getSelectedItem().toString(), condition.getSelectedItem().toString());
                     update.enqueue(new Callback<ArrayList<Folder>>() {
                         @Override
                         public void onResponse(Call<ArrayList<Folder>> call, Response<ArrayList<Folder>> response) {

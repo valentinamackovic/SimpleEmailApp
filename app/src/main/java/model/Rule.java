@@ -1,9 +1,11 @@
 package model;
 
+import java.io.Serializable;
+
 import enums.Condition;
 import enums.Operation;
 
-public class Rule {
+public class Rule implements Serializable {
     public int id;
     public Condition condition;
     public Operation operation;

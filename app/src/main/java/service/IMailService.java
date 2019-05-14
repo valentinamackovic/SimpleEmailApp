@@ -58,7 +58,7 @@ public interface IMailService {
 
         @FormUrlEncoded
         @PUT("/folders")
-        Call<ArrayList<Folder>> updateFolder(@Field("id") int id, @Field("folderName") String name);
+        Call<ArrayList<Folder>> updateFolder(@Field("id") int id, @Field("folderName") String name, @Field("folderOperation") String folderOperation, @Field("folderCondition") String folderCondition);
 
         @FormUrlEncoded
         @HTTP(method = "DELETE", path = MailService.BASE_URL + "/folders/delete", hasBody = true)
