@@ -17,6 +17,7 @@ import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 public interface IMailService {
 
@@ -34,7 +35,7 @@ public interface IMailService {
         @GET("/contacts")
         Call<ArrayList<Contact>> getAllContacts();
 
-        @POST("/contacts/update")
+        @PUT("/contacts")
         Call<Contact> updateContact(@Body() Contact contact);
 
         @FormUrlEncoded
@@ -54,6 +55,10 @@ public interface IMailService {
 
         @POST("/folders")
         Call<Folder> createFolder(@Body() Folder folder);
+
+        @FormUrlEncoded
+        @PUT("/folders")
+        Call<ArrayList<Folder>> updateFolder(@Field("id") int id, @Field("folderName") String name, @Field("folderOperation") String folderOperation, @Field("folderCondition") String folderCondition);
 
         @FormUrlEncoded
         @HTTP(method = "DELETE", path = MailService.BASE_URL + "/folders/delete", hasBody = true)

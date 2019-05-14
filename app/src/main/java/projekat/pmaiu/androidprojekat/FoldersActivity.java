@@ -143,6 +143,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onResume() {
         super.onResume();
+        startRepeatingTask();
 
         FloatingActionButton btnCreateFolder = findViewById(R.id.btnCreateFolder);
         btnCreateFolder.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +155,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
             }
         });
 
-        startRepeatingTask();
+
 
         //Getting data from service
 //        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
@@ -265,7 +266,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         Folder folder = (Folder) lv.getItemAtPosition(acmi.position);
 
         selected_folder = folder;
-        menu.add("Update");
+        menu.add("Edit");
         menu.add("Delete");
         menu.setHeaderTitle(folder.getName());
         id=folder.getId();
@@ -274,10 +275,8 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if(item.getTitle() == "Update"){
-            Intent i = new Intent(FoldersActivity.this, CreateFolderActivity.class);
-            i.putExtra("action", "update");
-
+        if(item.getTitle() == "Edit"){
+            Intent i = new Intent(FoldersActivity.this, UpdateFolderActivity.class);
             i.putExtra("folder", selected_folder);
             startActivity(i);
 
