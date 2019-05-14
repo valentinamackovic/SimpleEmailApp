@@ -61,4 +61,15 @@
     <string name="protocol">Protocol</string>
     <string name="pop3">POP3</string>
     <string name="imap">IMAP</string>
+    <string-array name="operation">
+        <item>MOVE</item>
+        <item>COPY</item>
+        <item>DELETE</item>
+    </string-array>
+    <string-array name="condition">
+        <item>TO</item>
+        <item>FROM</item>
+        <item>CC</item>
+        <item>SUBJECT</item>
+    </string-array>
 </resources>
