@@ -30,11 +30,6 @@ public class CreateFolderActivity extends AppCompatActivity {
             setTheme(R.style.AppTheme);
         }
 
-
-
-
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_folder);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_create_folder);
@@ -58,17 +53,7 @@ public class CreateFolderActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String action = getIntent().getStringExtra("action");
-        Folder folder = (Folder) getIntent().getSerializableExtra("folder");
-        if(action.equals("update")){
-            if(folder != null){
 
-                EditText folderName = findViewById(R.id.folder_name_create_folder_activity);
-                folderName.setText(folder.getName(), TextView.BufferType.EDITABLE);
-            }
-        }else if(action.equals("create")){
-
-        }
 
 
     }
@@ -98,15 +83,16 @@ public class CreateFolderActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_save_folder){
+
             EditText txtFolderName = findViewById(R.id.folder_name_create_folder_activity);
             final String folderName= txtFolderName.getText().toString();
 
             Folder f = new Folder();
             f.setName(txtFolderName.getText().toString());
 
-            if(folderName.equals(""))
+            if(folderName.equals("")){
                 Toast.makeText(CreateFolderActivity.this, "Please enter folder name!", Toast.LENGTH_SHORT).show();
-
+            }
             else{
                 IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
                 Call<Folder> createFolder = service.createFolder(f);
@@ -118,8 +104,11 @@ public class CreateFolderActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = pref.edit();
                         editor.putString("name", folderName);
                         editor.commit();
+
                         startActivity(new Intent(CreateFolderActivity.this, FoldersActivity.class));
                         finish();
+
+
                     }
 
                     @Override
@@ -135,4 +124,5 @@ public class CreateFolderActivity extends AppCompatActivity {
 
         return true;
     }
+
 }
