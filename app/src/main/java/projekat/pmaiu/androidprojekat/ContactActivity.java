@@ -22,11 +22,14 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 
 import model.Contact;
 import retrofit2.Call;
@@ -68,11 +71,22 @@ public class ContactActivity extends AppCompatActivity {
         contact = (Contact)i.getSerializableExtra("contact");
         imgView = findViewById(R.id.imgContact);
 
-        if(contact.getPhoto()!=null) {
+        if (contact.getPhoto()==null){
+            Log.e("image", "nema slike");
+        }
+        else if( !contact.getPhoto().getPath().contains("http")) {
+//            ContextWrapper cw1 = new ContextWrapper(getApplicationContext());
+//            File directory1 = cw1.getDir(contact.getPhoto().getPath(), Context.MODE_PRIVATE);
+//            Log.e("image", "myImageFile" + myImageFile.getAbsolutePath());
+//            Picasso.with(this).load(directory1).into(imgView);
+            byte[] decodedString = android.util.Base64.decode(contact.getPhoto().getData(), android.util.Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            imgView.setImageBitmap(decodedByte);
+        }
+        else if(contact.getPhoto().getPath().contains("http")) {
             Picasso.with(this).load(contact.getPhoto().getPath()).into(picassoImageTarget(getApplicationContext(), "imageDir", "imageFromCOntact" + contact.getId()));
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            Log.e("dir", "directory: " + directory.getAbsolutePath());
             myImageFile = new File(directory, "imageFromCOntact" + contact.getId());
             Log.e("image", "myImageFile" + myImageFile.getAbsolutePath());
             Picasso.with(this).load(myImageFile).into(imgView);
@@ -111,7 +125,8 @@ public class ContactActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        Picasso.with(this).invalidate(myImageFile);
+        if(myImageFile!=null)
+            Picasso.with(this).invalidate(myImageFile);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && null != data) {
             try {
                 final Uri imageUri = data.getData();
@@ -119,14 +134,39 @@ public class ContactActivity extends AppCompatActivity {
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 final Bitmap img=Bitmap.createScaledBitmap(selectedImage, 280, 250, true);
 //                selectedImage = getResizedBitmap(selectedImage, 400);
+//              pretvaranje u base64 da se posalje
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                img.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                String encodedString = android.util.Base64.encodeToString(byteArray, android.util.Base64.DEFAULT);
+                Toast.makeText(this, "ovaj"+encodedString, Toast.LENGTH_LONG).show();
+//                zavrseno
+
+                File cache = new File(getApplicationContext().getCacheDir(), "picasso-cache");
+                deleteDir(cache);
                 contact.getPhoto().setPath(imageUri.toString());
+                contact.getPhoto().setData(encodedString);
 
                 imgView.setImageBitmap(img);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+
             }
         }
+    }
+
+    private static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        // The directory is now empty so delete it
+        return dir.delete();
     }
 
     @Override
@@ -170,7 +210,7 @@ public class ContactActivity extends AppCompatActivity {
                 contact.setLastName(txtLast.getText().toString());
 //            contact.setPhoto();
                 contact.setEmail(txtEmail.getText().toString());
-
+                Log.e("image", "slika" + contact.getPhoto().getPath());
                 IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
                 Call<Contact> update = service.updateContact(contact);
                 update.enqueue(new Callback<Contact>() {
@@ -218,7 +258,8 @@ public class ContactActivity extends AppCompatActivity {
             message+="Email is not valid! \n";
         }
 
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        if(!message.equals(""))
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
         return  pass;
     }
 
