@@ -8,23 +8,24 @@ import java.util.List;
 public class Message implements Serializable {
 
     private int id;
-    private Contact from;
-    private List<Contact> to;
+    private String from;
+    private String to;
     private Date dateTime;
     private String subject;
     private String content;
-    private List<Contact> cc;
-    private List<Contact> bcc;
+    private String cc;
+    private String bcc;
     private ArrayList<Attachment> attachments;
     private ArrayList<Tag> tags;
     private Account account;
     private Folder folder;
+    private boolean unread;
 
     public Message(){
         super();
     }
 
-    public Message(int id, Contact from, List<Contact> to, Date dateTime, String subject, String content, List<Contact> cc, List<Contact> bcc, ArrayList<Attachment> attachments, ArrayList<Tag> tags, Account account, Folder folder) {
+    public Message(int id, String from, String to, Date dateTime, String subject, String content, String cc, String bcc, ArrayList<Attachment> attachments, ArrayList<Tag> tags, Account account, Folder folder, boolean unread) {
         this.id = id;
         this.from = from;
         this.to = to;
@@ -37,6 +38,7 @@ public class Message implements Serializable {
         this.tags = tags;
         this.account = account;
         this.folder = folder;
+        this.unread = unread;
     }
 
     public ArrayList<Tag> getTags() {
@@ -63,19 +65,19 @@ public class Message implements Serializable {
         this.id = id;
     }
 
-    public Contact getFrom() {
+    public String getFrom() {
         return from;
     }
 
-    public void setFrom(Contact from) {
-        this.from = from;
-    }
-
-    public List<Contact> getTo() {
+    public String getTo() {
         return to;
     }
 
-    public void setTo(List<Contact> to) {
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    public void setTo(String to) {
         this.to = to;
     }
 
@@ -103,19 +105,19 @@ public class Message implements Serializable {
         this.content = content;
     }
 
-    public List<Contact> getCc() {
+    public String getCc() {
         return cc;
     }
 
-    public void setCc(List<Contact> cc) {
-        this.cc = cc;
-    }
-
-    public List<Contact> getBcc() {
+    public String getBcc() {
         return bcc;
     }
 
-    public void setBcc(List<Contact> bcc) {
+    public void setCc(String cc) {
+        this.cc = cc;
+    }
+
+    public void setBcc(String bcc) {
         this.bcc = bcc;
     }
 
@@ -133,5 +135,13 @@ public class Message implements Serializable {
 
     public void setFolder(Folder folder) {
         this.folder = folder;
+    }
+
+    public boolean isUnread() {
+        return unread;
+    }
+
+    public void setUnread(boolean unread) {
+        this.unread = unread;
     }
 }

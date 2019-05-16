@@ -20,9 +20,11 @@ import retrofit2.Response;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -74,6 +76,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         toggle.syncState();
     }
 
+    private int userId = -1;
+
     Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
@@ -85,8 +89,12 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 Toast toast = Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT);
                 toast.show();
 
+                SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+                userId = uPref.getInt("loggedInUserId",-1);
+
+
                 IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-                Call<ArrayList<Message>> call = service.getAllMessages();
+                Call<ArrayList<Message>> call = service.getAllMessages(userId);
                 call.enqueue(new Callback<ArrayList<Message>>() {
                     @Override
                     public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
@@ -94,12 +102,16 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
                                 if(adapter.getCount() > 0){
+
                                     Message value=(Message) adapter.getItem(position);
                                     Intent i = new Intent(EmailsActivity.this, EmailActivity.class);
                                     i.putExtra("message", value);
+                                    if(value.isUnread()) {
+                                        readMessage(userId, value.getId());
+                                    }
                                     startActivity(i);
+                                    finish();
                                 }else{
                                     Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
                                     toast.show();
@@ -250,5 +262,22 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void readMessage(int profileId, int messageId){
+        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+        Call<ArrayList<Message>> call = service.readMessage(profileId, messageId);
+        call.enqueue(new Callback<ArrayList<Message>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Something went wrong, please try again...", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }

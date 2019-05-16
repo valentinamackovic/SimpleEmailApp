@@ -1,19 +1,13 @@
 package projekat.pmaiu.androidprojekat;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Picture;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
-import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -21,24 +15,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import model.Contact;
-import model.Message;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,6 +45,7 @@ public class ContactActivity extends AppCompatActivity {
     EditText txtEmail;
     ImageView imgView;
     public static final int PICK_IMAGE = 1;
+    File myImageFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +73,7 @@ public class ContactActivity extends AppCompatActivity {
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
             Log.e("dir", "directory: " + directory.getAbsolutePath());
-            File myImageFile = new File(directory, "imageFromCOntact" + contact.getId());
+            myImageFile = new File(directory, "imageFromCOntact" + contact.getId());
             Log.e("image", "myImageFile" + myImageFile.getAbsolutePath());
             Picasso.with(this).load(myImageFile).into(imgView);
         }
@@ -120,7 +111,7 @@ public class ContactActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Picasso.with(this).invalidate(myImageFile);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && null != data) {
             try {
                 final Uri imageUri = data.getData();
@@ -129,6 +120,7 @@ public class ContactActivity extends AppCompatActivity {
                 final Bitmap img=Bitmap.createScaledBitmap(selectedImage, 280, 250, true);
 //                selectedImage = getResizedBitmap(selectedImage, 400);
                 contact.getPhoto().setPath(imageUri.toString());
+
                 imgView.setImageBitmap(img);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

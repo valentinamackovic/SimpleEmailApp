@@ -18,6 +18,7 @@ import retrofit2.http.HTTP;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Query;
 
 public interface IMailService {
 
@@ -33,7 +34,7 @@ public interface IMailService {
         Call<Account> login(@Field("username") String username, @Field("password") String password);
 
         @GET("/contacts")
-        Call<ArrayList<Contact>> getAllContacts();
+        Call<ArrayList<Contact>> getAllContacts(@Query("userId") int userId);
 
         @PUT("/contacts")
         Call<Contact> updateContact(@Body() Contact contact);
@@ -48,7 +49,7 @@ public interface IMailService {
         Call<Account> updateProfile(@Field("id") int id,@Field("username") String username, @Field("password") String password,@Field("protocol") String protocol);
 
         @GET("/messages")
-        Call<ArrayList<Message>> getAllMessages();
+        Call<ArrayList<Message>> getAllMessages(@Query("userId") int id);
 
         @POST("/contacts")
         Call<Contact> createContact(@Body() Contact contact);
@@ -63,6 +64,10 @@ public interface IMailService {
         @FormUrlEncoded
         @HTTP(method = "DELETE", path = MailService.BASE_URL + "/folders/delete", hasBody = true)
         Call<ArrayList<Folder>> deleteFolder(@Field("folderId") int id);
+
+        @FormUrlEncoded
+        @POST("/readMessage")
+        Call<ArrayList<Message>> readMessage(@Field("userId") int userId, @Field("messageId") int messageId);
 
 
 

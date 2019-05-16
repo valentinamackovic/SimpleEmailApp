@@ -31,7 +31,7 @@
             android:layout_marginBottom="3dp"
             android:textColor="@color/colorTxt"
             android:textSize="40dp"
-            android:textFontWeight="900"
+            android:textFontWeight="800"
             />
     </RelativeLayout>
 
@@ -57,7 +57,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:textSize="21dp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

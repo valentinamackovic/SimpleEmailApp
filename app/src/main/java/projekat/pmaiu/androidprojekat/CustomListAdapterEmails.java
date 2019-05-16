@@ -1,6 +1,7 @@
 package projekat.pmaiu.androidprojekat;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,8 @@ public class CustomListAdapterEmails extends BaseAdapter {
 
         Message currentMessage = (Message) getItem(position);
 
+
+
         TextView textViewFrom =
                 convertView.findViewById(R.id.txtListViewFrom);
         TextView textViewSubject =
@@ -56,11 +59,21 @@ public class CustomListAdapterEmails extends BaseAdapter {
                 convertView.findViewById(R.id.txtListViewDate);
         TextView txtContactLetter = convertView.findViewById(R.id.contact_letter_on_mail);
 
-        String from = (String) currentMessage.getFrom().getFirstName();
+        if(currentMessage.isUnread()){
+            textViewFrom.setTypeface(textViewFrom.getTypeface(), Typeface.BOLD);
+            textViewSubject.setTypeface(textViewSubject.getTypeface(), Typeface.BOLD);
+        }else{
+            textViewFrom.setTypeface(textViewFrom.getTypeface(), Typeface.NORMAL);
+            textViewFrom.setTypeface(textViewSubject.getTypeface(), Typeface.NORMAL);
+        }
+
+        String from = (String) currentMessage.getFrom();
         textViewFrom.setText(from);
         txtContactLetter.setText(String.valueOf(from.charAt(0)));
         String subject = (String) currentMessage.getSubject();
         textViewSubject.setText(subject);
+
+
 
 
         SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");

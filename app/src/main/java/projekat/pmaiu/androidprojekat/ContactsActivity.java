@@ -81,8 +81,11 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
                 Toast toast = Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT);
                 toast.show();
 
+                SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+                int userId = uPref.getInt("loggedInUserId",-1);
+
                 IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-                Call<ArrayList<Contact>> call = service.getAllContacts();
+                Call<ArrayList<Contact>> call = service.getAllContacts(userId);
                 call.enqueue(new Callback<ArrayList<Contact>>() {
                     @Override
                     public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
