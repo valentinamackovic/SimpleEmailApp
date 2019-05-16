@@ -1,21 +1,24 @@
 package model;
 
 import java.io.Serializable;
+import java.util.Base64;
 
 public class Photo implements Serializable {
 
     private int id;
     private String path;
     private Contact contact;
+    private String data;
 
     public Photo() {
         super();
     }
 
-    public Photo(int id, String path, Contact contact) {
+    public Photo(int id, String path, Contact contact,String data) {
         this.id = id;
         this.path = path;
         this.contact = contact;
+        this.data=data;
     }
 
     public Contact getContact() {
@@ -40,5 +43,13 @@ public class Photo implements Serializable {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 }
