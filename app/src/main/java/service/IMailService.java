@@ -39,12 +39,12 @@ public interface IMailService {
 
 //        @PUT("/contacts/update")
         @PUT("/contacts")
-        Call<Contact> updateContact(@Body() Contact contact);
+        Call<Contact> updateContact(@Body() Contact contact, @Query("userId") int userId);
 
         @FormUrlEncoded
         @HTTP(method = "DELETE", path = MailService.BASE_URL + "/contacts/delete", hasBody = true)
 //        @DELETE("/contacts/delete")
-        Call<ArrayList<Contact>> deleteContact(@Field("contactId") int id);
+        Call<ArrayList<Contact>> deleteContact(@Field("contactId") int id, @Field("userId") int userId);
 
         @FormUrlEncoded
         @POST("/update_profile")
@@ -54,7 +54,7 @@ public interface IMailService {
         Call<ArrayList<Message>> getAllMessages(@Query("userId") int id);
 
         @POST("/contacts")
-        Call<Contact> createContact(@Body() Contact contact);
+        Call<Contact> createContact(@Body() Contact contact, @Query("userId") int userId);
 
         @POST("/folders")
         Call<Folder> createFolder(@Body() Folder folder);

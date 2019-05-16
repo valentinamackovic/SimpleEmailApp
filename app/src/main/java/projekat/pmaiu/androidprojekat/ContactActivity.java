@@ -211,8 +211,12 @@ public class ContactActivity extends AppCompatActivity {
 //            contact.setPhoto();
                 contact.setEmail(txtEmail.getText().toString());
                 Log.e("image", "slika" + contact.getPhoto().getPath());
+
+                SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+                int userId = uPref.getInt("loggedInUserId",-1);
+
                 IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-                Call<Contact> update = service.updateContact(contact);
+                Call<Contact> update = service.updateContact(contact, userId);
                 update.enqueue(new Callback<Contact>() {
                     @Override
                     public void onResponse(Call<Contact> call, Response<Contact> response) {
