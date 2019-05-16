@@ -56,7 +56,7 @@ public class CustomListAdapterEmails extends BaseAdapter {
                 convertView.findViewById(R.id.txtListViewDate);
         TextView txtContactLetter = convertView.findViewById(R.id.contact_letter_on_mail);
 
-        String from = (String) currentMessage.getFrom().getFirstName();
+        String from = (String) currentMessage.getFrom();
         textViewFrom.setText(from);
         txtContactLetter.setText(String.valueOf(from.charAt(0)));
         String subject = (String) currentMessage.getSubject();

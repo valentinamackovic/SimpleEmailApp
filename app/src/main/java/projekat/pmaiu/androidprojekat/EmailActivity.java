@@ -87,8 +87,8 @@ public class EmailActivity extends AppCompatActivity {
         TextView txtCc = findViewById(R.id.textEmailCc1);
         TextView txtDate = findViewById(R.id.textDate1);
 
-        txtFrom.setText(message.getFrom().getEmail());
-        txtTo.setText(message.getTo().get(0).getFirstName());
+        txtFrom.setText(message.getFrom());
+        txtTo.setText(message.getTo());
         SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
         Date datum = (Date) message.getDateTime();
         txtDate.setText(df.format(datum));
