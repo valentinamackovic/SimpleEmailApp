@@ -1,6 +1,12 @@
 package projekat.pmaiu.androidprojekat;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +58,10 @@ public class CustomListAdapterContacts extends BaseAdapter {
 
         String fullName=currentContact.getFirstName() + " "+ currentContact.getLastName();
         textViewName.setText(fullName );
-        photo.setImageResource(R.mipmap.profile_ico);
+
+        byte[] decodedString = android.util.Base64.decode(currentContact.getPhoto().getData(), android.util.Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        photo.setImageBitmap(decodedByte);
 
         return convertView;
     }

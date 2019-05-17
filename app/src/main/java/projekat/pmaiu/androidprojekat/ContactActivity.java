@@ -71,26 +71,19 @@ public class ContactActivity extends AppCompatActivity {
         contact = (Contact)i.getSerializableExtra("contact");
         imgView = findViewById(R.id.imgContact);
 
-        if (contact.getPhoto()==null){
-            Log.e("image", "nema slike");
-        }
-        else if( !contact.getPhoto().getPath().contains("http")) {
-//            ContextWrapper cw1 = new ContextWrapper(getApplicationContext());
-//            File directory1 = cw1.getDir(contact.getPhoto().getPath(), Context.MODE_PRIVATE);
-//            Log.e("image", "myImageFile" + myImageFile.getAbsolutePath());
-//            Picasso.with(this).load(directory1).into(imgView);
+        if( contact.getPhoto()!=null) {
             byte[] decodedString = android.util.Base64.decode(contact.getPhoto().getData(), android.util.Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             imgView.setImageBitmap(decodedByte);
         }
-        else if(contact.getPhoto().getPath().contains("http")) {
-            Picasso.with(this).load(contact.getPhoto().getPath()).into(picassoImageTarget(getApplicationContext(), "imageDir", "imageFromCOntact" + contact.getId()));
-            ContextWrapper cw = new ContextWrapper(getApplicationContext());
-            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            myImageFile = new File(directory, "imageFromCOntact" + contact.getId());
-            Log.e("image", "myImageFile" + myImageFile.getAbsolutePath());
-            Picasso.with(this).load(myImageFile).into(imgView);
-        }
+//        else if(contact.getPhoto().getPath().contains("http")) {
+//            Picasso.with(this).load(contact.getPhoto().getPath()).into(picassoImageTarget(getApplicationContext(), "imageDir", "imageFromCOntact" + contact.getId()));
+//            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+//            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+//            myImageFile = new File(directory, "imageFromCOntact" + contact.getId());
+//            Log.e("image", "myImageFile" + myImageFile.getAbsolutePath());
+//            Picasso.with(this).load(myImageFile).into(imgView);
+//        }
     }
 
     @Override
@@ -132,19 +125,17 @@ public class ContactActivity extends AppCompatActivity {
                 final Uri imageUri = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                final Bitmap img=Bitmap.createScaledBitmap(selectedImage, 280, 250, true);
+                final Bitmap img=Bitmap.createScaledBitmap(selectedImage, 80, 80, true);
 
-//              pretvaranje u base64 da se posalje
+//                pretvaranje u base64 da se posalje
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 img.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
                 String encodedString = android.util.Base64.encodeToString(byteArray, android.util.Base64.DEFAULT);
-                Toast.makeText(this, "ovaj"+encodedString, Toast.LENGTH_LONG).show();
 //                zavrseno
 
                 File cache = new File(getApplicationContext().getCacheDir(), "picasso-cache");
                 deleteDir(cache);
-                contact.getPhoto().setPath(imageUri.toString());
                 contact.getPhoto().setData(encodedString);
 
                 imgView.setImageBitmap(img);
@@ -210,7 +201,6 @@ public class ContactActivity extends AppCompatActivity {
                 contact.setLastName(txtLast.getText().toString());
 //            contact.setPhoto();
                 contact.setEmail(txtEmail.getText().toString());
-                Log.e("image", "slika" + contact.getPhoto().getPath());
 
                 SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
                 int userId = uPref.getInt("loggedInUserId",-1);

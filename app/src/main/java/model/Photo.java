@@ -6,7 +6,6 @@ import java.util.Base64;
 public class Photo implements Serializable {
 
     private int id;
-    private String path;
     private Contact contact;
     private String data;
 
@@ -14,9 +13,8 @@ public class Photo implements Serializable {
         super();
     }
 
-    public Photo(int id, String path, Contact contact,String data) {
+    public Photo(int id, Contact contact,String data) {
         this.id = id;
-        this.path = path;
         this.contact = contact;
         this.data=data;
     }
@@ -35,14 +33,6 @@ public class Photo implements Serializable {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     public String getData() {

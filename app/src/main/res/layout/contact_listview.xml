@@ -4,14 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="10dp">
+    android:padding="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+    <android.support.v7.widget.CardView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:cardCornerRadius="30dp"
+        android:elevation="10dp">
+
+        <ImageView
+            android:id="@+id/imgListViewContact"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@color/colorBackground"
+            android:scaleType="centerCrop"
+            android:layout_gravity="start"
+            />
+    </android.support.v7.widget.CardView>
+    <!--<ImageView
         android:id="@+id/imgListViewContact"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="start"
-        android:layout_marginStart="5dp"/>
+        android:layout_marginStart="5dp"/>-->
     <TextView
         android:id="@+id/txtListViewContact"
         android:layout_width="250dp"

@@ -8,7 +8,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ContactActivity">
+    tools:context=".ContactActivity"
+    android:padding="10dp">
 
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/toolbar_contact_activity"
@@ -40,9 +41,10 @@
 
     <ImageView
         android:id="@+id/imgContact"
-        android:layout_width="match_parent"
-        android:layout_height="170dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_contact_activity" />
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_contact_activity"
+        app:layout_constraintStart_toStartOf="parent"/>
     <TextView
         android:id="@+id/textViewFirst"
         android:layout_width="wrap_content"
