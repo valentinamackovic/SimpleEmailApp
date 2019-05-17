@@ -107,8 +107,11 @@ public class CreateContactActivity extends AppCompatActivity {
                  Toast.makeText(CreateContactActivity.this, "Please enter email!", Toast.LENGTH_SHORT).show();
             }
             else{
+                SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+                int userId = uPref.getInt("loggedInUserId",-1);
+
                 IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-                Call<Contact> createContact = service.createContact(c);
+                Call<Contact> createContact = service.createContact(c, userId);
                 createContact.enqueue(new Callback<Contact>() {
                     @Override
                     public void onResponse(Call<Contact> call, Response<Contact> response) {
