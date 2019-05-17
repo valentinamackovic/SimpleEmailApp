@@ -191,7 +191,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                         else {return 0;}
                     }
                 });
-
             }
         }
 

@@ -133,7 +133,7 @@ public class ContactActivity extends AppCompatActivity {
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 final Bitmap img=Bitmap.createScaledBitmap(selectedImage, 280, 250, true);
-//                selectedImage = getResizedBitmap(selectedImage, 400);
+
 //              pretvaranje u base64 da se posalje
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 img.compress(Bitmap.CompressFormat.JPEG, 100, stream);
