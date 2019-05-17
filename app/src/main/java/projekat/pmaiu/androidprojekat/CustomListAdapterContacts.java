@@ -59,9 +59,11 @@ public class CustomListAdapterContacts extends BaseAdapter {
         String fullName=currentContact.getFirstName() + " "+ currentContact.getLastName();
         textViewName.setText(fullName );
 
-        byte[] decodedString = android.util.Base64.decode(currentContact.getPhoto().getData(), android.util.Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        photo.setImageBitmap(decodedByte);
+        if(currentContact.getPhoto().getData()!=null) {
+            byte[] decodedString = android.util.Base64.decode(currentContact.getPhoto().getData(), android.util.Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            photo.setImageBitmap(decodedByte);
+        }
 
         return convertView;
     }
