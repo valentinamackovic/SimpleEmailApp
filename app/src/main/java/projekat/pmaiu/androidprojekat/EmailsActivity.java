@@ -7,12 +7,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.NotificationCompat;
@@ -27,28 +25,21 @@ import retrofit2.Response;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import model.Attachment;
-import model.Contact;
 import model.Message;
 import service.IMailService;
 import service.MailService;
+
 
 public class EmailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
@@ -58,6 +49,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     private Handler mHandler;
     private ScheduledExecutorService scheduler;
     private int userId = -1;
+    String NOTIFICATION_CHANNEL_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +87,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 (new Runnable() {
                     public void run() {
 
-//                        mInterval= TimeUnit.MINUTES.toMillis(Integer.parseInt(syncTimeStr));
-//                        Toast toast = Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT);
-//                        toast.show();
-
                         SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
                         userId = uPref.getInt("loggedInUserId",-1);
                         IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
@@ -120,12 +108,12 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
                             @Override
                             public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
-                                Toast.makeText(EmailsActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(EmailsActivity.this, "Something went wrong...", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
-                }, 0, Integer.parseInt(syncTimeStr), TimeUnit.SECONDS);
-
+                }, 0,20 , TimeUnit.SECONDS);
+//        Integer.parseInt(syncTimeStr)
     }
 
     private int numberOfUnreadMessages(ArrayList<Message> messages){
@@ -138,16 +126,32 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     }
 
     private void notificationDialog(Message m) {
+        Intent intent = new Intent(this, EmailActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("message", m);
+        if(m.isUnread()) {
+            readMessage(userId, m.getId());
+        }
+        Log.e("intent","u notdialog");
+
+        int requestID = (int) System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                getApplicationContext(),
+                requestID,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String NOTIFICATION_CHANNEL_ID = "not";
+        NOTIFICATION_CHANNEL_ID = "not";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_HIGH);
-            // Configure the notification channel.
-            notificationChannel.setDescription("Sample Channel description");
-            notificationChannel.enableLights(true);
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-            notificationChannel.enableVibration(true);
-            notificationManager.createNotificationChannel(notificationChannel);
+            NotificationChannel channel = new NotificationChannel(
+                    "not",
+                    "not",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
         }
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         notificationBuilder.setAutoCancel(true)
@@ -155,25 +159,47 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setTicker("Notification")
-                //.setPriority(Notification.PRIORITY_MAX)
                 .setContentTitle(m.getFrom())
                 .setContentText(m.getContent())
                 .setContentInfo("Information");
-        notificationManager.notify(1, notificationBuilder.build());
+
+        notificationBuilder.setContentIntent(pendingIntent);
+        notificationManager.notify(18, notificationBuilder.build());
     }
 
     private void notificationDialogForNMessages(int numberOfMessages) {
+        Intent intent = new Intent(this, EmailsActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        int requestID = (int) System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                getApplicationContext(),
+                requestID,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String NOTIFICATION_CHANNEL_ID = "not";
+        NOTIFICATION_CHANNEL_ID = "not";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_HIGH);
-            // Configure the notification channel.
-            notificationChannel.setDescription("New messages");
-            notificationChannel.enableLights(true);
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-            notificationChannel.enableVibration(true);
-            notificationManager.createNotificationChannel(notificationChannel);
+            NotificationChannel channel = new NotificationChannel(
+                    "not",
+                    "not",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
         }
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_HIGH);
+//            // Configure the notification channel.
+//            notificationChannel.setDescription("New messages");
+//            notificationChannel.enableLights(true);
+//            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+//            notificationChannel.enableVibration(true);
+//            notificationManager.createNotificationChannel(notificationChannel);
+//        }
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         notificationBuilder.setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
@@ -183,7 +209,9 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 //.setPriority(Notification.PRIORITY_MAX)
                 .setContentTitle("New messages")
                 .setContentText("You have "+ numberOfMessages + " messages")
-                .setContentInfo("Information");
+                .setContentInfo("Information")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
         notificationManager.notify(1, notificationBuilder.build());
     }
 

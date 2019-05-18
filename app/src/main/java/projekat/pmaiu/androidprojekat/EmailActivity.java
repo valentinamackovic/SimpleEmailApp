@@ -50,6 +50,7 @@ public class EmailActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Log.e("intent","u email");
     }
 
     @Override
@@ -94,6 +95,8 @@ public class EmailActivity extends AppCompatActivity {
         txtDate.setText(df.format(datum));
         txtSubject.setText(message.getSubject());
         txtContent.setText(message.getContent());
+
+        Log.e("intent","u email u resume");
 
         //attachments
         LinearLayout ly=findViewById(R.id.linear_layout_attachment);
@@ -143,7 +146,6 @@ public class EmailActivity extends AppCompatActivity {
         startActivity(new Intent(EmailActivity.this, EmailsActivity.class));
         return true;
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
