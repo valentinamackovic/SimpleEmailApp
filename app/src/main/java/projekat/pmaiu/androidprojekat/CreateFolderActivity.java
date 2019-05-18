@@ -110,8 +110,11 @@ public class CreateFolderActivity extends AppCompatActivity {
                 Toast.makeText(CreateFolderActivity.this, "Please enter folder name!", Toast.LENGTH_SHORT).show();
             }
             else{
+                SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+                int userId = uPref.getInt("loggedInUserId",-1);
+
                 IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-                Call<Folder> createFolder = service.createFolder(f);
+                Call<Folder> createFolder = service.createFolder(f, userId);
                 createFolder.enqueue(new Callback<Folder>() {
                     @Override
                     public void onResponse(Call<Folder> call, Response<Folder> response) {

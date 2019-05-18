@@ -33,6 +33,7 @@ public class FolderActivity extends AppCompatActivity {
 
     ListView listViewFolders;
     FoldersAdapter foldersAdapter;
+    private int userId = -1;
 
 
 
@@ -57,12 +58,27 @@ public class FolderActivity extends AppCompatActivity {
 
         adapter = new CustomListAdapterEmails(this, folder.getMessages());
         listView = findViewById(R.id.folder_list_view_emails);
-        listView.setAdapter(adapter);
+        if(adapter.getCount() > 0){
+            listView.setAdapter(adapter);
+            TextView tv = findViewById(R.id.folder_activity_emails);
+            tv.setText("Emails");
+        }else{
+            TextView tv = findViewById(R.id.folder_activity_emails);
+            tv.setText("Emails - nothing to show!");
+        }
         listView.setDivider(null);
 
         foldersAdapter = new FoldersAdapter(this, folder.getChildFolders());
         listViewFolders = findViewById(R.id.folder_list_view_folders);
-        listViewFolders.setAdapter(foldersAdapter);
+        if(foldersAdapter.getCount() > 0){
+            listViewFolders.setAdapter(foldersAdapter);
+            TextView tv = findViewById(R.id.folder_activity_folders);
+            tv.setText("Folders");
+        }else{
+            TextView tv = findViewById(R.id.folder_activity_folders);
+            tv.setText("Folders - nothing to show!");
+        }
+
         listViewFolders.setDivider(null);
     }
 
@@ -88,9 +104,14 @@ public class FolderActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+                userId = uPref.getInt("loggedInUserId",-1);
                 Message value=(Message) adapter.getItem(position);
                 Intent i = new Intent(FolderActivity.this, EmailActivity.class);
                 i.putExtra("message", value);
+                if(value.isUnread()) {
+                    readMessage(userId, value.getId());
+                }
                 startActivity(i);
             }
         });
@@ -137,4 +158,22 @@ public class FolderActivity extends AppCompatActivity {
 
         return true;
     }
+
+    private void readMessage(int profileId, int messageId){
+        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+        Call<ArrayList<Message>> call = service.readMessage(profileId, messageId);
+        call.enqueue(new Callback<ArrayList<Message>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Something went wrong, please try again...", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
 }

@@ -25,7 +25,11 @@ public class CustomListAdapterEmails extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return messages.size();
+        if(messages != null){
+            return  messages.size();
+        }else{
+            return 0;
+        }
     }
 
     @Override
@@ -68,8 +72,16 @@ public class CustomListAdapterEmails extends BaseAdapter {
         }
 
         String from = (String) currentMessage.getFrom();
+
+        if(from != null){
+
+            txtContactLetter.setText(String.valueOf(from.charAt(0)));
+        }else{
+            from = "Draft";
+            txtContactLetter.setText("!");
+        }
         textViewFrom.setText(from);
-        txtContactLetter.setText(String.valueOf(from.charAt(0)));
+
         String subject = (String) currentMessage.getSubject();
         textViewSubject.setText(subject);
 
@@ -78,8 +90,11 @@ public class CustomListAdapterEmails extends BaseAdapter {
 
         SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
         Date datum = (Date) currentMessage.getDateTime();
-        int month = datum.getMonth();
-        textViewDate.setText(months[month] + " "+String.valueOf(datum.getDay()));
+        if(datum != null){
+            int month = datum.getMonth();
+            textViewDate.setText(months[month] + " "+String.valueOf(datum.getDay()));
+        }
+
         return convertView;
     }
 }

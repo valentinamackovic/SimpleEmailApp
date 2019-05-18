@@ -6,7 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import model.Message;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.IMailService;
+import service.MailService;
 
 public class CreateEmailActivity extends AppCompatActivity {
 
@@ -84,4 +92,53 @@ public class CreateEmailActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        EditText txtTo = findViewById(R.id.txt_email_to_input);
+        EditText txtSubject = findViewById(R.id.txt_email_subject_input);
+        EditText txtCc = findViewById(R.id.editTextCc);
+        EditText txtBcc = findViewById(R.id.editTextBcc);
+        EditText txtContent = findViewById(R.id.txt_email_content_input);
+
+        Message message = new Message();
+
+        int br = 0;
+        if(txtTo.getText().toString().length() > 0){
+            message.setTo(txtTo.getText().toString());
+            br++;
+        }if(txtSubject.getText().toString().length() > 0){
+            message.setSubject(txtSubject.getText().toString());
+            br++;
+        }if(txtCc.getText().toString().length() > 0){
+            message.setCc(txtCc.getText().toString());
+            br++;
+        }if(txtBcc.getText().toString().length() > 0){
+            message.setBcc(txtBcc.getText().toString());
+            br++;
+        }if(txtContent.getText().toString().length() > 0){
+            message.setContent(txtContent.getText().toString());
+            br++;
+        }
+
+        if(br > 0 ) {
+            SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+            int userId = uPref.getInt("loggedInUserId", -1);
+
+            IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+            Call<Message> call = service.saveToDraft(message, userId);
+            call.enqueue(new Callback<Message>() {
+                @Override
+                public void onResponse(Call<Message> call, Response<Message> response) {
+                    Toast.makeText(getApplicationContext(), "Saved to drafts!", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onFailure(Call<Message> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong ...", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        super.onBackPressed();
+    }
 }

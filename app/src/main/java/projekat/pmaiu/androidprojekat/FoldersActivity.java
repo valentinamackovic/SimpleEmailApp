@@ -88,8 +88,11 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
                 Toast toast = Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT);
                 toast.show();
 
+                SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+                int userId = uPref.getInt("loggedInUserId",-1);
+
                 IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-                Call<List<Folder>> call = service.getAllFolders();
+                Call<List<Folder>> call = service.getAllFolders(userId);
                 call.enqueue(new Callback<List<Folder>>() {
                     @Override
                     public void onResponse(Call<List<Folder>> call, Response<List<Folder>> response) {
@@ -265,11 +268,19 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
         Folder folder = (Folder) lv.getItemAtPosition(acmi.position);
 
-        selected_folder = folder;
-        menu.add("Edit");
-        menu.add("Delete");
-        menu.setHeaderTitle(folder.getName());
-        id=folder.getId();
+        if(folder.getName().toLowerCase().equals("drafts")) {
+            menu.setHeaderTitle("Locked!");
+        }else if(folder.getName().toLowerCase().equals("inbox")){
+            menu.setHeaderTitle("Locked!");
+        }else{
+            selected_folder = folder;
+            menu.add("Edit");
+            menu.add("Delete");
+            menu.setHeaderTitle(folder.getName());
+            id = folder.getId();
+        }
+
+
 
     }
 
@@ -281,8 +292,11 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
             startActivity(i);
 
         }else if(item.getTitle() == "Delete"){
+            SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+            int userId = uPref.getInt("loggedInUserId",-1);
+
             IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-            Call<ArrayList<Folder>> delete = service.deleteFolder(id);
+            Call<ArrayList<Folder>> delete = service.deleteFolder(id, userId);
             delete.enqueue(new Callback<ArrayList<Folder>>() {
                 @Override
                 public void onResponse(Call<ArrayList<Folder>> call, Response<ArrayList<Folder>> response) {

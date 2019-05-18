@@ -26,12 +26,25 @@ public interface IMailService {
                 "User-Agent: Mobile-Android",
                 "Content-Type:application/json"
         })
+
+        //+++++++++ FOLDERS ++++++++++++++
         @GET("/folders")
-        Call<List<Folder>> getAllFolders();
+        Call<List<Folder>> getAllFolders(@Query("userId") int userId);
+
+        @POST("/folders")
+        Call<Folder> createFolder(@Body() Folder folder, @Query("userId") int userId);
 
         @FormUrlEncoded
-        @POST("/login")
-        Call<Account> login(@Field("username") String username, @Field("password") String password);
+        @PUT("/folders")
+        Call<ArrayList<Folder>> updateFolder(@Field("id") int id, @Field("folderName") String name, @Field("folderOperation") String folderOperation, @Field("folderCondition") String folderCondition);
+
+        @FormUrlEncoded
+        @HTTP(method = "DELETE", path = MailService.BASE_URL + "/folders/delete", hasBody = true)
+        Call<ArrayList<Folder>> deleteFolder(@Field("folderId") int id, @Field("userId") int userId);
+
+        //+++++++++ CONTACTS +++++++++++++++++++++
+
+
 
         @GET("/contacts")
         Call<ArrayList<Contact>> getAllContacts(@Query("userId") int userId);
@@ -46,30 +59,29 @@ public interface IMailService {
 //        @DELETE("/contacts/delete")
         Call<ArrayList<Contact>> deleteContact(@Field("contactId") int id, @Field("userId") int userId);
 
-        @FormUrlEncoded
-        @POST("/update_profile")
-        Call<Account> updateProfile(@Field("id") int id,@Field("username") String username, @Field("password") String password,@Field("protocol") String protocol);
-
-        @GET("/messages")
-        Call<ArrayList<Message>> getAllMessages(@Query("userId") int id);
-
         @POST("/contacts")
         Call<Contact> createContact(@Body() Contact contact, @Query("userId") int userId);
 
-        @POST("/folders")
-        Call<Folder> createFolder(@Body() Folder folder);
-
-        @FormUrlEncoded
-        @PUT("/folders")
-        Call<ArrayList<Folder>> updateFolder(@Field("id") int id, @Field("folderName") String name, @Field("folderOperation") String folderOperation, @Field("folderCondition") String folderCondition);
-
-        @FormUrlEncoded
-        @HTTP(method = "DELETE", path = MailService.BASE_URL + "/folders/delete", hasBody = true)
-        Call<ArrayList<Folder>> deleteFolder(@Field("folderId") int id);
+        //++++++++ MESSAGES ++++++++++++++++
+        @GET("/messages")
+        Call<ArrayList<Message>> getAllMessages(@Query("userId") int id);
 
         @FormUrlEncoded
         @POST("/readMessage")
         Call<ArrayList<Message>> readMessage(@Field("userId") int userId, @Field("messageId") int messageId);
+
+        @POST("/savetodraft")
+        Call<Message> saveToDraft(@Body() Message message, @Query("userId") int userId);
+
+        //+++++++++ OTHER +++++++++++++
+        @FormUrlEncoded
+        @POST("/login")
+        Call<Account> login(@Field("username") String username, @Field("password") String password);
+
+        @FormUrlEncoded
+        @POST("/update_profile")
+        Call<Account> updateProfile(@Field("id") int id,@Field("username") String username, @Field("password") String password,@Field("protocol") String protocol);
+
 
 
 

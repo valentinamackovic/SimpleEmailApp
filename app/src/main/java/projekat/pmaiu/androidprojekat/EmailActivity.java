@@ -32,6 +32,11 @@ import java.util.List;
 import model.Attachment;
 import model.Contact;
 import model.Message;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.IMailService;
+import service.MailService;
 
 public class EmailActivity extends AppCompatActivity {
 
@@ -86,34 +91,43 @@ public class EmailActivity extends AppCompatActivity {
         TextView txtContent = findViewById(R.id.textView6);
         TextView txtCc = findViewById(R.id.textEmailCc1);
         TextView txtDate = findViewById(R.id.textDate1);
+        TextView txtFolder = findViewById(R.id.textFolder1);
 
         txtFrom.setText(message.getFrom());
         txtTo.setText(message.getTo());
         SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
         Date datum = (Date) message.getDateTime();
-        txtDate.setText(df.format(datum));
+        if(datum != null){
+            txtDate.setText(df.format(datum));
+        }
+
         txtSubject.setText(message.getSubject());
         txtContent.setText(message.getContent());
+        txtCc.setText(message.getCc());
+
 
         //attachments
         LinearLayout ly=findViewById(R.id.linear_layout_attachment);
 
         LayoutInflater layoutInflator = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         List views = new ArrayList();
-        for(Attachment a : message.getAttachments()){
-            View view = layoutInflator.inflate(R.layout.attacment_row, null);
+        if(message.getAttachments() != null){
+            for(Attachment a : message.getAttachments()){
+                View view = layoutInflator.inflate(R.layout.attacment_row, null);
 
-            ImageView imgView=view.findViewById(R.id.icon_attachment);
-            imgView.setImageResource(R.drawable.icon_attachment);
-            TextView textView=view.findViewById(R.id.txt_attachment);
+                ImageView imgView=view.findViewById(R.id.icon_attachment);
+                imgView.setImageResource(R.drawable.icon_attachment);
+                TextView textView=view.findViewById(R.id.txt_attachment);
 
-            textView.setText(a.getName());
+                textView.setText(a.getName());
 
-            views.add(view);
+                views.add(view);
+            }
+            for(int z = 0; z<views.size(); z++) {
+                ly.addView((View) views.get(z));
+            }
         }
-        for(int z = 0; z<views.size(); z++) {
-            ly.addView((View) views.get(z));
-        }
+
         btnReply.setVisibility(View.VISIBLE);
         btnReplyAll.setVisibility(View.VISIBLE);
     }
@@ -140,7 +154,7 @@ public class EmailActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        startActivity(new Intent(EmailActivity.this, EmailsActivity.class));
+        onBackPressed();
         return true;
     }
 
@@ -165,7 +179,8 @@ public class EmailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
-        startActivity(new Intent(EmailActivity.this, EmailsActivity.class));
+        super.onBackPressed();
     }
+
+
 }

@@ -46,6 +46,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     CustomListAdapterEmails adapter;
     private long mInterval = 0;
     private Handler mHandler;
+    private int userId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         }else{
             setTheme(R.style.AppTheme);
         }
+        getMessages();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emails);
         listView = findViewById(R.id.listView_emails);
@@ -74,9 +77,11 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+
     }
 
-    private int userId = -1;
+
 
     Runnable mStatusChecker = new Runnable() {
         @Override
@@ -111,7 +116,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                                         readMessage(userId, value.getId());
                                     }
                                     startActivity(i);
-                                    finish();
                                 }else{
                                     Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
                                     toast.show();
@@ -278,5 +282,42 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             }
         });
 
+    }
+
+    private void getMessages(){
+        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+        userId = uPref.getInt("loggedInUserId",-1);
+
+        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+        Call<ArrayList<Message>> call = service.getAllMessages(userId);
+        call.enqueue(new Callback<ArrayList<Message>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+                generateEmailsList(response.body());
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                        if(adapter.getCount() > 0){
+
+                            Message value=(Message) adapter.getItem(position);
+                            Intent i = new Intent(EmailsActivity.this, EmailActivity.class);
+                            i.putExtra("message", value);
+                            if(value.isUnread()) {
+                                readMessage(userId, value.getId());
+                            }
+                            startActivity(i);
+                        }else{
+                            Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+                Toast.makeText(EmailsActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
