@@ -37,65 +37,107 @@
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.Toolbar>
 
-    <EditText
-        android:id="@+id/txt_email_to_input"
+    <LinearLayout
+        android:id="@+id/to_field_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_create_email_activity"
-        android:hint="@string/to"
-        android:inputType="textEmailAddress"
-        android:textSize="8pt"
-        android:paddingTop="11pt"
-        android:layout_marginTop="3pt"
-        android:layout_marginEnd="10pt"
-        android:layout_marginStart="5pt"/>
-    <EditText
-        android:id="@+id/txt_email_subject_input"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/to"
+            />
+
+        <MultiAutoCompleteTextView
+            android:id="@+id/autocomplete_to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cc_field_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_email_to_input"
-        android:hint="@string/subject"
-        android:inputType="text"
-        android:textSize="8pt"
-        android:paddingTop="11pt"
-        android:layout_marginTop="3pt"
-        android:layout_marginEnd="10pt"
-        android:layout_marginStart="5pt"/>
-    <EditText
-        android:id="@+id/editTextCc"
+        app:layout_constraintTop_toBottomOf="@id/to_field_layout"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/cc"
+            />
+
+        <MultiAutoCompleteTextView
+            android:id="@+id/autocomplete_cc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bcc_field_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_email_subject_input"
-        android:hint="@string/cc"
-        android:inputType="textEmailAddress"
-        android:textSize="8pt"
-        android:paddingTop="11pt"
-        android:layout_marginTop="3pt"
-        android:layout_marginEnd="10pt"
-        android:layout_marginStart="5pt"/>
-    <EditText
-        android:id="@+id/editTextBcc"
+        app:layout_constraintTop_toBottomOf="@id/cc_field_layout"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/bcc"
+            />
+
+        <MultiAutoCompleteTextView
+            android:id="@+id/autocomplete_bcc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_subject"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextCc"
-        android:hint="@string/bcc"
-        android:inputType="text"
-        android:textSize="8pt"
-        android:paddingTop="11pt"
-        android:layout_marginTop="3pt"
-        android:layout_marginEnd="10pt"
-        android:layout_marginStart="5pt"/>
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/bcc_field_layout"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/subject"
+            android:gravity="center" />
+
+        <EditText
+            android:id="@+id/txt_email_subject_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:inputType="text"
+            android:paddingTop="11pt"
+            android:textSize="8pt"
+            />
+
+    </LinearLayout>
+
+
+
 
     <EditText
         android:id="@+id/txt_email_content_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
-        app:layout_constraintTop_toBottomOf="@id/editTextBcc"
+        app:layout_constraintTop_toBottomOf="@id/layout_subject"
         android:gravity="top|left"
         android:hint="@string/compose_email"
         android:lines="15"
@@ -106,4 +148,8 @@
         android:layout_marginTop="3pt"
         android:layout_marginEnd="10pt"
         android:layout_marginStart="5pt"/>
+
+
+
+
 </android.support.constraint.ConstraintLayout>

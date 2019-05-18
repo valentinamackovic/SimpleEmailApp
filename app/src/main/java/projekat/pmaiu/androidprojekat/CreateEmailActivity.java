@@ -1,14 +1,24 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import model.Contact;
 import model.Message;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -17,6 +27,9 @@ import service.IMailService;
 import service.MailService;
 
 public class CreateEmailActivity extends AppCompatActivity {
+
+    private String[] myContacts;
+    private ArrayList<String> contacts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +46,44 @@ public class CreateEmailActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+        int userId = uPref.getInt("loggedInUserId",-1);
+
+        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+        Call<ArrayList<Contact>> call = service.getAllContacts(userId);
+        call.enqueue(new Callback<ArrayList<Contact>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
+                for (Contact c: response.body()) {
+                    String contact = c.getFirstName() + " " + c.getLastName() + ", " + c.getEmail();
+                    contacts.add(contact);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Contact>> call, Throwable t) {
+                Toast.makeText(CreateEmailActivity.this, "Something went wrong...", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                (this, android.R.layout.select_dialog_item, contacts);
+
+        MultiAutoCompleteTextView actvTo = findViewById(R.id.autocomplete_to);
+        actvTo.setThreshold(1);
+        actvTo.setAdapter(adapter);
+        actvTo.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+
+        MultiAutoCompleteTextView actvCc = findViewById(R.id.autocomplete_cc);
+        actvCc.setThreshold(1);
+        actvCc.setAdapter(adapter);
+        actvCc.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+
+        MultiAutoCompleteTextView actvBcc = findViewById(R.id.autocomplete_bcc);
+        actvBcc.setThreshold(1);
+        actvBcc.setAdapter(adapter);
+        actvBcc.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
     }
 
 
@@ -44,6 +95,10 @@ public class CreateEmailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+
+
+
     }
 
     @Override
@@ -84,7 +139,7 @@ public class CreateEmailActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.btnCreateEmailSend)
             Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_SHORT).show();
         else if(item.getItemId() == R.id.btnCreateEmailCancel)
-            Toast.makeText(getApplicationContext(), "Canceled!", Toast.LENGTH_SHORT).show();
+            onBackPressed();
         else if(item.getItemId() == R.id.btnCreateEmailAttachment)
             Toast.makeText(getApplicationContext(), "Attachment added!", Toast.LENGTH_SHORT).show();
         else
@@ -94,10 +149,10 @@ public class CreateEmailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        EditText txtTo = findViewById(R.id.txt_email_to_input);
+        EditText txtTo = findViewById(R.id.autocomplete_to);
         EditText txtSubject = findViewById(R.id.txt_email_subject_input);
-        EditText txtCc = findViewById(R.id.editTextCc);
-        EditText txtBcc = findViewById(R.id.editTextBcc);
+        EditText txtCc = findViewById(R.id.autocomplete_cc);
+        EditText txtBcc = findViewById(R.id.autocomplete_bcc);
         EditText txtContent = findViewById(R.id.txt_email_content_input);
 
         Message message = new Message();
