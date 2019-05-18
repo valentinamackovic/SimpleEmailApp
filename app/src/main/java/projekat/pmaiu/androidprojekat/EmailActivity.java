@@ -55,6 +55,7 @@ public class EmailActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Log.e("intent","u email");
     }
 
     @Override
@@ -106,6 +107,8 @@ public class EmailActivity extends AppCompatActivity {
         txtCc.setText(message.getCc());
 
 
+        Log.e("intent","u email u resume");
+
         //attachments
         LinearLayout ly=findViewById(R.id.linear_layout_attachment);
 
@@ -130,6 +133,11 @@ public class EmailActivity extends AppCompatActivity {
 
         btnReply.setVisibility(View.VISIBLE);
         btnReplyAll.setVisibility(View.VISIBLE);
+
+        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+        int userId = uPref.getInt("loggedInUserId",-1);
+
+        readMessage(userId, message.getId());
     }
 
     @Override
@@ -158,7 +166,6 @@ public class EmailActivity extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -182,5 +189,21 @@ public class EmailActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    private void readMessage(int profileId, int messageId){
+        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+        Call<ArrayList<Message>> call = service.readMessage(profileId, messageId);
+        call.enqueue(new Callback<ArrayList<Message>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Something went wrong, please try again...", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
 
 }

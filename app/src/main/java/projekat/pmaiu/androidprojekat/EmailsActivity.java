@@ -1,14 +1,19 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,25 +25,21 @@ import retrofit2.Response;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import model.Attachment;
-import model.Contact;
 import model.Message;
 import service.IMailService;
 import service.MailService;
+
 
 public class EmailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
@@ -46,7 +47,9 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     CustomListAdapterEmails adapter;
     private long mInterval = 0;
     private Handler mHandler;
+    private ScheduledExecutorService scheduler;
     private int userId = -1;
+    String NOTIFICATION_CHANNEL_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +59,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         }else{
             setTheme(R.style.AppTheme);
         }
-        getMessages();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emails);
         listView = findViewById(R.id.listView_emails);
@@ -78,69 +79,140 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String syncTimeStr = pref.getString("refresh_rate", "0");
+        scheduler =Executors.newScheduledThreadPool(1);
 
-    }
+        scheduler.scheduleAtFixedRate
+                (new Runnable() {
+                    public void run() {
 
-
-
-    Runnable mStatusChecker = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                String syncTimeStr = pref.getString("refresh_rate", "0");
-                mInterval= TimeUnit.MINUTES.toMillis(Integer.parseInt(syncTimeStr));
-
-                Toast toast = Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT);
-                toast.show();
-
-                SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
-                userId = uPref.getInt("loggedInUserId",-1);
-
-
-                IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-                Call<ArrayList<Message>> call = service.getAllMessages(userId);
-                call.enqueue(new Callback<ArrayList<Message>>() {
-                    @Override
-                    public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
-                        generateEmailsList(response.body());
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+                        userId = uPref.getInt("loggedInUserId",-1);
+                        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+                        Call<ArrayList<Message>> call = service.getAllMessages(userId);
+                        call.enqueue(new Callback<ArrayList<Message>>() {
                             @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                                if(adapter.getCount() > 0){
-
-                                    Message value=(Message) adapter.getItem(position);
-                                    Intent i = new Intent(EmailsActivity.this, EmailActivity.class);
-                                    i.putExtra("message", value);
-                                    if(value.isUnread()) {
-                                        readMessage(userId, value.getId());
+                            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+                                generateEmailsList(response.body());
+                                if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1){
+                                    for(Message m : response.body()) {
+                                        if (m.isUnread())
+                                            notificationDialog(m);
                                     }
-                                    startActivity(i);
-                                }else{
-                                    Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
-                                    toast.show();
                                 }
+                                else if(numberOfUnreadMessages(response.body())>1){
+                                    notificationDialogForNMessages(numberOfUnreadMessages(response.body()));
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+                                Toast.makeText(EmailsActivity.this, "Something went wrong...", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
-
-                    @Override
-                    public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
-                        Toast.makeText(EmailsActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } finally {
-                mHandler.postDelayed(mStatusChecker, mInterval);
-            }
-        }
-    };
-
-    void startRepeatingTask() {
-        mStatusChecker.run();
+                }, 0,20 , TimeUnit.SECONDS);
+//        Integer.parseInt(syncTimeStr)
     }
 
-    void stopRepeatingTask() {
-        mHandler.removeCallbacks(mStatusChecker);
+    private int numberOfUnreadMessages(ArrayList<Message> messages){
+        int number=0;
+        for(Message m : messages) {
+            if (m.isUnread())
+                number += 1;
+        }
+        return number;
+    }
+
+    private void notificationDialog(Message m) {
+        Intent intent = new Intent(this, EmailActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("message", m);
+        if(m.isUnread()) {
+           // readMessage(userId, m.getId());
+        }
+        Log.e("intent","u notdialog");
+
+        int requestID = (int) System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                getApplicationContext(),
+                requestID,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NOTIFICATION_CHANNEL_ID = "not";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    "not",
+                    "not",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+        notificationBuilder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setTicker("Notification")
+                .setContentTitle(m.getFrom())
+                .setContentText(m.getContent())
+                .setContentInfo("Information");
+
+        notificationBuilder.setContentIntent(pendingIntent);
+        notificationManager.notify(18, notificationBuilder.build());
+    }
+
+    private void notificationDialogForNMessages(int numberOfMessages) {
+        Intent intent = new Intent(this, EmailsActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        int requestID = (int) System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                getApplicationContext(),
+                requestID,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NOTIFICATION_CHANNEL_ID = "not";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    "not",
+                    "not",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_HIGH);
+//            // Configure the notification channel.
+//            notificationChannel.setDescription("New messages");
+//            notificationChannel.enableLights(true);
+//            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+//            notificationChannel.enableVibration(true);
+//            notificationManager.createNotificationChannel(notificationChannel);
+//        }
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+        notificationBuilder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setTicker("Notification")
+                //.setPriority(Notification.PRIORITY_MAX)
+                .setContentTitle("New messages")
+                .setContentText("You have "+ numberOfMessages + " messages")
+                .setContentInfo("Information")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+        notificationManager.notify(1, notificationBuilder.build());
     }
 
     @Override
@@ -151,6 +223,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onResume() {
         super.onResume();
+
+
 
         FloatingActionButton btnCreate = findViewById(R.id.btnCreateEmailAction);
         btnCreate.setOnClickListener(new View.OnClickListener() {
@@ -170,8 +244,24 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 startActivity(new Intent(EmailsActivity.this, ProfileActivity.class));
             }
         });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                if(adapter.getCount() > 0){
+                    Message value=(Message) adapter.getItem(position);
+                    Intent i = new Intent(EmailsActivity.this, EmailActivity.class);
+                    i.putExtra("message", value);
+                    if(value.isUnread()) {
+                        readMessage(userId, value.getId());
+                    }
+                    startActivity(i);
 
-        startRepeatingTask();
+                }else{
+                    Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            }
+        });
     }
 
     public void generateEmailsList(ArrayList<Message> messages){
@@ -197,7 +287,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 });
             }
         }
-
         listView = findViewById(R.id.listView_emails);
         adapter = new CustomListAdapterEmails(this, messages);
         listView.setAdapter(adapter);
@@ -207,7 +296,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onPause() {
         super.onPause();
-        stopRepeatingTask();
+//        stopRepeatingTask();
     }
 
     @Override
@@ -218,6 +307,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        scheduler.shutdown();
     }
 
     @Override
@@ -282,42 +372,5 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             }
         });
 
-    }
-
-    private void getMessages(){
-        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
-        userId = uPref.getInt("loggedInUserId",-1);
-
-        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-        Call<ArrayList<Message>> call = service.getAllMessages(userId);
-        call.enqueue(new Callback<ArrayList<Message>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
-                generateEmailsList(response.body());
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                        if(adapter.getCount() > 0){
-
-                            Message value=(Message) adapter.getItem(position);
-                            Intent i = new Intent(EmailsActivity.this, EmailActivity.class);
-                            i.putExtra("message", value);
-                            if(value.isUnread()) {
-                                readMessage(userId, value.getId());
-                            }
-                            startActivity(i);
-                        }else{
-                            Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
-                            toast.show();
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
-                Toast.makeText(EmailsActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }

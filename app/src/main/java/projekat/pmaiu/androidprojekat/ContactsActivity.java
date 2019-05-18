@@ -109,7 +109,7 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
 
                     @Override
                     public void onFailure(Call<ArrayList<Contact>> call, Throwable t) {
-                        Toast.makeText(ContactsActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ContactsActivity.this, "Something went wrong...", Toast.LENGTH_SHORT).show();
                     }
                 });
             } finally {
