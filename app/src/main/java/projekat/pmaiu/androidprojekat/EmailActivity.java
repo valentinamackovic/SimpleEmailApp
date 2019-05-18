@@ -137,7 +137,10 @@ public class EmailActivity extends AppCompatActivity {
         SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
         int userId = uPref.getInt("loggedInUserId",-1);
 
-        readMessage(userId, message.getId());
+        if(message.isUnread()){
+            readMessage(userId, message.getId());
+        }
+
     }
 
     @Override
