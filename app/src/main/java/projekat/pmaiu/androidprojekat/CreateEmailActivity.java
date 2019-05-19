@@ -136,8 +136,9 @@ public class CreateEmailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.btnCreateEmailSend)
-            Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_SHORT).show();
+        if(item.getItemId() == R.id.btnCreateEmailSend) {
+
+        }
         else if(item.getItemId() == R.id.btnCreateEmailCancel)
             onBackPressed();
         else if(item.getItemId() == R.id.btnCreateEmailAttachment)

@@ -96,11 +96,8 @@ public class EmailActivity extends AppCompatActivity {
 
         txtFrom.setText(message.getFrom());
         txtTo.setText(message.getTo());
-        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
-        Date datum = (Date) message.getDateTime();
-        if(datum != null){
-            txtDate.setText(df.format(datum));
-        }
+        Date datum = message.getDateTime();
+        txtDate.setText(Message.toISO8601UTC(datum));
 
         txtSubject.setText(message.getSubject());
         txtContent.setText(message.getContent());

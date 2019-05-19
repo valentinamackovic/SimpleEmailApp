@@ -73,6 +73,10 @@ public interface IMailService {
         @POST("/savetodraft")
         Call<Message> saveToDraft(@Body() Message message, @Query("userId") int userId);
 
+        @POST("/messages")
+        Call<Message> saveToOutbox(@Body() Message message, @Query("userId") int userId);
+
+
         //+++++++++ OTHER +++++++++++++
         @FormUrlEncoded
         @POST("/login")
