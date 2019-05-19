@@ -158,39 +158,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
             }
         });
 
-
-
-        //Getting data from service
-//        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-//        Call<List<Folder>> call = service.getAllFolders();
-//        call.enqueue(new Callback<List<Folder>>() {
-//            @Override
-//            public void onResponse(Call<List<Folder>> call, Response<List<Folder>> response) {
-//                generateFoldersList(response.body());
-//                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//
-//                        if(adapter.getCount() > 0){
-//                            Folder value=(Folder) adapter.getItem(position);
-//                            Intent i = new Intent(FoldersActivity.this, FolderActivity.class);
-//                            i.putExtra("folder", value);
-//                            startActivity(i);
-//                        }else{
-//                            Toast toast = Toast.makeText(getApplicationContext(), "Empty folder-adapter", Toast.LENGTH_SHORT);
-//                            toast.show();
-//                        }
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Folder>> call, Throwable t) {
-//
-//                Toast.makeText(FoldersActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
     }
 
     public void generateFoldersList(List<Folder> folders){
