@@ -50,9 +50,11 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     private ScheduledExecutorService scheduler;
     private int userId = -1;
     String NOTIFICATION_CHANNEL_ID;
+    private boolean active;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        active=true;
         SharedPreferences prefTheme = getApplicationContext().getSharedPreferences("ThemePref", 0);
         if(!prefTheme.getBoolean("dark_mode", false)){
             setTheme(R.style.AppThemeLight);
@@ -95,13 +97,13 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                             @Override
                             public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
                                 generateEmailsList(response.body());
-                                if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1){
+                                if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1 && !active){
                                     for(Message m : response.body()) {
                                         if (m.isUnread())
                                             notificationDialog(m);
                                     }
                                 }
-                                else if(numberOfUnreadMessages(response.body())>1){
+                                else if(numberOfUnreadMessages(response.body())>1 && !active){
                                     notificationDialogForNMessages(numberOfUnreadMessages(response.body()));
                                 }
                             }
@@ -190,16 +192,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 notificationManager.createNotificationChannel(channel);
             }
         }
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_HIGH);
-//            // Configure the notification channel.
-//            notificationChannel.setDescription("New messages");
-//            notificationChannel.enableLights(true);
-//            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-//            notificationChannel.enableVibration(true);
-//            notificationManager.createNotificationChannel(notificationChannel);
-//        }
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         notificationBuilder.setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
@@ -224,31 +216,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     protected void onResume() {
 
         super.onResume();
-
-        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
-        userId = uPref.getInt("loggedInUserId",-1);
-        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-        Call<ArrayList<Message>> call = service.getAllMessages(userId);
-        call.enqueue(new Callback<ArrayList<Message>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
-                generateEmailsList(response.body());
-                if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1){
-                    for(Message m : response.body()) {
-                        if (m.isUnread())
-                            notificationDialog(m);
-                    }
-                }
-                else if(numberOfUnreadMessages(response.body())>1){
-                    notificationDialogForNMessages(numberOfUnreadMessages(response.body()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
-                Toast.makeText(EmailsActivity.this, "Something went wrong...", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         FloatingActionButton btnCreate = findViewById(R.id.btnCreateEmailAction);
         btnCreate.setOnClickListener(new View.OnClickListener() {
@@ -320,6 +287,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onPause() {
         super.onPause();
+        active=false;
 //        stopRepeatingTask();
     }
 
