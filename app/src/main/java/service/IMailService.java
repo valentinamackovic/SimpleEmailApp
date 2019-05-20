@@ -76,6 +76,10 @@ public interface IMailService {
         @POST("/messages")
         Call<Message> createMessage(@Body() Message message, @Query("userId") int userId);
 
+        @FormUrlEncoded
+        @HTTP(method = "DELETE", path = MailService.BASE_URL + "/messages/delete", hasBody = true)
+        Call<ArrayList<Message>> deleteMessage(@Field("messageId") int id, @Field("userId") int userId);
+
 
         //+++++++++ OTHER +++++++++++++
         @FormUrlEncoded

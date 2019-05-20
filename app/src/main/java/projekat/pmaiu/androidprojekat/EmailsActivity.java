@@ -19,10 +19,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import model.Contact;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -51,6 +54,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     private int userId = -1;
     String NOTIFICATION_CHANNEL_ID;
     private boolean active;
+    private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -283,6 +287,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         adapter = new CustomListAdapterEmails(this, messages);
         listView.setAdapter(adapter);
         listView.setDivider(null);
+        registerForContextMenu(listView);
     }
 
     @Override
@@ -365,5 +370,27 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             }
         });
 
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        ListView lv = (ListView) v;
+        AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        Message m = (Message) lv.getItemAtPosition(acmi.position);
+
+        menu.add("Delete");
+        menu.setHeaderTitle(m.getSubject());
+        id=m.getId();
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if(item.getTitle() == "Delete"){
+
+        }
+        else{
+            return false;
+        }
+        return true;
     }
 }
