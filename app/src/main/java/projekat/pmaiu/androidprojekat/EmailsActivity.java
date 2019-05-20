@@ -386,6 +386,24 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if(item.getTitle() == "Delete"){
+            SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+            int userId = uPref.getInt("loggedInUserId",-1);
+
+            IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+            Call<ArrayList<Message>> delete = service.deleteMessage(id, userId);
+            delete.enqueue(new Callback<ArrayList<Message>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+                    Toast.makeText(getApplicationContext(),"Deleted!",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(EmailsActivity.this, EmailsActivity.class));
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+                    Toast.makeText(EmailsActivity.this, "Something went wrong, please try again.", Toast.LENGTH_SHORT).show();
+                }
+            });
 
         }
         else{
