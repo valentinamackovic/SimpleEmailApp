@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import model.Message;
 
@@ -53,8 +55,6 @@ public class CustomListAdapterEmails extends BaseAdapter {
 
         Message currentMessage = (Message) getItem(position);
 
-
-
         TextView textViewFrom =
                 convertView.findViewById(R.id.txtListViewFrom);
         TextView textViewSubject =
@@ -85,14 +85,14 @@ public class CustomListAdapterEmails extends BaseAdapter {
         String subject = (String) currentMessage.getSubject();
         textViewSubject.setText(subject);
 
-
-
-
-        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
+        cal.setTime(currentMessage.getDateTime());
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+// etc.
         Date datum = (Date) currentMessage.getDateTime();
         if(datum != null){
-            int month = datum.getMonth();
-            textViewDate.setText(months[month] + " "+String.valueOf(datum.getDay()));
+            textViewDate.setText(months[month] + " "+day);
         }
 
         return convertView;

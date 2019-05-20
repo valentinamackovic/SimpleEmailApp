@@ -13,7 +13,15 @@ import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import model.Contact;
 import model.Message;
@@ -153,6 +161,7 @@ public class CreateEmailActivity extends AppCompatActivity {
             if(txtBcc != null)
                 m.setBcc(bcc);
             m.setContent(content);
+            m.setDateTime(new Date());
 
             SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0);
             final String ime = pref.getString("username", "emptyVal");
