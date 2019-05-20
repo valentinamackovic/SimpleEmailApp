@@ -107,12 +107,22 @@ public class FolderActivity extends AppCompatActivity {
                 SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
                 userId = uPref.getInt("loggedInUserId",-1);
                 Message value=(Message) adapter.getItem(position);
-                Intent i = new Intent(FolderActivity.this, EmailActivity.class);
-                i.putExtra("message", value);
-                if(value.isUnread()) {
-                    readMessage(userId, value.getId());
+
+                if(!value.isDraft()){
+                    Intent i = new Intent(FolderActivity.this, EmailActivity.class);
+                    i.putExtra("message", value);
+                    if(value.isUnread()) {
+                        readMessage(userId, value.getId());
+                    }
+                    Toast.makeText(getApplicationContext(), "mail", Toast.LENGTH_LONG).show();
+                    startActivity(i);
+                }else{
+                    Intent i = new Intent(FolderActivity.this, CreateEmailActivity.class);
+                    i.putExtra("message", value);
+                    startActivity(i);
                 }
-                startActivity(i);
+
+
             }
         });
 

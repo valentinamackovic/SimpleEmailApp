@@ -91,8 +91,11 @@ public class UpdateFolderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!folderName.getText().toString().equals("")){
+                    SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+                    int userId = uPref.getInt("loggedInUserId",-1);
+
                     IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-                    Call<ArrayList<Folder>> update = service.updateFolder(folder.getId(), folderName.getText().toString(), operation.getSelectedItem().toString(), condition.getSelectedItem().toString());
+                    Call<ArrayList<Folder>> update = service.updateFolder(folder.getId(), folderName.getText().toString(), operation.getSelectedItem().toString(), condition.getSelectedItem().toString(), userId);
                     update.enqueue(new Callback<ArrayList<Folder>>() {
                         @Override
                         public void onResponse(Call<ArrayList<Folder>> call, Response<ArrayList<Folder>> response) {

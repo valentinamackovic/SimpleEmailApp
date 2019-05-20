@@ -24,12 +24,14 @@ public class Message implements Serializable {
     private Account account;
     private Folder folder;
     private boolean unread;
+    private boolean draft;
 
     public Message(){
         super();
     }
 
-    public Message(int id, String from, String to, Date dateTime, String subject, String content, String cc, String bcc, ArrayList<Attachment> attachments, ArrayList<Tag> tags, Account account, Folder folder, boolean unread) {
+
+    public Message(int id, String from, String to, Date dateTime, String subject, String content, String cc, String bcc, ArrayList<Attachment> attachments, ArrayList<Tag> tags, Account account, Folder folder, boolean unread, boolean draft) {
         this.id = id;
         this.from = from;
         this.to = to;
@@ -43,6 +45,7 @@ public class Message implements Serializable {
         this.account = account;
         this.folder = folder;
         this.unread = unread;
+        this.draft = draft;
     }
 
     public ArrayList<Tag> getTags() {
@@ -147,6 +150,14 @@ public class Message implements Serializable {
 
     public void setUnread(boolean unread) {
         this.unread = unread;
+    }
+
+    public boolean isDraft() {
+        return draft;
+    }
+
+    public void setDraft(boolean draft) {
+        this.draft = draft;
     }
 
     public static String toISO8601UTC(Date date) {

@@ -86,14 +86,19 @@ public class CustomListAdapterEmails extends BaseAdapter {
         textViewSubject.setText(subject);
 
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
-        cal.setTime(currentMessage.getDateTime());
-        int month = cal.get(Calendar.MONTH);
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-// etc.
-        Date datum = (Date) currentMessage.getDateTime();
-        if(datum != null){
-            textViewDate.setText(months[month] + " "+day);
+        if(currentMessage.getDateTime()!= null){
+            cal.setTime(currentMessage.getDateTime());
+            int month = cal.get(Calendar.MONTH);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+
+            Date datum = (Date) currentMessage.getDateTime();
+            if(datum != null){
+                textViewDate.setText(months[month] + " "+day);
+            }
         }
+
+// etc.
+
 
         return convertView;
     }

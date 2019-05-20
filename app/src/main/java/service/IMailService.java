@@ -36,7 +36,7 @@ public interface IMailService {
 
         @FormUrlEncoded
         @PUT("/folders")
-        Call<ArrayList<Folder>> updateFolder(@Field("id") int id, @Field("folderName") String name, @Field("folderOperation") String folderOperation, @Field("folderCondition") String folderCondition);
+        Call<ArrayList<Folder>> updateFolder(@Field("id") int id, @Field("folderName") String name, @Field("folderOperation") String folderOperation, @Field("folderCondition") String folderCondition, @Field("userId") int userId);
 
         @FormUrlEncoded
         @HTTP(method = "DELETE", path = MailService.BASE_URL + "/folders/delete", hasBody = true)
@@ -79,6 +79,9 @@ public interface IMailService {
         @FormUrlEncoded
         @HTTP(method = "DELETE", path = MailService.BASE_URL + "/messages/delete", hasBody = true)
         Call<ArrayList<Message>> deleteMessage(@Field("messageId") int id, @Field("userId") int userId);
+
+        @DELETE("/deleteDraft")
+        Call<ArrayList<Message>> deleteDraft(@Query("messageId") int messageId, @Query("userId") int userId);
 
 
         //+++++++++ OTHER +++++++++++++

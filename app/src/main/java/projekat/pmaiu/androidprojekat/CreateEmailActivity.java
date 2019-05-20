@@ -35,6 +35,7 @@ public class CreateEmailActivity extends AppCompatActivity {
 
     private String[] myContacts;
     private ArrayList<String> contacts = new ArrayList<>();
+    private Message draft  = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,24 @@ public class CreateEmailActivity extends AppCompatActivity {
         super.onResume();
 
 
+        Message draftM = (Message) getIntent().getSerializableExtra("message");
+        if(draftM != null && draftM.isDraft()){
+            MultiAutoCompleteTextView txtTo = findViewById(R.id.autocomplete_to);
+            MultiAutoCompleteTextView txtCc = findViewById(R.id.autocomplete_cc);
+            MultiAutoCompleteTextView txtBcc = findViewById(R.id.autocomplete_bcc);
+            EditText txtSubject = findViewById(R.id.txt_email_subject_input);
+            EditText txtContent = findViewById(R.id.txt_email_content_input);
+
+            txtTo.setText(draftM.getTo());
+            txtCc.setText(draftM.getCc());
+            txtBcc.setText(draftM.getBcc());
+            txtSubject.setText(draftM.getSubject());
+            txtContent.setText(draftM.getContent());
+
+            draft = draftM;
+
+        }
+
 
 
     }
@@ -162,6 +181,7 @@ public class CreateEmailActivity extends AppCompatActivity {
                 m.setBcc(bcc);
             m.setContent(content);
             m.setDateTime(new Date());
+            m.setId(0);
 
             SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0);
             final String ime = pref.getString("username", "emptyVal");
@@ -203,7 +223,27 @@ public class CreateEmailActivity extends AppCompatActivity {
             }
         }
         else if(item.getItemId() == R.id.btnCreateEmailCancel)
+
+        if(draft == null){
             onBackPressed();
+        }else{
+            SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+            int userId = uPref.getInt("loggedInUserId", -1);
+            IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+            Call<ArrayList<Message>> call = service.deleteDraft(draft.getId(), userId);
+            call.enqueue(new Callback<ArrayList<Message>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+                    startActivity(new Intent(CreateEmailActivity.this, FoldersActivity.class));
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+
+                }
+            });
+
+        }
         else if(item.getItemId() == R.id.btnCreateEmailAttachment)
             Toast.makeText(getApplicationContext(), "Attachment added!", Toast.LENGTH_SHORT).show();
         else
@@ -220,6 +260,13 @@ public class CreateEmailActivity extends AppCompatActivity {
         EditText txtContent = findViewById(R.id.txt_email_content_input);
 
         Message message = new Message();
+        if(draft != null){
+            message.setId(draft.getId());
+            message.setSubject(draft.getSubject());
+            message.setBcc(draft.getBcc());
+        }else{
+            message.setId(0);
+        }
 
         int br = 0;
         if(txtTo.getText().toString().length() > 0){
@@ -242,7 +289,6 @@ public class CreateEmailActivity extends AppCompatActivity {
         if(br > 0 ) {
             SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
             int userId = uPref.getInt("loggedInUserId", -1);
-
             IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
             Call<Message> call = service.saveToDraft(message, userId);
             call.enqueue(new Callback<Message>() {
