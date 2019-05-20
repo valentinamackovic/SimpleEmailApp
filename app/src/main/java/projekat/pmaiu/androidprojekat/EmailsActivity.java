@@ -267,16 +267,17 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                     }
                 });
             }
-            else if(sort.equals(("Desceding"))){
+           /*else if(sort.equals(("Desceding"))){
                 //opadajuce
                 Collections.sort(messages, new Comparator<Message>() {
                     public int compare(Message o1, Message o2) {
+
                         if (o1.getDateTime().after(o2.getDateTime())) {return -1;}
                         if (o1.getDateTime().before(o2.getDateTime())) {return 0;}
                         else {return 0;}
                     }
                 });
-            }
+            }*/
         }
         listView = findViewById(R.id.listView_emails);
         adapter = new CustomListAdapterEmails(this, messages);

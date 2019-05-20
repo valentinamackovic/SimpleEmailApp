@@ -74,7 +74,7 @@ public interface IMailService {
         Call<Message> saveToDraft(@Body() Message message, @Query("userId") int userId);
 
         @POST("/messages")
-        Call<Message> saveToOutbox(@Body() Message message, @Query("userId") int userId);
+        Call<Message> createMessage(@Body() Message message, @Query("userId") int userId);
 
 
         //+++++++++ OTHER +++++++++++++

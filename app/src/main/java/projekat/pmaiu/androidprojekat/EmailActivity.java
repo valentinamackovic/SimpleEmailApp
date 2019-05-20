@@ -97,7 +97,7 @@ public class EmailActivity extends AppCompatActivity {
         txtFrom.setText(message.getFrom());
         txtTo.setText(message.getTo());
         Date datum = message.getDateTime();
-        txtDate.setText(Message.toISO8601UTC(datum));
+        txtDate.setText(message.toISO8601UTC(datum));
 
         txtSubject.setText(message.getSubject());
         txtContent.setText(message.getContent());
