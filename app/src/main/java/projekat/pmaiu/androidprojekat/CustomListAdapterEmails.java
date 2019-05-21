@@ -74,13 +74,12 @@ public class CustomListAdapterEmails extends BaseAdapter {
         String from = (String) currentMessage.getFrom();
 
         if(from != null){
-
             txtContactLetter.setText(String.valueOf(from.charAt(0)));
         }else{
             from = "Draft";
             txtContactLetter.setText("!");
         }
-        textViewFrom.setText(from);
+        textViewFrom.setText(from.split(",")[0]);
 
         String subject = (String) currentMessage.getSubject();
         textViewSubject.setText(subject);
@@ -98,8 +97,6 @@ public class CustomListAdapterEmails extends BaseAdapter {
         }
 
 // etc.
-
-
         return convertView;
     }
 }

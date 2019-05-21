@@ -182,10 +182,12 @@ public class CreateEmailActivity extends AppCompatActivity {
             m.setContent(content);
             m.setDateTime(new Date());
             m.setId(0);
+            m.setFrom(EmailsActivity.loggedInUserEmail);
 
             SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0);
-            final String ime = pref.getString("username", "emptyVal");
-            m.setFrom(ime);
+            String ime = pref.getString("username", "emptyVal");
+            String email = pref.getString("email", "emptyVal");
+            m.setFrom(ime + "," + email);
 
             if (to.equals("")) {
                 Toast.makeText(CreateEmailActivity.this, "Please enter who you are sending to!", Toast.LENGTH_SHORT).show();
