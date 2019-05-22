@@ -72,9 +72,11 @@ public class ContactActivity extends AppCompatActivity {
         imgView = findViewById(R.id.imgContact);
 
         if( contact.getPhoto()!=null) {
-            byte[] decodedString = android.util.Base64.decode(contact.getPhoto().getData(), android.util.Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            imgView.setImageBitmap(decodedByte);
+            if(contact.getPhoto().getData()!=null) {
+                byte[] decodedString = android.util.Base64.decode(contact.getPhoto().getData(), android.util.Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                imgView.setImageBitmap(decodedByte);
+            }
         }
 //        else if(contact.getPhoto().getPath().contains("http")) {
 //            Picasso.with(this).load(contact.getPhoto().getPath()).into(picassoImageTarget(getApplicationContext(), "imageDir", "imageFromCOntact" + contact.getId()));

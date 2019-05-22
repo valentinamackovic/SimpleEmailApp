@@ -424,15 +424,16 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
     public static ArrayList<Message> filterMessagesToFolder(ArrayList<Message> mess, Folder folder, String inboxutbox){
         ArrayList<Message> messReturn=new ArrayList<>();
-
-        for(Message m : mess) {
-            if (folder == null && m.getFrom().split(",")[1].equals(loggedInUserEmail) && inboxutbox.equals("outbox")) {
-                messReturn.add(m);
-            }if(folder == null && inboxutbox.equals("inbox") && (emailFromArrayList(m.getTo()) || emailFromArrayList(m.getBcc()) || emailFromArrayList(m.getCc()))){
-                messReturn.add(m);
-            }
-            else{
-                //posebni uslovi za foldere koje korisnik napravi
+        if(mess.size()!=0) {
+            for (Message m : mess) {
+                if (folder == null && m.getFrom().split(",")[1].equals(loggedInUserEmail) && inboxutbox.equals("outbox")) {
+                    messReturn.add(m);
+                }
+                if (folder == null && inboxutbox.equals("inbox") && (emailFromArrayList(m.getTo()) || emailFromArrayList(m.getBcc()) || emailFromArrayList(m.getCc()))) {
+                    messReturn.add(m);
+                } else {
+                    //posebni uslovi za foldere koje korisnik napravi
+                }
             }
         }
         return messReturn;
