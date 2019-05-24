@@ -148,7 +148,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         if(m.isUnread()) {
            // readMessage(userId, m.getId());
         }
-        Log.e("intent","u notdialog");
 
         int requestID = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getActivity(

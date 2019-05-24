@@ -2,19 +2,28 @@ package projekat.pmaiu.androidprojekat;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
+import model.Attachment;
 import model.Message;
+import model.Tag;
 
 public class CustomListAdapterEmails extends BaseAdapter {
     private Context context;
@@ -44,6 +53,7 @@ public class CustomListAdapterEmails extends BaseAdapter {
         return position;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -63,19 +73,19 @@ public class CustomListAdapterEmails extends BaseAdapter {
                 convertView.findViewById(R.id.txtListViewDate);
         TextView txtContactLetter = convertView.findViewById(R.id.contact_letter_on_mail);
 
-        if(currentMessage.isUnread()){
+        if (currentMessage.isUnread()) {
             textViewFrom.setTypeface(textViewFrom.getTypeface(), Typeface.BOLD);
             textViewSubject.setTypeface(textViewSubject.getTypeface(), Typeface.BOLD);
-        }else{
+        } else {
             textViewFrom.setTypeface(textViewFrom.getTypeface(), Typeface.NORMAL);
             textViewFrom.setTypeface(textViewSubject.getTypeface(), Typeface.NORMAL);
         }
 
         String from = (String) currentMessage.getFrom();
 
-        if(from != null){
+        if (from != null) {
             txtContactLetter.setText(String.valueOf(from.charAt(0)));
-        }else{
+        } else {
             from = "Draft";
             txtContactLetter.setText("!");
         }
@@ -85,18 +95,35 @@ public class CustomListAdapterEmails extends BaseAdapter {
         textViewSubject.setText(subject);
 
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
-        if(currentMessage.getDateTime()!= null){
+        if (currentMessage.getDateTime() != null) {
             cal.setTime(currentMessage.getDateTime());
             int month = cal.get(Calendar.MONTH);
             int day = cal.get(Calendar.DAY_OF_MONTH);
 
             Date datum = (Date) currentMessage.getDateTime();
-            if(datum != null){
-                textViewDate.setText(months[month] + " "+day);
+            if (datum != null) {
+                textViewDate.setText(months[month] + " " + day);
             }
         }
 
-// etc.
+        LinearLayout ly = convertView.findViewById(R.id.linear_layout_for_tags);
+        if (currentMessage.getTags() != null) {
+            if(currentMessage.getTags().size()>0) {
+                for (Tag a : currentMessage.getTags()) {
+                    ImageView imgView = new ImageView(context);
+                    imgView.setMaxHeight(50);
+                    imgView.setMaxWidth(50);
+                    imgView.setId(a.getId());
+                    imgView.setForegroundGravity(Gravity.CENTER);
+
+                    imgView.setImageResource(R.drawable.ic_important_tag);
+
+                    ly.addView(imgView);
+                }
+            }
+        }
+        else
+            ly.removeAllViews();
         return convertView;
     }
 }
