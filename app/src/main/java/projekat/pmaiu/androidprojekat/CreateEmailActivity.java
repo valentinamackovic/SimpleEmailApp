@@ -2,27 +2,54 @@ package projekat.pmaiu.androidprojekat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipOutputStream;
 
+import model.Attachment;
 import model.Contact;
 import model.Message;
 import retrofit2.Call;
@@ -37,8 +64,14 @@ public class CreateEmailActivity extends AppCompatActivity {
     private ArrayList<String> contacts = new ArrayList<>();
     private Message draft  = null;
 
+    ImageView imgView;
+    public static final int PICKFILE_RESULT_CODE = 1;
+    String encodedString;
+    public static ArrayList<Attachment> attachments;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        attachments=new ArrayList<>();
         SharedPreferences prefTheme = getApplicationContext().getSharedPreferences("ThemePref", 0);
         if(!prefTheme.getBoolean("dark_mode", false)){
             setTheme(R.style.AppThemeLight);
@@ -62,7 +95,7 @@ public class CreateEmailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
                 for (Contact c: response.body()) {
-                    String contact = c.getFirstName() + " " + c.getLastName() + ", " + c.getEmail();
+                    String contact = c.getFirstName() + " " + c.getLastName() + ": " + c.getEmail();
                     contacts.add(contact);
                 }
             }
@@ -118,11 +151,71 @@ public class CreateEmailActivity extends AppCompatActivity {
             txtContent.setText(draftM.getContent());
 
             draft = draftM;
-
         }
 
+        imgView = findViewById(R.id.createEmailAddAttachment);
+        imgView.setClickable(true);
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.setType("*/*");
+                startActivityForResult(i, PICKFILE_RESULT_CODE);
+            }
+        });
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICKFILE_RESULT_CODE && resultCode == RESULT_OK && null != data) {
+            TextView txtAttachmentName = findViewById(R.id.createEmailAttachment);
+            String path = data.getData().getPath();
 
+            Uri returnUri = data.getData();
+            Cursor returnCursor =
+                    getContentResolver().query(returnUri, null, null, null, null);
+
+            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            returnCursor.moveToFirst();
+            txtAttachmentName.setText(returnCursor.getString(nameIndex));
+//            ovaj size RADI(?), NIJE 0
+            int size=returnCursor.getColumnIndex(OpenableColumns.SIZE);
+            Log.e("path",returnCursor.getString(nameIndex));
+
+ //         pretvaranje u base64 da se posalje
+            File file = new File(path);
+
+            //izvuce neku velicinu fajla ali dobijem string u obliku AAA ???????
+            byte[] bytes = new byte[size];
+            Log.e("test", "size"+ Integer.toString(size));
+            try {
+                BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+                buf.read(bytes, 0, bytes.length);
+                Log.e("test", "size"+ buf.read(bytes, 0, bytes.length));
+                buf.close();
+            } catch (FileNotFoundException e) {e.printStackTrace();
+            } catch (Exception e) { e.printStackTrace();}
+
+            encodedString = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
+//          zavrseno
+
+//        -----    nije radilo ovo dole, nzm zasto..puca u try catch
+//            DownloadAttachment asyncTask=new DownloadAttachment();
+//            asyncTask.execute(path);
+
+            Attachment a=new Attachment();
+            a.setId(hashCode());
+            a.setData(encodedString);
+            a.setName(returnCursor.getString(nameIndex));
+            a.setType("");
+            Log.e("test", a.getName());
+            Log.e("test", "data " + encodedString);
+            attachments.add(a);
+
+        }
     }
 
     @Override
@@ -175,19 +268,18 @@ public class CreateEmailActivity extends AppCompatActivity {
             Message m = new Message();
             m.setTo(to);
             m.setSubject(subject);
-            if(txtCc != null)
-                m.setCc(cc);
-            if(txtBcc != null)
-                m.setBcc(bcc);
+            m.setCc(cc);
+            m.setBcc(bcc);
             m.setContent(content);
             m.setDateTime(new Date());
             m.setId(0);
             m.setFrom(EmailsActivity.loggedInUserEmail);
+            m.setAttachments(attachments);
 
-            SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0);
-            String ime = pref.getString("username", "emptyVal");
-            String email = pref.getString("email", "emptyVal");
-            m.setFrom(ime + "," + email);
+//            SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0);
+//            String ime = pref.getString("username", "emptyVal");
+//            String email = pref.getString("email", "emptyVal");
+//            m.setFrom(ime + "," + email);
 
             if (to.equals("")) {
                 Toast.makeText(CreateEmailActivity.this, "Please enter who you are sending to!", Toast.LENGTH_SHORT).show();
@@ -205,12 +297,6 @@ public class CreateEmailActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Toast.makeText(getApplicationContext(), "Email has been sent!", Toast.LENGTH_SHORT).show();
-                       /* SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0); // 0 - for private mode
-                        SharedPreferences.Editor editor = pref.edit();
-                        editor.putString("from", ime);
-                        editor.putString("to", to);
-                        editor.putString("subject",subject);
-                        editor.commit();*/
                         startActivity(new Intent(CreateEmailActivity.this, EmailsActivity.class));
                         finish();
 

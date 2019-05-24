@@ -36,12 +36,20 @@
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.Toolbar>
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_create_email_activity"
+        app:layout_constraintLeft_toLeftOf="parent" >
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent">
     <LinearLayout
         android:id="@+id/to_field_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_create_email_activity"
+        app:layout_constraintTop_toTopOf="parent"
         android:orientation="horizontal">
 
         <TextView
@@ -129,9 +137,6 @@
 
     </LinearLayout>
 
-
-
-
     <EditText
         android:id="@+id/txt_email_content_input"
         android:layout_width="match_parent"
@@ -140,7 +145,7 @@
         app:layout_constraintTop_toBottomOf="@id/layout_subject"
         android:gravity="top|left"
         android:hint="@string/compose_email"
-        android:lines="15"
+        android:lines="12"
         android:background="@android:color/transparent"
         android:scrollbars="vertical"
         android:textSize="8pt"
@@ -149,7 +154,25 @@
         android:layout_marginEnd="10pt"
         android:layout_marginStart="5pt"/>
 
-
-
-
+    <ImageView
+        android:id="@+id/createEmailAddAttachment"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/icon_attachment"
+        android:scaleType="centerCrop"
+        android:layout_gravity="start"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_email_content_input"
+        />
+        <TextView
+            android:id="@+id/createEmailAttachment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTxt"
+            android:text=""
+            android:gravity="center"
+            app:layout_constraintLeft_toRightOf="@id/createEmailAddAttachment"
+            app:layout_constraintTop_toBottomOf="@id/txt_email_content_input"/>
+        </android.support.constraint.ConstraintLayout>
+</ScrollView>
 </android.support.constraint.ConstraintLayout>

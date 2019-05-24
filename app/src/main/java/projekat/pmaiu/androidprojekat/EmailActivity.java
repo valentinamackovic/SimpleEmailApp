@@ -5,18 +5,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.View.OnClickListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +46,10 @@ import service.MailService;
 
 public class EmailActivity extends AppCompatActivity {
 
+    int id;
+    Message message;
+    private int userId = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences prefTheme = getApplicationContext().getSharedPreferences("ThemePref", 0);
@@ -55,6 +65,7 @@ public class EmailActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         Log.e("intent","u email");
     }
 
@@ -63,15 +74,20 @@ public class EmailActivity extends AppCompatActivity {
         super.onStart();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onResume() {
         super.onResume();
 
+        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+        userId = uPref.getInt("loggedInUserId",-1);
+
         Intent i = getIntent();
-        Message message = (Message)i.getSerializableExtra("message");
+        message = (Message)i.getSerializableExtra("message");
 
         Button btnReply = findViewById(R.id.btnReply);
-        btnReply.setOnClickListener(new View.OnClickListener() {
+        btnReply.setClickable(true);
+        btnReply.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(),"Replied!",Toast.LENGTH_SHORT).show();
@@ -102,11 +118,9 @@ public class EmailActivity extends AppCompatActivity {
             txtDate.setText(message.toISO8601UTC(datum));
         }
 
-
         txtSubject.setText(message.getSubject());
         txtContent.setText(message.getContent());
         txtCc.setText(message.getCc());
-
 
         Log.e("intent","u email u resume");
 
@@ -121,12 +135,28 @@ public class EmailActivity extends AppCompatActivity {
 
                 ImageView imgView=view.findViewById(R.id.icon_attachment);
                 imgView.setImageResource(R.drawable.icon_attachment);
-                TextView textView=view.findViewById(R.id.txt_attachment);
+                final TextView textView=view.findViewById(R.id.txt_attachment);
 
                 textView.setText(a.getName());
 
+//                kod za klik na att i njegovo skidanje, nemam pojma da li radi jer ne radi ni upload kako treba
+//                textView.setTooltipText(Integer.toString(a.getId()));
+//                textView.setClickable(true);
+//                textView.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                        //Get the URL entered
+//                        Attachment att= message.getAttachments().get(Integer.parseInt(textView.getTooltipText().toString()));
+//                        String name = att.getName();
+////                        new DownloadFile().execute(url);
+//
+//                    }
+//                });
+
                 views.add(view);
             }
+
             for(int z = 0; z<views.size(); z++) {
                 ly.addView((View) views.get(z));
             }
@@ -135,13 +165,11 @@ public class EmailActivity extends AppCompatActivity {
         btnReply.setVisibility(View.VISIBLE);
         btnReplyAll.setVisibility(View.VISIBLE);
 
-        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
         int userId = uPref.getInt("loggedInUserId",-1);
 
         if(message.isUnread()){
             readMessage(userId, message.getId());
         }
-
     }
 
     @Override
@@ -207,7 +235,6 @@ public class EmailActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Something went wrong, please try again...", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
 }
