@@ -79,7 +79,7 @@ public class CustomListAdapterEmails extends BaseAdapter {
             from = "Draft";
             txtContactLetter.setText("!");
         }
-        textViewFrom.setText(from.split(",")[0]);
+        textViewFrom.setText(from.split(":")[0]);
 
         String subject = (String) currentMessage.getSubject();
         textViewSubject.setText(subject);

@@ -258,6 +258,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                     i.putExtra("message", value);
                     if(value.isUnread()) {
                         readMessage(userId, value.getId());
+                        value.setUnread(false);
                     }
                     startActivity(i);
                   //  finish();
@@ -281,7 +282,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                     }
                 });
             }
-           /*else if(sort.equals(("Desceding"))){
+           else if(sort.equals(("Desceding"))){
                 //opadajuce
                 Collections.sort(messages, new Comparator<Message>() {
                     public int compare(Message o1, Message o2) {
@@ -291,7 +292,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                         else {return 0;}
                     }
                 });
-            }*/
+            }
         }
         listView = findViewById(R.id.listView_emails);
         adapter = new CustomListAdapterEmails(this, messages);
@@ -426,7 +427,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         ArrayList<Message> messReturn=new ArrayList<>();
         if(mess.size()!=0) {
             for (Message m : mess) {
-                if (folder == null && m.getFrom().split(",")[1].equals(loggedInUserEmail) && inboxutbox.equals("outbox")) {
+                String oneContact=m.getFrom();
+                if(oneContact.contains(":"))
+                    oneContact=oneContact.split(":")[1];
+                if (folder == null && oneContact.equals(loggedInUserEmail) && inboxutbox.equals("outbox")) {
                     messReturn.add(m);
                 }
                 if (folder == null && inboxutbox.equals("inbox") && (emailFromArrayList(m.getTo()) || emailFromArrayList(m.getBcc()) || emailFromArrayList(m.getCc()))) {
@@ -443,6 +447,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         if(complexEmail!=null) {
             String[] contacts = complexEmail.split(",");
             for (String s : contacts) {
+                if(s.contains(":"))
+                    s=s.split(":")[1];
                 if (s.equals(loggedInUserEmail))
                     return true;
             }
