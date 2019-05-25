@@ -20,9 +20,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import enums.Condition;
 import model.Account;
 import model.Contact;
 import model.Folder;
+import model.Rule;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -148,7 +150,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         if(m.isUnread()) {
            // readMessage(userId, m.getId());
         }
-        Log.e("intent","u notdialog");
 
         int requestID = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getActivity(
@@ -461,8 +462,30 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 }
                 if (folder == null && inboxutbox.equals("inbox") && (emailFromArrayList(m.getTo()) || emailFromArrayList(m.getBcc()) || emailFromArrayList(m.getCc()))) {
                     messReturn.add(m);
-                } else {
-                    //posebni uslovi za foldere koje korisnik napravi
+                }
+            }
+//          proizvoljni folderi ---------------------------------------------------------
+//          TRENUTNO SAMO COPY
+            if(folder!=null) {
+                String word=folder.getWord();
+                Rule ruleForFolder=folder.getRule();
+                for(Message n: mess ){
+                    if(ruleForFolder.condition== Condition.TO){
+                        if(n.getTo().toLowerCase().contains(word.toLowerCase()))
+                            messReturn.add(n);
+                    }
+                    else if(ruleForFolder.condition== Condition.CC){
+                        if(n.getCc().toLowerCase().contains(word.toLowerCase()))
+                            messReturn.add(n);
+                    }
+                    else if(ruleForFolder.condition== Condition.FROM){
+                        if(n.getFrom().toLowerCase().contains(word.toLowerCase()))
+                            messReturn.add(n);
+                    }
+                    else if(ruleForFolder.condition== Condition.SUBJECT){
+                        if(n.getSubject().toLowerCase().contains(word.toLowerCase()))
+                            messReturn.add(n);
+                    }
                 }
             }
         }

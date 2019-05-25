@@ -1,5 +1,7 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -8,6 +10,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +31,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -35,6 +42,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -164,7 +172,7 @@ public class CreateEmailActivity extends AppCompatActivity {
             }
         });
     }
-
+//  PICK CONTENT NE VRACA DOBAR URI
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -172,51 +180,162 @@ public class CreateEmailActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICKFILE_RESULT_CODE && resultCode == RESULT_OK && null != data) {
             TextView txtAttachmentName = findViewById(R.id.createEmailAttachment);
-            String path = data.getData().getPath();
+            Path pdfPath = Paths.get("/"+data.getData().getPath());
 
             Uri returnUri = data.getData();
+            String uri=returnUri.toString().split("content:")[1];
+
+//            ---------------
+            Log.e("test", "ponovo ovo duagacko "+getPath(this, Uri.parse(uri)));
+//            ----------------
             Cursor returnCursor =
                     getContentResolver().query(returnUri, null, null, null, null);
 
-            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            int nameIndex =returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             returnCursor.moveToFirst();
             txtAttachmentName.setText(returnCursor.getString(nameIndex));
 //            ovaj size RADI(?), NIJE 0
             int size=returnCursor.getColumnIndex(OpenableColumns.SIZE);
-            Log.e("path",returnCursor.getString(nameIndex));
-
- //         pretvaranje u base64 da se posalje
-            File file = new File(path);
 
             //izvuce neku velicinu fajla ali dobijem string u obliku AAA ???????
             byte[] bytes = new byte[size];
-            Log.e("test", "size"+ Integer.toString(size));
             try {
-                BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
-                buf.read(bytes, 0, bytes.length);
-                Log.e("test", "size"+ buf.read(bytes, 0, bytes.length));
-                buf.close();
-            } catch (FileNotFoundException e) {e.printStackTrace();
-            } catch (Exception e) { e.printStackTrace();}
+//                ovo je sve za test, ne radi
+                Log.e("test", "nov nacin u try ");
+                Log.e("test","nov nacin 3 "+ pdfPath);
+
+                final byte[] bytesTest = Files.readAllBytes(pdfPath);
+                Log.e("test", "nov nacin bytes "+ bytesTest.toString());
+                encodedString = android.util.Base64.encodeToString(bytesTest, android.util.Base64.DEFAULT);
+//                BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+//                buf.read(bytes, 0, bytes.length);
+//
+//                buf.close();
+            }catch (IOException e) {
+                Log.e("test", "sta se desava, zasto ne ispise erooooor ");
+                Log.e("test", "sta se desava, zasto ne ispise erooooor " + e);
+                e.printStackTrace();}
 
             encodedString = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
 //          zavrseno
-
-//        -----    nije radilo ovo dole, nzm zasto..puca u try catch
-//            DownloadAttachment asyncTask=new DownloadAttachment();
-//            asyncTask.execute(path);
 
             Attachment a=new Attachment();
             a.setId(hashCode());
             a.setData(encodedString);
             a.setName(returnCursor.getString(nameIndex));
-            a.setType("");
-            Log.e("test", a.getName());
+//            a.setType("");
             Log.e("test", "data " + encodedString);
             attachments.add(a);
-
         }
     }
+    public static String getPath(final Context context, final Uri uri) {
+
+        // DocumentProvider
+        if (DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+
+                // TODO handle non-primary volumes
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("/downloads/public_downloads"), Long.valueOf(id));
+
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[] {
+                        split[1]
+                };
+
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
+
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int column_index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(column_index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+//
+//    private String getRealPathFromURI(Uri contentURI) {
+//        String result;
+//        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+//        if (cursor == null) { // Source is Dropbox or other similar local file path
+//            result = contentURI.getPath();
+//        } else {
+//            cursor.moveToFirst();
+//            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+//            result = cursor.getString(idx);
+//            cursor.close();
+//        }
+//        return result;
+//    }
 
     @Override
     protected void onPause() {
