@@ -61,6 +61,9 @@
     <string name="protocol">Protocol</string>
     <string name="pop3">POP3</string>
     <string name="imap">IMAP</string>
+    <string name="toCreateFolder">If (choose which part of email below)</string>
+    <string name="containsCreateFolder">Contains: </string>
+    <string name="wordCreateFolder">enter a word </string>
     <string-array name="operation">
         <item>MOVE</item>
         <item>COPY</item>

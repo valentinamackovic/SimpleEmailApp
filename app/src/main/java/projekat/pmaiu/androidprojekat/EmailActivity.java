@@ -3,10 +3,13 @@ package projekat.pmaiu.androidprojekat;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +29,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +56,7 @@ public class EmailActivity extends AppCompatActivity {
     int id;
     Message message;
     private int userId = -1;
+    LinearLayout ly;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +133,7 @@ public class EmailActivity extends AppCompatActivity {
         Log.e("intent","u email u resume");
 
         //attachments
-        LinearLayout ly=findViewById(R.id.linear_layout_attachment);
+        ly=findViewById(R.id.linear_layout_attachment);
 
         LayoutInflater layoutInflator = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         List views = new ArrayList();
@@ -139,20 +147,31 @@ public class EmailActivity extends AppCompatActivity {
 
                 textView.setText(a.getName());
 
-//                kod za klik na att i njegovo skidanje, nemam pojma da li radi jer ne radi ni upload kako treba
-//                textView.setTooltipText(Integer.toString(a.getId()));
-//                textView.setClickable(true);
-//                textView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        //Get the URL entered
-//                        Attachment att= message.getAttachments().get(Integer.parseInt(textView.getTooltipText().toString()));
-//                        String name = att.getName();
-////                        new DownloadFile().execute(url);
-//
-//                    }
-//                });
+//                kod za klik na att , da li radi sa vise atributa... id od atributa postaviti????
+                textView.setTooltipText(Integer.toString(a.getId()));
+                textView.setClickable(true);
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        //Get the URL entered
+                        Attachment att= message.getAttachments().get(0);
+                        String name = att.getName();
+                        byte[] decodedString = android.util.Base64.decode(message.getAttachments().get(0).getData(), android.util.Base64.DEFAULT);
+
+                        //napravi samo prazan fajl, a sve prodje
+                        try {
+                            Log.e("test","test");
+                            FileOutputStream fos = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "abcde71.pdf"));
+                            Log.e("test","downloads "+Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+                            fos.write(decodedString);
+                            fos.flush();
+                            fos.close();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                });
 
                 views.add(view);
             }
@@ -175,6 +194,7 @@ public class EmailActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        ly.removeAllViews();
     }
 
     @Override

@@ -12,14 +12,24 @@ public class Folder implements Serializable {
     private ArrayList<Folder> childFolders;
     private Folder parentFolder;
     private ArrayList<Message> messages;
+    private String word;
 
-    public Folder(int id, String name, Rule rule, ArrayList<Folder> childFolders, Folder parentFolder, ArrayList<Message> messages) {
+    public Folder(int id, String name, Rule rule, ArrayList<Folder> childFolders, Folder parentFolder, ArrayList<Message> messages,String word) {
         this.id = id;
         this.name = name;
         this.rule = rule;
         this.childFolders = childFolders;
         this.parentFolder = parentFolder;
         this.messages = messages;
+        this.word=word;
+    }
+
+    public String getWord() {
+        return word;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
     }
 
     public Folder() {

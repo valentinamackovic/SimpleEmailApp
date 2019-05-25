@@ -89,6 +89,7 @@ public class CreateFolderActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.action_save_folder){
 
             EditText txtFolderName = findViewById(R.id.folder_name_create_folder_activity);
+            EditText txtword= findViewById(R.id.word_create_folder_activity);
             final String folderName= txtFolderName.getText().toString();
             Spinner spinner = (Spinner)findViewById(R.id.spinnerCondition);
             String selectedCondition = spinner.getSelectedItem().toString();
@@ -101,10 +102,12 @@ public class CreateFolderActivity extends AppCompatActivity {
             r.condition = e;
             Operation o = Operation.valueOf(selectedOperation);
             r.operation = o;
+            String word=txtword.getText().toString().trim();
 
             Folder f = new Folder();
             f.setName(txtFolderName.getText().toString());
             f.setRule(r);
+            f.setWord(word);
 
             if(folderName.equals("")){
                 Toast.makeText(CreateFolderActivity.this, "Please enter folder name!", Toast.LENGTH_SHORT).show();
