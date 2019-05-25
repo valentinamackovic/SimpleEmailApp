@@ -246,9 +246,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
             menu.setHeaderTitle(folder.getName());
             id = folder.getId();
         }
-
-
-
     }
 
     @Override
