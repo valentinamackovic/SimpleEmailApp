@@ -133,26 +133,7 @@ public class CreateEmailActivity extends AppCompatActivity {
         actvBcc.setThreshold(1);
         actvBcc.setAdapter(adapter);
         actvBcc.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-
-
-//        EditText txtContent1 = findViewById(R.id.txt_email_content_input);
-//        EditText txtSubject1 = findViewById(R.id.txt_email_subject_input);
-//        String fromOriginal = getIntent().getStringExtra("from");
-//        String content1 = getIntent().getStringExtra("content");
-//        String to = getIntent().getStringExtra("to");
-//        String date = getIntent().getStringExtra("date");
-//        String subject = getIntent().getStringExtra("subject");
-//        txtContent1.setText("----------------------Forwarded message---------------------- " + " " + "From: " + "  " + fromOriginal + "     " +
-//                "                               " + "To: " + "       " + to + "              " + "Date: " + "   " + date +
-//                "   " +
-//                "------------------------------------------------------------------------------ "
-//                + " " + content1 + " ");
-//
-//        txtSubject1.setText("Fwd: " + subject);
-
-
-
-            }
+    }
 
 
     @Override
@@ -180,37 +161,18 @@ public class CreateEmailActivity extends AppCompatActivity {
             txtContent.setText(draftM.getContent());
 
             draft = draftM;
-
-        }
-        EditText txtContent = findViewById(R.id.txt_email_content_input);
-        EditText txtSubject = findViewById(R.id.txt_email_subject_input);
-        String fromOriginal = getIntent().getStringExtra("from");
-        String content1 = getIntent().getStringExtra("content");
-        String to = getIntent().getStringExtra("to");
-        String date = getIntent().getStringExtra("date");
-        String subject = getIntent().getStringExtra("subject");
-        String att = getIntent().getStringExtra("att");
-       // Bitmap bitmap = (Bitmap) getIntent().getParcelableExtra("img");
-        if(att !=null && fromOriginal != null && content1 != null && to != null && date != null && subject != null) {
-             txtContent.setText("----------------------Forwarded message---------------------- " + " " + "From: " + "  " + fromOriginal + "     " +
-                "                               " + "To: " + "       " + to + "              " + "Date: " + "   " + date +
-                "   " +
-                "------------------------------------------------------------------------------ "
-                + " " + content1 + " "   +att);
-
-            txtSubject.setText("Fwd: " + subject);
         }
 
-        //imgView = findViewById(R.id.createEmailAddAttachment);
-       // imgView.setClickable(true);
-       // imgView.setOnClickListener(new View.OnClickListener() {
-           // @Override
-            //public void onClick(View v) {
-               // Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-              //  i.setType("*/*");
-              //  startActivityForResult(i, PICKFILE_RESULT_CODE);
-           // }
-       // });
+        imgView = findViewById(R.id.createEmailAddAttachment);
+        imgView.setClickable(true);
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.setType("*/*");
+                startActivityForResult(i, PICKFILE_RESULT_CODE);
+            }
+        });
     }
 //  PICK CONTENT NE VRACA DOBAR URI
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -219,7 +181,7 @@ public class CreateEmailActivity extends AppCompatActivity {
     {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICKFILE_RESULT_CODE && resultCode == RESULT_OK && null != data) {
-           // TextView txtAttachmentName = findViewById(R.id.createEmailAttachment);
+            TextView txtAttachmentName = findViewById(R.id.createEmailAttachment);
             Path pdfPath = Paths.get("/"+data.getData().getPath());
 
             Uri returnUri = data.getData();
@@ -233,7 +195,7 @@ public class CreateEmailActivity extends AppCompatActivity {
 
             int nameIndex =returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             returnCursor.moveToFirst();
-            //txtAttachmentName.setText(returnCursor.getString(nameIndex));
+            txtAttachmentName.setText(returnCursor.getString(nameIndex));
 //            ovaj size RADI(?), NIJE 0
             int size=returnCursor.getColumnIndex(OpenableColumns.SIZE);
 
