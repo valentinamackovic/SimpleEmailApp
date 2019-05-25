@@ -6,10 +6,12 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,10 +31,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -230,7 +234,39 @@ public class EmailActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.btnDeleteEmail)
             Toast.makeText(getApplicationContext(), "Deleted!", Toast.LENGTH_SHORT).show();
         else if(item.getItemId() == R.id.btnEmailForward)
-            Toast.makeText(getApplicationContext(), "Forwarded!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Forwarded!", Toast.LENGTH_SHORT).show();
+        {
+
+            Intent i = new Intent(getBaseContext(), CreateEmailActivity.class);
+            i.putExtra("subject", message.getSubject());
+            i.putExtra("content", message.getContent());
+            i.putExtra("from", message.getFrom());
+            i.putExtra("to", message.getTo());
+            Date datum = message.getDateTime();
+            i.putExtra("date", message.toISO8601UTC(datum));
+
+            ly=findViewById(R.id.linear_layout_attachment);
+
+            LayoutInflater layoutInflator = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            List views = new ArrayList();
+            if(message.getAttachments() != null) {
+                for (Attachment a : message.getAttachments()) {
+                    View view = layoutInflator.inflate(R.layout.attacment_row, null);
+
+                    //ImageView imgView = view.findViewById(R.id.icon_attachment);
+                    //imgView.setImageResource(R.drawable.icon_attachment);
+                    //Bitmap bitmap = imgView.getDrawingCache();
+                  // i.putExtra("img", bitmap);
+                    i.putExtra("att", a.getName());
+                }
+            }
+            for(int z = 0; z<views.size(); z++) {
+                ly.addView((View) views.get(z));
+            }
+
+            startActivity(i);
+        }
+
         else
             onBackPressed();
         return true;
