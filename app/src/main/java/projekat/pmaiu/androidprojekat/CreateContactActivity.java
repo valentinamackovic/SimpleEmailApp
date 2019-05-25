@@ -2,6 +2,9 @@ package projekat.pmaiu.androidprojekat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
@@ -12,10 +15,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import model.Account;
 import model.Contact;
+import model.Photo;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,6 +35,10 @@ import service.IMailService;
 import service.MailService;
 
 public class CreateContactActivity extends AppCompatActivity {
+
+    ImageView imgView;
+    public static final int PICK_IMAGE = 1;
+    String encodedString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +63,63 @@ public class CreateContactActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() { super.onResume(); }
+    protected void onResume() {
+        super.onResume();
+        imgView = findViewById(R.id.imgCreateContact);
+        imgView.setClickable(true);
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(
+                        Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(Intent.createChooser(i, "Select Picture"), PICK_IMAGE);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && null != data) {
+            try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                final Bitmap img=Bitmap.createScaledBitmap(selectedImage, 80, 80, true);
+
+//                pretvaranje u base64 da se posalje
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                img.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                encodedString = android.util.Base64.encodeToString(byteArray, android.util.Base64.DEFAULT);
+//                zavrseno
+
+                File cache = new File(getApplicationContext().getCacheDir(), "picasso-cache");
+                deleteDir(cache);
+//                contact.getPhoto().setData(encodedString);
+
+                imgView.setImageBitmap(img);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+
+            }
+        }
+    }
+
+    private static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        // The directory is now empty so delete it
+        return dir.delete();
+    }
 
     @Override
     protected void onPause() {
@@ -96,6 +168,8 @@ public class CreateContactActivity extends AppCompatActivity {
             c.setFirstName(txtFirstName.getText().toString());
             c.setLastName(txtLastName.getText().toString());
             c.setEmail(txtEmail.getText().toString());
+            c.setPhoto(new Photo());
+            c.getPhoto().setData(encodedString);
 
             if(firstName.equals("")){
                 Toast.makeText(CreateContactActivity.this, "Please enter first name!", Toast.LENGTH_SHORT).show();

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,8 +56,16 @@ public class FolderActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         Folder folder = (Folder) i.getSerializableExtra("folder");
-
-        adapter = new CustomListAdapterEmails(this, folder.getMessages());
+        if(folder.getName().equals("Outbox")){
+            adapter = new CustomListAdapterEmails(this, EmailsActivity.filterMessagesToFolder(EmailsActivity.messages,null, "outbox" ));
+        }
+        else if(folder.getName().equals("Inbox")){
+             adapter = new CustomListAdapterEmails(this, EmailsActivity.filterMessagesToFolder(EmailsActivity.messages,null, "inbox" ));
+        }
+        else {
+            Log.e("TEST", "u else u folderact");
+            adapter = new CustomListAdapterEmails(this, folder.getMessages());
+        }
         listView = findViewById(R.id.folder_list_view_emails);
         if(adapter.getCount() > 0){
             listView.setAdapter(adapter);

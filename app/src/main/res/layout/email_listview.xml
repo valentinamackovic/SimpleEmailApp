@@ -6,39 +6,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp">
 
+    <LinearLayout
+        android:id="@+id/linear_layout_for_tags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/imgListViewContact"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center"
-            android:src="@drawable/contact_background"
-            />
+            <ImageView
+                android:id="@+id/imgListViewContact"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:src="@drawable/contact_background"
+                />
 
-        <TextView
-            android:id="@+id/contact_letter_on_mail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/imgListViewContact"
-            android:layout_alignTop="@id/imgListViewContact"
-            android:layout_alignRight="@id/imgListViewContact"
-            android:layout_alignBottom="@id/imgListViewContact"
-            android:gravity="center"
-            android:layout_marginBottom="3dp"
-            android:textColor="@color/colorTxt"
-            android:textSize="40dp"
-            android:textFontWeight="800"
-            />
+            <TextView
+                android:id="@+id/contact_letter_on_mail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/imgListViewContact"
+                android:layout_alignTop="@id/imgListViewContact"
+                android:layout_alignRight="@id/imgListViewContact"
+                android:layout_alignBottom="@id/imgListViewContact"
+                android:gravity="center"
+                android:layout_marginBottom="3dp"
+                android:textColor="@color/colorTxt"
+                android:textSize="30dp"
+                android:textFontWeight="800"
+                />
     </RelativeLayout>
-
-
-
-
-
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -20,7 +20,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import model.Account;
 import model.Contact;
+import model.Folder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,11 +57,18 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     String NOTIFICATION_CHANNEL_ID;
     private boolean active;
     private int id;
+    public static ArrayList<Message> messages;
+    Context context;
+    public static String loggedInUserEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         active=true;
-        SharedPreferences prefTheme = getApplicationContext().getSharedPreferences("ThemePref", 0);
+        messages= new ArrayList<>();
+        context=getApplicationContext();
+        SharedPreferences prefTheme = context.getSharedPreferences("ThemePref", 0);
+        SharedPreferences prefForUser = context.getSharedPreferences("MailPref", 0);
+        loggedInUserEmail = prefForUser.getString("email", "");
         if(!prefTheme.getBoolean("dark_mode", false)){
             setTheme(R.style.AppThemeLight);
         }else{
@@ -100,7 +109,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                         call.enqueue(new Callback<ArrayList<Message>>() {
                             @Override
                             public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
-                                generateEmailsList(response.body());
+                                messages=response.body();
+                                generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
                                 if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1 && !active){
                                     for(Message m : response.body()) {
                                         if (m.isUnread())
@@ -138,7 +148,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         if(m.isUnread()) {
            // readMessage(userId, m.getId());
         }
-        Log.e("intent","u notdialog");
 
         int requestID = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getActivity(
@@ -248,6 +257,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                     i.putExtra("message", value);
                     if(value.isUnread()) {
                         readMessage(userId, value.getId());
+                        value.setUnread(false);
                     }
                     startActivity(i);
                   //  finish();
@@ -271,7 +281,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                     }
                 });
             }
-           /*else if(sort.equals(("Desceding"))){
+           else if(sort.equals(("Desceding"))){
                 //opadajuce
                 Collections.sort(messages, new Comparator<Message>() {
                     public int compare(Message o1, Message o2) {
@@ -281,7 +291,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                         else {return 0;}
                     }
                 });
-            }*/
+            }
         }
         listView = findViewById(R.id.listView_emails);
         adapter = new CustomListAdapterEmails(this, messages);
@@ -411,4 +421,39 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         }
         return true;
     }
+
+    public static ArrayList<Message> filterMessagesToFolder(ArrayList<Message> mess, Folder folder, String inboxutbox){
+        ArrayList<Message> messReturn=new ArrayList<>();
+        if(mess.size()!=0) {
+            for (Message m : mess) {
+                String oneContact=m.getFrom();
+                if(oneContact.contains(":"))
+                    oneContact=oneContact.split(":")[1];
+                if (folder == null && oneContact.equals(loggedInUserEmail) && inboxutbox.equals("outbox")) {
+                    messReturn.add(m);
+                }
+                if (folder == null && inboxutbox.equals("inbox") && (emailFromArrayList(m.getTo()) || emailFromArrayList(m.getBcc()) || emailFromArrayList(m.getCc()))) {
+                    messReturn.add(m);
+                } else {
+                    //posebni uslovi za foldere koje korisnik napravi
+                }
+            }
+        }
+        return messReturn;
+    }
+
+    public static boolean emailFromArrayList(String complexEmail){
+        if(complexEmail!=null) {
+            String[] contacts = complexEmail.split(",");
+            for (String s : contacts) {
+                if(s.contains(":"))
+                    s=s.split(":")[1];
+                if (s.equals(loggedInUserEmail))
+                    return true;
+            }
+        }
+        return false;
+
+    }
+
 }
