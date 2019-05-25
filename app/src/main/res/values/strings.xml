@@ -64,6 +64,7 @@
     <string name="toCreateFolder">If (choose which part of email below)</string>
     <string name="containsCreateFolder">Contains: </string>
     <string name="wordCreateFolder">enter a word </string>
+    <string name="search">Search</string>
     <string-array name="operation">
         <item>MOVE</item>
         <item>COPY</item>
