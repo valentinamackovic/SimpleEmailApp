@@ -118,8 +118,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                             @Override
                             public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
                                 messages=response.body();
-                                generateEmailsList(response.body());
-                               // generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
+//                                generateEmailsList(response.body());
+                                generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
                                 if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1 && !active){
                                     for(Message m : response.body()) {
                                         if (m.isUnread())
@@ -488,12 +488,15 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         if(mess.size()!=0) {
             for (Message m : mess) {
                 String oneContact=m.getFrom();
+                Log.e("test", "filtiranje poruka from " +oneContact );
+                Log.e("test", "filtiranje poruka to " +m.getTo() );
                 if(oneContact.contains(":"))
                     oneContact=oneContact.split(":")[1];
                 if (folder == null && oneContact.equals(loggedInUserEmail) && inboxutbox.equals("outbox")) {
                     messReturn.add(m);
                 }
-                if (folder == null && inboxutbox.equals("inbox") && (emailFromArrayList(m.getTo()) || emailFromArrayList(m.getBcc()) || emailFromArrayList(m.getCc()))) {
+                if (folder == null && inboxutbox.equals("inbox") && (m.getTo().contains(loggedInUserEmail) || m.getBcc().contains(loggedInUserEmail) || m.getCc().contains(loggedInUserEmail))) {
+
                     messReturn.add(m);
                 }
             }
@@ -526,21 +529,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             }
         }
         return messReturn;
-    }
-
-
-    public static boolean emailFromArrayList(String complexEmail){
-        if(complexEmail!=null) {
-            String[] contacts = complexEmail.split(",");
-            for (String s : contacts) {
-                if(s.contains(":"))
-                    s=s.split(":")[1];
-                if (s.equals(loggedInUserEmail))
-                    return true;
-            }
-        }
-        return false;
-
     }
 
     @Override

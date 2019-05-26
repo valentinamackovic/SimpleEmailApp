@@ -282,7 +282,6 @@ public class CreateEmailActivity extends AppCompatActivity {
                             final byte[] bytesTestProbaRAdi = Files.readAllBytes(Paths.get(proba.getPath()));
                             encodedString = android.util.Base64.encodeToString(bytesTestProbaRAdi, android.util.Base64.DEFAULT);
                             Log.e("test", "nesto cudno 2 proba "+ proba.getPath());
-                            Log.e("test", "nesto cudno 2  proooslo proba " );
                             Log.e("test", "nesto cudno 2  proooslo proba string "+ encodedString );
                         } catch (Exception e) {
                             e.printStackTrace();

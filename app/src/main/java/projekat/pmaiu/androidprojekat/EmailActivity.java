@@ -170,6 +170,7 @@ public class EmailActivity extends AppCompatActivity {
         List views = new ArrayList();
         if(message.getAttachments() != null){
             for(Attachment a : message.getAttachments()){
+                final Attachment att=a;
                 View view = layoutInflator.inflate(R.layout.attacment_row, null);
 
                 ImageView imgView=view.findViewById(R.id.icon_attachment);
@@ -193,7 +194,7 @@ public class EmailActivity extends AppCompatActivity {
                         //napravi samo prazan fajl, a sve prodje
                         try {
                             Log.e("test","test za download att");
-                            FileOutputStream fos = new FileOutputStream(getFilesDir()+ "test1.pdf");
+                            FileOutputStream fos = new FileOutputStream(getFilesDir()+ att.getName());
                             fos.write(decodedString);
                             Log.e("test","posle write files dir "+getFilesDir() );
                             fos.flush();
