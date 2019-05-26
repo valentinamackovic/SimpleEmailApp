@@ -167,6 +167,71 @@ public class CreateEmailActivity extends AppCompatActivity {
         }
 
         imgView = findViewById(R.id.createEmailAddAttachment);
+         EditText txtContent = findViewById(R.id.txt_email_content_input);
+         EditText txtSubject = findViewById(R.id.txt_email_subject_input);
+         String fromOriginal = getIntent().getStringExtra("from");
+         String content1 = getIntent().getStringExtra("content");
+         String to = getIntent().getStringExtra("to");
+         String date = getIntent().getStringExtra("date");
+         String subject = getIntent().getStringExtra("subject");
+         String att = getIntent().getStringExtra("att");
+    // Bitmap bitmap = (Bitmap) getIntent().getParcelableExtra("img");
+            if(att !=null && fromOriginal != null && content1 != null && to != null && date != null && subject != null) {
+                txtContent.setText("----------------------Forwarded message---------------------- " + " " + "From: " + "  " + fromOriginal + "     " +
+                "                               " + "To: " + "       " + to + "              " + "Date: " + "   " + date +
+                "   " +
+                "------------------------------------------------------------------------------ "
+                + " " + content1 + " "   +att);
+
+                txtSubject.setText("Fwd: " + subject);
+            }
+            else if(att ==null && fromOriginal != null && content1 != null && to != null && date != null && subject != null) {
+            txtContent.setText("----------------------Forwarded message---------------------- " + " " + "From: " + "  " + fromOriginal + "     " +
+                    "                               " + "To: " + "       " + to + "              " + "Date: " + "   " + date +
+                    "   " +
+                    "------------------------------------------------------------------------------ "
+                    + " " + content1 );
+
+            txtSubject.setText("Fwd: " + subject);
+        }
+
+        String content2 = getIntent().getStringExtra("content1");
+        String to2 = getIntent().getStringExtra("to1");
+        String date2 = getIntent().getStringExtra("date1");
+        String subject2 = getIntent().getStringExtra("subject1");
+        String att2 = getIntent().getStringExtra("att1");
+        EditText toReply = findViewById(R.id.autocomplete_to);
+        toReply.setText(to2);
+        if(att2 !=null &&  content2 != null && to2 != null && date2 != null && subject2 != null) {
+            txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + to2 + "     " +
+                    "                               " +  "              " + "Date: " + "   " + date2 +
+                    "   " +
+                    "------------------------------------------------------------------------------ "
+                    + " " + content2 + " "   +att2);
+
+            txtSubject.setText("Re: " + subject2);
+        }
+        else if(att2 ==null &&  content2 != null && to2 != null && date2 != null && subject2 != null) {
+            txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + to2 + "     " +
+                    "                               " +  "              " + "Date: " + "   " + date2 +
+                    "   " +
+                    "------------------------------------------------------------------------------ "
+                    + " " + content1 );
+
+            txtSubject.setText("Re: " + subject2);
+        }
+
+
+    imgView = findViewById(R.id.createEmailAddAttachment);
+        imgView.setClickable(true);
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.setType("*/*");
+                startActivityForResult(i, PICKFILE_RESULT_CODE);
+            }
+        });
     }
 //  PICK CONTENT NE VRACA DOBAR URI
     @RequiresApi(api = Build.VERSION_CODES.O)

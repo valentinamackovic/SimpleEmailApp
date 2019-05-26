@@ -102,7 +102,34 @@ public class EmailActivity extends AppCompatActivity {
         btnReply.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"Replied!",Toast.LENGTH_SHORT).show();
+                Intent i1 = new Intent(getBaseContext(), CreateEmailActivity.class);
+                i1.putExtra("subject1", message.getSubject());
+                i1.putExtra("content1", message.getContent());
+                i1.putExtra("to1", message.getFrom());
+                Date datum = message.getDateTime();
+                i1.putExtra("date1", message.toISO8601UTC(datum));
+
+                ly=findViewById(R.id.linear_layout_attachment);
+
+                LayoutInflater layoutInflator = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                List views = new ArrayList();
+                if(message.getAttachments() != null) {
+                    for (Attachment a : message.getAttachments()) {
+                        View view1 = layoutInflator.inflate(R.layout.attacment_row, null);
+
+                        //ImageView imgView = view.findViewById(R.id.icon_attachment);
+                        //imgView.setImageResource(R.drawable.icon_attachment);
+                        //Bitmap bitmap = imgView.getDrawingCache();
+                        // i.putExtra("img", bitmap);
+                        i1.putExtra("att1", a.getName());
+                        i1.putExtra("img", R.drawable.icon_attachment);
+                    }
+                }
+                for(int z = 0; z<views.size(); z++) {
+                    ly.addView((View) views.get(z));
+                }
+
+                startActivity(i1);
             }
         });
 
@@ -235,7 +262,6 @@ public class EmailActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.btnDeleteEmail)
             Toast.makeText(getApplicationContext(), "Deleted!", Toast.LENGTH_SHORT).show();
         else if(item.getItemId() == R.id.btnEmailForward)
-            //Toast.makeText(getApplicationContext(), "Forwarded!", Toast.LENGTH_SHORT).show();
         {
 
             Intent i = new Intent(getBaseContext(), CreateEmailActivity.class);
@@ -259,6 +285,7 @@ public class EmailActivity extends AppCompatActivity {
                     //Bitmap bitmap = imgView.getDrawingCache();
                   // i.putExtra("img", bitmap);
                     i.putExtra("att", a.getName());
+                    i.putExtra("img", R.drawable.icon_attachment);
                 }
             }
             for(int z = 0; z<views.size(); z++) {
