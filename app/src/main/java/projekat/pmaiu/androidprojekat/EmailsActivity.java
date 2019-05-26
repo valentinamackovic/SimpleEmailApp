@@ -25,6 +25,7 @@ import model.Account;
 import model.Contact;
 import model.Folder;
 import model.Rule;
+import model.Tag;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,8 +38,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -381,16 +384,26 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 Toast.makeText(getApplicationContext(), "Something went wrong, please try again...", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
+
+    public Message m;
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         ListView lv = (ListView) v;
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        Message m = (Message) lv.getItemAtPosition(acmi.position);
+        m = (Message) lv.getItemAtPosition(acmi.position);
 
         menu.add("Delete");
+        boolean hasTag=false;
+        if(m.getTags()!=null){
+            for(Tag t : m.getTags()){
+                if(t.getName().equals("IMPORTANT"))
+                    hasTag=true;
+            }
+        }
+        if(!hasTag)
+            menu.add("Add important tag");
         menu.setHeaderTitle(m.getSubject());
         id=m.getId();
     }
@@ -416,9 +429,26 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                     Toast.makeText(EmailsActivity.this, "Something went wrong, please try again.", Toast.LENGTH_SHORT).show();
                 }
             });
+        } else if (item.getTitle() == "Add important tag") {
+            Tag tag1=new Tag();
+            tag1.setName("IMPORTANT");
+            m.setTags(new ArrayList<>(Arrays.asList(tag1)));
 
-        }
-        else{
+            IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+            Call<ArrayList<Message>> call = service.updateMessageTag(userId, m.getId(), tag1);
+            call.enqueue(new Callback<ArrayList<Message>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+                        Log.i("messages", "Updated tag");
+                    };
+                @Override
+                public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+                    Toast.makeText(EmailsActivity.this, "Empty message-adapter", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
+        } else {
             return false;
         }
         return true;

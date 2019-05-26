@@ -8,6 +8,7 @@ import model.Account;
 import model.Contact;
 import model.Folder;
 import model.Message;
+import model.Tag;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -93,6 +94,8 @@ public interface IMailService {
         @POST("/update_profile")
         Call<Account> updateProfile(@Field("id") int id,@Field("username") String username, @Field("password") String password,@Field("protocol") String protocol);
 
+        @PUT("/messages/tags")
+        Call<ArrayList<Message>> updateMessageTag(@Query("userId") int userId,@Query("id") int id,@Body() Tag tag);
 
 
 

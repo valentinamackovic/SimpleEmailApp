@@ -107,6 +107,7 @@ public class CustomListAdapterEmails extends BaseAdapter {
         }
 
         LinearLayout ly = convertView.findViewById(R.id.linear_layout_for_tags);
+        ly.removeAllViews();
         if (currentMessage.getTags() != null) {
             if(currentMessage.getTags().size()>0) {
                 for (Tag a : currentMessage.getTags()) {
