@@ -15,6 +15,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -31,10 +32,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -115,7 +118,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                             @Override
                             public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
                                 messages=response.body();
-                                generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
+                                generateEmailsList(response.body());
+                               // generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
                                 if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1 && !active){
                                     for(Message m : response.body()) {
                                         if (m.isUnread())
@@ -134,7 +138,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                         });
                     }
                 }, 0,20 , TimeUnit.SECONDS);
-//        Integer.parseInt(syncTimeStr)
+       // Integer.parseInt(syncTimeStr);
     }
 
     private int numberOfUnreadMessages(ArrayList<Message> messages){
@@ -234,6 +238,32 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     protected void onResume() {
 
         super.onResume();
+
+        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+        userId = uPref.getInt("loggedInUserId",-1);
+        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+        Call<ArrayList<Message>> call = service.getAllMessages(userId);
+        call.enqueue(new Callback<ArrayList<Message>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+                generateEmailsList(response.body());
+                if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1){
+                    for(Message m : response.body()) {
+                        if (m.isUnread())
+                            notificationDialog(m);
+                    }
+                }
+                else if(numberOfUnreadMessages(response.body())>1){
+                    notificationDialogForNMessages(numberOfUnreadMessages(response.body()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+                Toast.makeText(EmailsActivity.this, "Something went wrong...", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         FloatingActionButton btnCreate = findViewById(R.id.btnCreateEmailAction);
         btnCreate.setOnClickListener(new View.OnClickListener() {
@@ -479,8 +509,11 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                             messReturn.add(n);
                     }
                     else if(ruleForFolder.condition== Condition.CC){
-                        if(n.getCc().toLowerCase().contains(word.toLowerCase()))
-                            messReturn.add(n);
+                        if(word != null){
+                            if(n.getCc().toLowerCase().contains(word.toLowerCase()))
+                                messReturn.add(n);
+                        }
+
                     }
                     else if(ruleForFolder.condition== Condition.FROM){
                         if(n.getFrom().toLowerCase().contains(word.toLowerCase()))
@@ -496,6 +529,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         return messReturn;
     }
 
+
     public static boolean emailFromArrayList(String complexEmail){
         if(complexEmail!=null) {
             String[] contacts = complexEmail.split(",");
@@ -510,4 +544,46 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.emails_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search_emails);
+        final SearchView serchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        serchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+               // Toast.makeText(getApplicationContext(), serchView.getQuery(), Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+                int userId = uPref.getInt("loggedInUserId",-1);
+                IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+                Call<ArrayList<Message>> filter = service.searchMessages(userId, serchView.getQuery().toString());
+                filter.enqueue(new Callback<ArrayList<Message>>() {
+                    @Override
+                    public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+                        if(response.body().size() == 0){
+                            Toast.makeText(getApplicationContext(), "No matching result for this search!", Toast.LENGTH_LONG).show();
+                        }else{
+                            generateEmailsList(response.body());
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+
+                    }
+                });
+                return false;
+            }
+        });
+        return true;
+    }
 }

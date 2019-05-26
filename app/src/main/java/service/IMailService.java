@@ -84,6 +84,9 @@ public interface IMailService {
         @DELETE("/deleteDraft")
         Call<ArrayList<Message>> deleteDraft(@Query("messageId") int messageId, @Query("userId") int userId);
 
+        @POST("/searchMessages")
+        Call<ArrayList<Message>> searchMessages(@Query("userId") int userId, @Query("keyword") String keyword);
+
 
         //+++++++++ OTHER +++++++++++++
         @FormUrlEncoded

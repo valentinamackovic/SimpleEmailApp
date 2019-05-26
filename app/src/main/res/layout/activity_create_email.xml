@@ -129,9 +129,9 @@
             android:id="@+id/txt_email_subject_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="9dp"
             android:inputType="text"
-            android:paddingTop="11pt"
+            android:paddingTop="1pt"
             android:textSize="8pt"
             />
 
