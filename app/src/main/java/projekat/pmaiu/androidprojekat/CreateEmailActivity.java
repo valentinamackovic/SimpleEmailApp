@@ -33,6 +33,8 @@ import com.google.gson.GsonBuilder;
 
 //import org.apache.commons.io.FileUtils;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Text;
 
 import java.io.BufferedInputStream;
@@ -46,6 +48,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -164,15 +167,6 @@ public class CreateEmailActivity extends AppCompatActivity {
         }
 
         imgView = findViewById(R.id.createEmailAddAttachment);
-        imgView.setClickable(true);
-        imgView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                i.setType("*/*");
-                startActivityForResult(i, PICKFILE_RESULT_CODE);
-            }
-        });
     }
 //  PICK CONTENT NE VRACA DOBAR URI
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -180,54 +174,88 @@ public class CreateEmailActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICKFILE_RESULT_CODE && resultCode == RESULT_OK && null != data) {
-            TextView txtAttachmentName = findViewById(R.id.createEmailAttachment);
-            Path pdfPath = Paths.get("/"+data.getData().getPath());
+//        super.onActivityResult(requestCode, resultCode, data);
+        String filename;
+        String encodedString="";
+        if (requestCode == PICKFILE_RESULT_CODE) {
+            if (resultCode == RESULT_OK) {
+                Uri returnUri1 = data.getData();
+                Cursor returnCursor1 =
+                        getContentResolver().query(returnUri1, null, null, null, null);
 
-            Uri returnUri = data.getData();
-            String uri=returnUri.toString().split("content:")[1];
+                returnCursor1.moveToFirst();
+                int nameIndex1 =returnCursor1.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                String Filename=returnCursor1.getString(nameIndex1);
+                try {
+                    Uri uri = data.getData();
 
-//            ---------------
-            Log.e("test", "ponovo ovo duagacko "+getPath(this, Uri.parse(uri)));
-//            ----------------
-            Cursor returnCursor =
-                    getContentResolver().query(returnUri, null, null, null, null);
 
-            int nameIndex =returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-            returnCursor.moveToFirst();
-            txtAttachmentName.setText(returnCursor.getString(nameIndex));
-//            ovaj size RADI(?), NIJE 0
-            int size=returnCursor.getColumnIndex(OpenableColumns.SIZE);
-
-            //izvuce neku velicinu fajla ali dobijem string u obliku AAA ???????
-            byte[] bytes = new byte[size];
-            try {
-//                ovo je sve za test, ne radi
-                Log.e("test", "nov nacin u try ");
-                Log.e("test","nov nacin 3 "+ pdfPath);
-
-                final byte[] bytesTest = Files.readAllBytes(pdfPath);
-                Log.e("test", "nov nacin bytes "+ bytesTest.toString());
-                encodedString = android.util.Base64.encodeToString(bytesTest, android.util.Base64.DEFAULT);
-//                BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
-//                buf.read(bytes, 0, bytes.length);
+                        String mimeType = getContentResolver().getType(uri);
+                        if (mimeType == null) {
+                            String path = getPath(this, uri);
+                            if (path == null) {
+                                filename = FilenameUtils.getName(uri.toString());
+                            } else {
+                                File file = new File(path);
+                                filename = file.getName();
+                            }
+                        } else {
+                            Uri returnUri = data.getData();
+                            Cursor returnCursor = getContentResolver().query(returnUri, null, null, null, null);
+                            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                            int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+                            returnCursor.moveToFirst();
+                            filename = returnCursor.getString(nameIndex);
+                            String size = Long.toString(returnCursor.getLong(sizeIndex));
+                        }
+                        File fileSave = getExternalFilesDir(null);
+                        String sourcePath = getExternalFilesDir(null).toString();
+                        try {
 //
-//                buf.close();
-            }catch (IOException e) {
-                Log.e("test", "sta se desava, zasto ne ispise erooooor ");
-                Log.e("test", "sta se desava, zasto ne ispise erooooor " + e);
-                e.printStackTrace();}
+                            copyFileStream(new File(sourcePath + "/" + filename), uri,this);
+                            File proba=new File(sourcePath + "/" + filename);
+                            final byte[] bytesTestProbaRAdi = Files.readAllBytes(Paths.get(proba.getPath()));
+                            encodedString = android.util.Base64.encodeToString(bytesTestProbaRAdi, android.util.Base64.DEFAULT);
+                            Log.e("test", "nesto cudno 2 proba "+ proba.getPath());
+                            Log.e("test", "nesto cudno 2  proooslo proba " );
+                            Log.e("test", "nesto cudno 2  proooslo proba string "+ encodedString );
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-            encodedString = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
-//          zavrseno
-
-            Attachment a=new Attachment();
-            a.setId(hashCode());
-            a.setData(encodedString);
-            a.setName(returnCursor.getString(nameIndex));
+                } catch (Exception e) {
+                    Log.e("test", "nesto cudno 2  nije proslo  "+ e);
+                    e.printStackTrace();
+                }
+                Attachment a=new Attachment();
+                a.setId(hashCode());
+                a.setData(encodedString);
+                a.setName(returnCursor1.getString(nameIndex1));
 //            a.setType("");
-            Log.e("test", "data " + encodedString);
-            attachments.add(a);
+                Log.e("test", "data " + encodedString);
+                attachments.add(a);
+            }
+        }
+    }
+    private void copyFileStream(File dest, Uri uri, Context context)
+            throws IOException {
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = context.getContentResolver().openInputStream(uri);
+            os = new FileOutputStream(dest);
+            byte[] buffer = new byte[1024];
+            int length;
+
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            is.close();
+            os.close();
         }
     }
     public static String getPath(final Context context, final Uri uri) {
@@ -324,20 +352,6 @@ public class CreateEmailActivity extends AppCompatActivity {
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
-//
-//    private String getRealPathFromURI(Uri contentURI) {
-//        String result;
-//        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
-//        if (cursor == null) { // Source is Dropbox or other similar local file path
-//            result = contentURI.getPath();
-//        } else {
-//            cursor.moveToFirst();
-//            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-//            result = cursor.getString(idx);
-//            cursor.close();
-//        }
-//        return result;
-//    }
 
     @Override
     protected void onPause() {
@@ -453,8 +467,13 @@ public class CreateEmailActivity extends AppCompatActivity {
             });
 
         }
-        else if(item.getItemId() == R.id.btnCreateEmailAttachment)
+        else if(item.getItemId() == R.id.btnCreateEmailAttachment) {
+            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.setType("*/*");
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            startActivityForResult(i, PICKFILE_RESULT_CODE);
             Toast.makeText(getApplicationContext(), "Attachment added!", Toast.LENGTH_SHORT).show();
+        }
         else
             onBackPressed();
         return true;

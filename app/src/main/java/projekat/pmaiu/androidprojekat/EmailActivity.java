@@ -165,13 +165,14 @@ public class EmailActivity extends AppCompatActivity {
 
                         //napravi samo prazan fajl, a sve prodje
                         try {
-                            Log.e("test","test");
-                            FileOutputStream fos = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "abcde71.pdf"));
-                            Log.e("test","downloads "+Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+                            Log.e("test","test za download att");
+                            FileOutputStream fos = new FileOutputStream(getFilesDir()+ "test1.pdf");
                             fos.write(decodedString);
+                            Log.e("test","posle write files dir "+getFilesDir() );
                             fos.flush();
                             fos.close();
                         }catch (Exception e){
+                            Log.e("test","downloads u catsh"+e);
                             e.printStackTrace();
                         }
                     }
