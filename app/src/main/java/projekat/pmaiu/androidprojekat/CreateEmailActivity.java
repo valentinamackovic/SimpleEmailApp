@@ -1,5 +1,6 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
@@ -233,12 +235,26 @@ public class CreateEmailActivity extends AppCompatActivity {
             }
         });
     }
-//  PICK CONTENT NE VRACA DOBAR URI
+
+    public void showProgressDialog() {
+        final int THREE_SECONDS = 3*1000;
+        final ProgressDialog dlg = new ProgressDialog(this);
+        dlg.setMessage("Uploading file...");
+        dlg.setCancelable(false);
+        dlg.show();
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                dlg.dismiss();
+            }
+        }, THREE_SECONDS);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
+        showProgressDialog();
 //        super.onActivityResult(requestCode, resultCode, data);
         String filename;
         String encodedString="";

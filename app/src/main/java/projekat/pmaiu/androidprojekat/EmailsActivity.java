@@ -555,7 +555,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 filter.enqueue(new Callback<ArrayList<Message>>() {
                     @Override
                     public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
-                        if(response.body().size() == 0){
+                        if(response.body()==null){
+                            Toast.makeText(getApplicationContext(), "No matching result for this search!", Toast.LENGTH_LONG).show();
+                        }
+                        else if(response.body().size() == 0){
                             Toast.makeText(getApplicationContext(), "No matching result for this search!", Toast.LENGTH_LONG).show();
                         }else{
                             generateEmailsList(response.body());

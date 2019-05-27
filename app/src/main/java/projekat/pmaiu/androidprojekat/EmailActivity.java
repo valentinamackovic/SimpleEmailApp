@@ -1,5 +1,7 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -84,6 +87,19 @@ public class EmailActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    public void showProgressDialog() {
+        final int THREE_SECONDS = 3*1000;
+        final ProgressDialog dlg = new ProgressDialog(this);
+        dlg.setMessage("Dwonloading file...");
+        dlg.setCancelable(false);
+        dlg.show();
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                dlg.dismiss();
+            }
+        }, THREE_SECONDS);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -190,10 +206,9 @@ public class EmailActivity extends AppCompatActivity {
                         Attachment att= message.getAttachments().get(0);
                         String name = att.getName();
                         byte[] decodedString = android.util.Base64.decode(message.getAttachments().get(0).getData(), android.util.Base64.DEFAULT);
-
-                        //napravi samo prazan fajl, a sve prodje
+                        showProgressDialog();
                         try {
-                            Log.e("test","test za download att");
+//                            FileOutputStream fosProba = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+ "test.pdf");
                             FileOutputStream fos = new FileOutputStream(getFilesDir()+ att.getName());
                             fos.write(decodedString);
                             Log.e("test","posle write files dir "+getFilesDir() );
