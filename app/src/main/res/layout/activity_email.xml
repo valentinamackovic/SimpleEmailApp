@@ -43,28 +43,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_alignParentBottom="true"
         >
-        <Button
-            android:id="@+id/btnReply"
-            android:drawableStart="@drawable/icon_reply"
-            android:background="@android:color/transparent"
-            android:text="@string/email_reply"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="17pt"
-            android:layout_marginBottom="7pt"
-            style="?android:attr/borderlessButtonStyle"
-            />
 
-        <Button
-            android:id="@+id/btnReplyToAll"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="27pt"
-            android:layout_marginBottom="7pt"
-            android:background="@android:color/transparent"
-            android:drawableStart="@drawable/icon_reply_all"
-            android:text="@string/email_reply_to_all" />
 
     </LinearLayout>
     <ScrollView
