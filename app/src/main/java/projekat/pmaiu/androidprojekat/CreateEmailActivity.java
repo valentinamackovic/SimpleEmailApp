@@ -186,19 +186,19 @@ public class CreateEmailActivity extends AppCompatActivity {
          String att = getIntent().getStringExtra("att");
     // Bitmap bitmap = (Bitmap) getIntent().getParcelableExtra("img");
             if(att !=null && fromOriginal != null && content1 != null && to != null && date != null && subject != null) {
-                txtContent.setText("----------------------Forwarded message---------------------- " + " " + "From: " + "  " + fromOriginal + "     " +
+                txtContent.setText("------------------Forwarded message------------------ " + " " + "From: " + "  " + fromOriginal + "     " +
                 "                               " + "To: " + "       " + to + "              " + "Date: " + "   " + date +
                 "   " +
-                "------------------------------------------------------------------------------ "
+                "----------------------------------------------------------------------- "
                 + " " + content1 + " "   +att);
 
                 txtSubject.setText("Fwd: " + subject);
             }
             else if(att ==null && fromOriginal != null && content1 != null && to != null && date != null && subject != null) {
-            txtContent.setText("----------------------Forwarded message---------------------- " + " " + "From: " + "  " + fromOriginal + "     " +
+            txtContent.setText("-----------------Forwarded message----------------- " + " " + "From: " + "  " + fromOriginal + "     " +
                     "                               " + "To: " + "       " + to + "              " + "Date: " + "   " + date +
                     "   " +
-                    "------------------------------------------------------------------------------ "
+                    "---------------------------------------------------------------------- "
                     + " " + content1 );
 
             txtSubject.setText("Fwd: " + subject);
@@ -215,7 +215,7 @@ public class CreateEmailActivity extends AppCompatActivity {
             txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + to2 + "     " +
                     "                               " +  "              " + "Date: " + "   " + date2 +
                     "   " +
-                    "------------------------------------------------------------------------------ "
+                    "--------------------------------------------------------------------- "
                     + " " + content2 + " "   +att2);
 
             txtSubject.setText("Re: " + subject2);
@@ -224,7 +224,7 @@ public class CreateEmailActivity extends AppCompatActivity {
             txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + to2 + "     " +
                     "                               " +  "              " + "Date: " + "   " + date2 +
                     "   " +
-                    "------------------------------------------------------------------------------ "
+                    "--------------------------------------------------------------------- "
                     + " " + content1 );
 
             txtSubject.setText("Re: " + subject2);

@@ -39,33 +39,33 @@ public class DownloadAttachment extends AsyncTask {
     @Override
     protected String doInBackground(Object[] objects) {
         //ovo ne radi, puca kod bufferedreadera
-        String dataString = "";
-        Log.e("test", "file "+objects[0]);
-        File file=new File(objects[0].toString());
-        // i have kept text.txt in the sd-card
-
-        // Read text from file
-        StringBuilder text = new StringBuilder();
-
-        try {
-            Log.e("test", "u try ");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            Log.e("test", "u try1 ");
-            String line;
-            while ((line = br.readLine()) != null) {
-                Log.e("test", "line "+line);
-                text.append(line);
-                text.append('\n');
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-            // You'll need to add proper error handling here
-        }
-        // Set the text
-        dataString = text.toString();
-        Log.e("test", "data string "+dataString);
-
-        return dataString ;
+//        String dataString = "";
+//        Log.e("test", "file "+objects[0]);
+//        File file=new File(objects[0].toString());
+//        // i have kept text.txt in the sd-card
+//
+//        // Read text from file
+//        StringBuilder text = new StringBuilder();
+//
+//        try {
+//            Log.e("test", "u try ");
+//            BufferedReader br = new BufferedReader(new FileReader(file));
+//            Log.e("test", "u try1 ");
+//            String line;
+//            while ((line = br.readLine()) != null) {
+//                Log.e("test", "line "+line);
+//                text.append(line);
+//                text.append('\n');
+//            }
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            // You'll need to add proper error handling here
+//        }
+//        // Set the text
+//        dataString = text.toString();
+//        Log.e("test", "data string "+dataString);
+//
+        return null ;
 //        int count;
 //        try {
 //            URL url = new URL(f_url[0]);

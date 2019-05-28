@@ -70,6 +70,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     public static ArrayList<Message> messages;
     Context context;
     public static String loggedInUserEmail;
+    List<Folder> folders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,8 +121,17 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                             @Override
                             public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
                                 messages=response.body();
-                                generateEmailsList(response.body());
-//                                generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
+//                                getFoldersForUser(userId);
+//
+//                                for(Folder f : folders){
+//                                    ArrayList<Message> messagesForFolder=new ArrayList<>();
+//                                    if(f.getName()!="Inbox" && f.getName()!="Outbox"&&f.getName()!="Drafts"){
+//                                        messagesForFolder.addAll(EmailsActivity.filterMessagesToFolder(EmailsActivity.messages,f, "" ));
+//                                        f.setMessages(messagesForFolder);
+//                                    }
+//                                }
+//                                generateEmailsList(response.body());
+                                generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
                                 if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1 && !active){
                                     for(Message m : response.body()) {
                                         if (m.isUnread())
@@ -141,6 +151,22 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                     }
                 }, 0,20 , TimeUnit.SECONDS);
        // Integer.parseInt(syncTimeStr);
+    }
+
+    private void getFoldersForUser(int userId){
+        folders=new ArrayList<>();
+        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+        Call<List<Folder>> call = service.getAllFolders(userId);
+        call.enqueue(new Callback<List<Folder>>() {
+            @Override
+            public void onResponse(Call<List<Folder>> call, Response<List<Folder>> response) {
+                folders=response.body();
+            }
+
+            @Override
+            public void onFailure(Call<List<Folder>> call, Throwable t) {
+            }
+        });
     }
 
     private int numberOfUnreadMessages(ArrayList<Message> messages){
@@ -241,33 +267,30 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
         super.onResume();
 
-        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
-        userId = uPref.getInt("loggedInUserId",-1);
-        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-        Call<ArrayList<Message>> call = service.getAllMessages(userId);
-        call.enqueue(new Callback<ArrayList<Message>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
-                generateEmailsList(response.body());
-                if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1){
-                    for(Message m : response.body()) {
-                        if (m.isUnread())
-                            notificationDialog(m);
-                    }
-                }
-                else if(numberOfUnreadMessages(response.body())>1){
-                    notificationDialogForNMessages(numberOfUnreadMessages(response.body()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
-                Toast.makeText(EmailsActivity.this, "Something went wrong...", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-
+//        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+//        userId = uPref.getInt("loggedInUserId",-1);
+//        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+//        Call<ArrayList<Message>> call = service.getAllMessages(userId);
+//        call.enqueue(new Callback<ArrayList<Message>>() {
+//            @Override
+//            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+//                generateEmailsList(response.body());
+//                if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1){
+//                    for(Message m : response.body()) {
+//                        if (m.isUnread())
+//                            notificationDialog(m);
+//                    }
+//                }
+//                else if(numberOfUnreadMessages(response.body())>1){
+//                    notificationDialogForNMessages(numberOfUnreadMessages(response.body()));
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+//                Toast.makeText(EmailsActivity.this, "Something went wrong...", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         FloatingActionButton btnCreate = findViewById(R.id.btnCreateEmailAction);
         btnCreate.setOnClickListener(new View.OnClickListener() {
@@ -554,6 +577,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                                 messRemove.add(n);
                     }
                 }
+                EmailsActivity.messages.removeAll(messRemove);
                 mess.removeAll(messRemove);
             }
         }
@@ -601,7 +625,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                         }else{
                             generateEmailsList(response.body());
                         }
-
                     }
 
                     @Override

@@ -72,9 +72,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
-
     }
 
     Runnable mStatusChecker = new Runnable() {
@@ -191,7 +188,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         } else{
             super.onBackPressed();
         }
-
     }
 
     @Override

@@ -65,7 +65,10 @@ public class FolderActivity extends AppCompatActivity {
         }
         else {
             Log.e("TEST", "u else u folderact");
-            adapter = new CustomListAdapterEmails(this, EmailsActivity.filterMessagesToFolder(EmailsActivity.messages,folder, "" ));
+            ArrayList<Message> messagesForFolder=new ArrayList<>();
+            messagesForFolder.addAll(EmailsActivity.filterMessagesToFolder(EmailsActivity.messages,folder, "" ));
+            folder.setMessages(messagesForFolder);
+            adapter = new CustomListAdapterEmails(this, folder.getMessages());
         }
         listView = findViewById(R.id.folder_list_view_emails);
         if(adapter.getCount() > 0){
