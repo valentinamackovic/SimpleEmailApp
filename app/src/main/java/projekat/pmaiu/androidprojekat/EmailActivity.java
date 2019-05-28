@@ -1,10 +1,12 @@
 package projekat.pmaiu.androidprojekat;
 
+import android.Manifest;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
@@ -16,6 +18,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -33,6 +36,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -164,12 +169,25 @@ public class EmailActivity extends AppCompatActivity {
                         byte[] decodedString = android.util.Base64.decode(message.getAttachments().get(0).getData(), android.util.Base64.DEFAULT);
                         showProgressDialog();
                         try {
-//                            FileOutputStream fosProba = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+ "test.pdf");
-                            FileOutputStream fos = new FileOutputStream(getFilesDir()+ att.getName());
-                            fos.write(decodedString);
-                            Log.e("test","posle write files dir "+getFilesDir() );
-                            fos.flush();
-                            fos.close();
+                            Log.e("test","pre ifa ");
+                            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                                Log.e("test","mimetype " +att.getType());
+                                File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                                File file = new File(dir, "mail"+att.getName());
+//                              promeniti da naziv bude kao naziv u att
+                                FileOutputStream fos = new FileOutputStream(getFilesDir()+ "mail"+att.getName());
+                                fos.write(decodedString);
+                                Log.e("test","posle write files dir "+getFilesDir() );
+
+                                fos.flush();
+                                fos.close();
+                                File src= new File(getFilesDir()+ "mail"+att.getName());
+                                FileUtils.copyFile(src, file, true);
+                            }
+                            else {
+                                ActivityCompat.requestPermissions(EmailActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            }
+
                         }catch (Exception e){
                             Log.e("test","downloads u catsh"+e);
                             e.printStackTrace();

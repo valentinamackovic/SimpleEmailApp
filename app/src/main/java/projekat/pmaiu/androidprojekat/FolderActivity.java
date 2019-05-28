@@ -131,12 +131,8 @@ public class FolderActivity extends AppCompatActivity {
                     i.putExtra("message", value);
                     startActivity(i);
                 }
-
-
             }
         });
-
-
     }
 
     @Override

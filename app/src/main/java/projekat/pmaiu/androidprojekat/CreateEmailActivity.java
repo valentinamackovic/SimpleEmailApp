@@ -17,15 +17,19 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.annotation.RequiresApi;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +64,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipOutputStream;
@@ -83,6 +88,8 @@ public class CreateEmailActivity extends AppCompatActivity {
     public static final int PICKFILE_RESULT_CODE = 1;
     String encodedString;
     public static ArrayList<Attachment> attachments;
+    public LinearLayout ly;
+    List views;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,7 +175,7 @@ public class CreateEmailActivity extends AppCompatActivity {
             draft = draftM;
         }
 
-        imgView = findViewById(R.id.createEmailAddAttachment);
+//        imgView = findViewById(R.id.createEmailAddAttachment);
          EditText txtContent = findViewById(R.id.txt_email_content_input);
          EditText txtSubject = findViewById(R.id.txt_email_subject_input);
          String fromOriginal = getIntent().getStringExtra("from");
@@ -223,17 +230,6 @@ public class CreateEmailActivity extends AppCompatActivity {
             txtSubject.setText("Re: " + subject2);
         }
 
-
-    imgView = findViewById(R.id.createEmailAddAttachment);
-        imgView.setClickable(true);
-        imgView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                i.setType("*/*");
-                startActivityForResult(i, PICKFILE_RESULT_CODE);
-            }
-        });
     }
 
     public void showProgressDialog() {
@@ -267,11 +263,11 @@ public class CreateEmailActivity extends AppCompatActivity {
                 returnCursor1.moveToFirst();
                 int nameIndex1 =returnCursor1.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                 String Filename=returnCursor1.getString(nameIndex1);
+                String mimeType="";
                 try {
                     Uri uri = data.getData();
 
-
-                        String mimeType = getContentResolver().getType(uri);
+                        mimeType = getContentResolver().getType(uri);
                         if (mimeType == null) {
                             String path = getPath(this, uri);
                             if (path == null) {
@@ -283,6 +279,7 @@ public class CreateEmailActivity extends AppCompatActivity {
                         } else {
                             Uri returnUri = data.getData();
                             Cursor returnCursor = getContentResolver().query(returnUri, null, null, null, null);
+
                             int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                             int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
                             returnCursor.moveToFirst();
@@ -304,21 +301,44 @@ public class CreateEmailActivity extends AppCompatActivity {
                         }
 
                 } catch (Exception e) {
-                    Log.e("test", "nesto cudno 2  nije proslo  "+ e);
+                    Log.e("test", "upload att nije proslo  "+ e);
                     e.printStackTrace();
                 }
+                ly=findViewById(R.id.linear_layout_attachments_create_email);
+
+                LayoutInflater layoutInflator = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                views = new ArrayList();
+
+                View view = layoutInflator.inflate(R.layout.attacment_row, null);
+
+                ImageView imgView=view.findViewById(R.id.icon_attachment);
+                imgView.setImageResource(R.drawable.icon_attachment);
+                final TextView textView=view.findViewById(R.id.txt_attachment);
+
+                textView.setText(returnCursor1.getString(nameIndex1));
+
+                views.add(view);
+
+                Log.e("test", "tip" + mimeType);
+                if(mimeType.equals("application/pdf"))
+                    mimeType="pdf";
+                if(mimeType.equals("image/jpeg"))
+                    mimeType="jpeg";
                 Attachment a=new Attachment();
                 a.setId(hashCode());
                 a.setData(encodedString);
                 a.setName(returnCursor1.getString(nameIndex1));
-//            a.setType("");
+                a.setType(mimeType);
                 Log.e("test", "data " + encodedString);
                 attachments.add(a);
+
+                for(int z = 0; z<views.size(); z++) {
+                    ly.addView((View) views.get(z));
+                }
             }
         }
     }
-    private void copyFileStream(File dest, Uri uri, Context context)
-            throws IOException {
+    private void copyFileStream(File dest, Uri uri, Context context) throws IOException {
         InputStream is = null;
         OutputStream os = null;
         try {
