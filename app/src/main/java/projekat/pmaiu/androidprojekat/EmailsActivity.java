@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -119,8 +120,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                             @Override
                             public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
                                 messages=response.body();
-//                                generateEmailsList(response.body());
-                                generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
+                                generateEmailsList(response.body());
+//                                generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
                                 if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1 && !active){
                                     for(Message m : response.body()) {
                                         if (m.isUnread())
@@ -264,6 +265,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 Toast.makeText(EmailsActivity.this, "Something went wrong...", Toast.LENGTH_SHORT).show();
             }
         });
+
+
 
 
         FloatingActionButton btnCreate = findViewById(R.id.btnCreateEmailAction);
@@ -557,6 +560,19 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         return messReturn;
     }
 
+    public void showProgressDialogSearch() {
+        final int THREE_SECONDS = 3*1000;
+        final ProgressDialog dlg = new ProgressDialog(this);
+        dlg.setMessage("Searching");
+        dlg.setCancelable(false);
+        dlg.show();
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                dlg.dismiss();
+            }
+        }, THREE_SECONDS);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.emails_menu, menu);
@@ -564,15 +580,11 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         final SearchView serchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
         serchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
             @Override
             public boolean onQueryTextSubmit(String query) {
-               // Toast.makeText(getApplicationContext(), serchView.getQuery(), Toast.LENGTH_LONG).show();
-                return false;
-            }
+                showProgressDialogSearch();
 
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
 
                 SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
                 int userId = uPref.getInt("loggedInUserId",-1);
@@ -597,6 +609,14 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
                     }
                 });
+                return false;
+            }
+
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+
                 return false;
             }
         });
