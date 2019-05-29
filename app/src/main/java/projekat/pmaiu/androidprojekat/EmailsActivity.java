@@ -150,7 +150,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                             }
                         });
                     }
-                }, 0,20 , TimeUnit.SECONDS);
+                }, 0,45 , TimeUnit.SECONDS);
        // Integer.parseInt(syncTimeStr);
     }
 
@@ -525,13 +525,16 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 }
                 if(m.getTo() != null){
                     if (folder == null && inboxutbox.equals("inbox") && (m.getTo().contains(loggedInUserEmail) )) {
-
                         messReturn.add(m);
                     }
                 }
                 if(m.getBcc() != null){
                     if (folder == null && inboxutbox.equals("inbox") && m.getBcc().contains(loggedInUserEmail)) {
-
+                        messReturn.add(m);
+                    }
+                }
+                if(m.getCc() != null){
+                    if (folder == null && inboxutbox.equals("inbox") && m.getCc().contains(loggedInUserEmail)) {
                         messReturn.add(m);
                     }
                 }
