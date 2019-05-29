@@ -171,10 +171,8 @@ public class EmailActivity extends AppCompatActivity {
                         }
                     }
                 });
-
                 views.add(view);
             }
-
             for(int z = 0; z<views.size(); z++) {
                 ly.addView((View) views.get(z));
             }
@@ -288,38 +286,39 @@ public class EmailActivity extends AppCompatActivity {
         }
         else if(item.getItemId() == R.id.btnOptionsToAll){
             Intent ii = new Intent(getBaseContext(), CreateEmailActivity.class);
-            ii.putExtra("subject11", message.getSubject());
-            ii.putExtra("content11", message.getContent());
-            SharedPreferences prefForUser = getApplicationContext().getSharedPreferences("MailPref", 0);
-            String loggedInUserEmail = prefForUser.getString("email", "");
-            if(message.getTo().contains(loggedInUserEmail)){
-                message.getTo().replace(loggedInUserEmail, "");
-                ii.putExtra("to11", message.getTo());
-            }
-            ii.putExtra("from11", message.getFrom());
-            Date datum = message.getDateTime();
-            ii.putExtra("date11", message.toISO8601UTC(datum));
-
-            ly=findViewById(R.id.linear_layout_attachment);
-
-            LayoutInflater layoutInflator = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            List views = new ArrayList();
-            if(message.getAttachments() != null) {
-                for (Attachment a : message.getAttachments()) {
-                    View view = layoutInflator.inflate(R.layout.attacment_row, null);
-
-                    ImageView imgView = view.findViewById(R.id.icon_attachment);
-                    imgView.setImageResource(R.drawable.icon_attachment);
-                    //ii.putExtra("att11", a.getName());
-                    ii.putExtra("att11", a);
-                    ii.putExtra("img", R.drawable.icon_attachment);
-
-                }
-
-                for(int z = 0; z<views.size(); z++) {
-                    ly.addView((View) views.get(z));
-                }
-            }
+            ii.putExtra("msgReplyAll", message);
+//            ii.putExtra("subject11", message.getSubject());
+//            ii.putExtra("content11", message.getContent());
+//            SharedPreferences prefForUser = getApplicationContext().getSharedPreferences("MailPref", 0);
+//            String loggedInUserEmail = prefForUser.getString("email", "");
+//            if(message.getTo().contains(loggedInUserEmail)){
+//                message.getTo().replace(loggedInUserEmail, "");
+//                ii.putExtra("to11", message.getTo());
+//            }
+//            ii.putExtra("from11", message.getFrom());
+//            Date datum = message.getDateTime();
+//            ii.putExtra("date11", message.toISO8601UTC(datum));
+//
+//            ly=findViewById(R.id.linear_layout_attachment);
+//
+//            LayoutInflater layoutInflator = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//            List views = new ArrayList();
+//            if(message.getAttachments() != null) {
+//                for (Attachment a : message.getAttachments()) {
+//                    View view = layoutInflator.inflate(R.layout.attacment_row, null);
+//
+//                    ImageView imgView = view.findViewById(R.id.icon_attachment);
+//                    imgView.setImageResource(R.drawable.icon_attachment);
+//                    //ii.putExtra("att11", a.getName());
+//                    ii.putExtra("att11", a);
+//                    ii.putExtra("img", R.drawable.icon_attachment);
+//
+//                }
+//
+//                for(int z = 0; z<views.size(); z++) {
+//                    ly.addView((View) views.get(z));
+//                }
+//            }
             startActivity(ii);
         }
 

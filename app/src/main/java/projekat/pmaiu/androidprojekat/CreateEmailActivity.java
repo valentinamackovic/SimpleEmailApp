@@ -87,12 +87,12 @@ public class CreateEmailActivity extends AppCompatActivity {
     private ArrayList<String> contacts = new ArrayList<>();
     private Message draft  = null;
 
-    ImageView imgView;
     public static final int PICKFILE_RESULT_CODE = 1;
-    String encodedString;
     public static ArrayList<Attachment> attachments;
     public LinearLayout ly;
     List views;
+    Message messageReplyToAll;
+    public static String loggedInUserEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +148,9 @@ public class CreateEmailActivity extends AppCompatActivity {
         actvBcc.setThreshold(1);
         actvBcc.setAdapter(adapter);
         actvBcc.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+
+        SharedPreferences prefForUser = getApplicationContext().getSharedPreferences("MailPref", 0);
+        loggedInUserEmail = prefForUser.getString("email", "");
     }
 
 
@@ -260,6 +263,30 @@ public class CreateEmailActivity extends AppCompatActivity {
             txtSubject.setText("Re: " + subject3);
         }
 
+        Intent i = getIntent();
+        messageReplyToAll = (Message)i.getSerializableExtra("msgReplyAll");
+        if(messageReplyToAll!=null){
+            txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + messageReplyToAll.getFrom() + "     " +
+                    "                               " +  "              "+ "Date: " + "   " + messageReplyToAll.getDateTime() +
+                    "   " +
+                    "--------------------------------------------------------------------- "
+                    + " " + messageReplyToAll.getContent() + " " );
+            EditText replyToAll = findViewById(R.id.autocomplete_to);
+//            if(messageReplyToAll.getCc()!=null)
+//                replyToAll.setText(removeLoggedInUserEmail(messageReplyToAll.getCc()));
+//            else if(messageReplyToAll.getBcc()!=null)
+//                replyToAll.setText(removeLoggedInUserEmail(messageReplyToAll.getBcc()));
+//            else
+                replyToAll.setText(removeLoggedInUserEmail(messageReplyToAll.getTo()));
+                Log.e("test", messageReplyToAll.getTo());
+        }
+    }
+
+    public String removeLoggedInUserEmail(String emails){
+        String ret="";
+        if(emails.contains(loggedInUserEmail))
+            ret=emails.replace(loggedInUserEmail, "");
+        return ret;
     }
 
     public void showProgressDialog() {
