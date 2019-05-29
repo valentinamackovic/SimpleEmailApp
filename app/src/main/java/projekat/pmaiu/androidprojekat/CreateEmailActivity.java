@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,6 +57,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -183,14 +186,13 @@ public class CreateEmailActivity extends AppCompatActivity {
          String to = getIntent().getStringExtra("to");
          String date = getIntent().getStringExtra("date");
          String subject = getIntent().getStringExtra("subject");
-         String att = getIntent().getStringExtra("att");
-    // Bitmap bitmap = (Bitmap) getIntent().getParcelableExtra("img");
+        Attachment att = (Attachment) getIntent().getSerializableExtra("att");
             if(att !=null && fromOriginal != null && content1 != null && to != null && date != null && subject != null) {
                 txtContent.setText("------------------Forwarded message------------------ " + " " + "From: " + "  " + fromOriginal + "     " +
                 "                               " + "To: " + "       " + to + "              " + "Date: " + "   " + date +
                 "   " +
                 "----------------------------------------------------------------------- "
-                + " " + content1 + " "   +att);
+                + " " + content1 + " "   +att.getName());
 
                 txtSubject.setText("Fwd: " + subject);
             }
@@ -208,15 +210,15 @@ public class CreateEmailActivity extends AppCompatActivity {
         String to2 = getIntent().getStringExtra("to1");
         String date2 = getIntent().getStringExtra("date1");
         String subject2 = getIntent().getStringExtra("subject1");
-        String att2 = getIntent().getStringExtra("att1");
+        Attachment att2 = (Attachment) getIntent().getSerializableExtra("att1");
         EditText toReply = findViewById(R.id.autocomplete_to);
         toReply.setText(to2);
         if(att2 !=null &&  content2 != null && to2 != null && date2 != null && subject2 != null) {
             txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + to2 + "     " +
                     "                               " +  "              " + "Date: " + "   " + date2 +
                     "   " +
-                    "--------------------------------------------------------------------- "
-                    + " " + content2 + " "   +att2);
+                    "------------------------------------------------------------------------ "
+                    + " " + content2 + " "   +att2.getName());
 
             txtSubject.setText("Re: " + subject2);
         }
@@ -224,10 +226,38 @@ public class CreateEmailActivity extends AppCompatActivity {
             txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + to2 + "     " +
                     "                               " +  "              " + "Date: " + "   " + date2 +
                     "   " +
-                    "--------------------------------------------------------------------- "
+                    "------------------------------------------------------------------------ "
                     + " " + content1 );
 
             txtSubject.setText("Re: " + subject2);
+        }
+
+        String content3 = getIntent().getStringExtra("content11");
+        String to3 = getIntent().getStringExtra("to11");
+        String from3 = getIntent().getStringExtra("from11");
+        String date3 = getIntent().getStringExtra("date11");
+        String subject3 = getIntent().getStringExtra("subject11");
+        Attachment att3 = (Attachment) getIntent().getSerializableExtra("att11");
+        EditText toReplyAll = findViewById(R.id.autocomplete_to);
+        toReplyAll.setText(to3);
+        ImageView image = (ImageView) findViewById(R.id.icon_attachment);
+        if(att3 !=null &&  content3 != null && to3 != null && date3 != null && subject3 != null) {
+            txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + from3 + "     " +
+                    "                               " +  "              "+ "Date: " + "   " + date3 +
+                    "   " +
+                    "--------------------------------------------------------------------- "
+                    + " " + content3 + " " +att3.getName());
+
+            txtSubject.setText("Re: " + subject3);
+        }
+        else if(att3 ==null &&  content3 != null && to3 != null && date3 != null && subject3 != null) {
+            txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + from3 + "     " +
+                    "                               " +  "              " + "Date: " + "   " + date3 +
+                    "   " +
+                    "--------------------------------------------------------------------- "
+                    + " " + content3 );
+
+            txtSubject.setText("Re: " + subject3);
         }
 
     }

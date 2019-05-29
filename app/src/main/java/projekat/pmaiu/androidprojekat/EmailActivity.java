@@ -1,61 +1,38 @@
 package projekat.pmaiu.androidprojekat;
 
 import android.Manifest;
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.View.OnClickListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import model.Attachment;
-import model.Contact;
 import model.Message;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -258,7 +235,6 @@ public class EmailActivity extends AppCompatActivity {
             i.putExtra("to", message.getTo());
             Date datum = message.getDateTime();
             i.putExtra("date", message.toISO8601UTC(datum));
-
             ly=findViewById(R.id.linear_layout_attachment);
 
             LayoutInflater layoutInflator = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -267,13 +243,13 @@ public class EmailActivity extends AppCompatActivity {
                 for (Attachment a : message.getAttachments()) {
                     View view = layoutInflator.inflate(R.layout.attacment_row, null);
 
-                    //ImageView imgView = view.findViewById(R.id.icon_attachment);
-                    //imgView.setImageResource(R.drawable.icon_attachment);
-                    //Bitmap bitmap = imgView.getDrawingCache();
-                  // i.putExtra("img", bitmap);
-                    i.putExtra("att", a.getName());
+                    ImageView imgView = view.findViewById(R.id.icon_attachment);
+                    imgView.setImageResource(R.drawable.icon_attachment);
+                    views.add(view);
+                    i.putExtra("att", a);
                     i.putExtra("img", R.drawable.icon_attachment);
                 }
+
             }
             for(int z = 0; z<views.size(); z++) {
                 ly.addView((View) views.get(z));
@@ -301,21 +277,50 @@ public class EmailActivity extends AppCompatActivity {
                             //imgView.setImageResource(R.drawable.icon_attachment);
                             //Bitmap bitmap = imgView.getDrawingCache();
                             // i.putExtra("img", bitmap);
-                            i.putExtra("att1", a.getName());
+                            i.putExtra("att1", a);
                             i.putExtra("img", R.drawable.icon_attachment);
                         }
                     }
                     for(int z = 0; z<views.size(); z++) {
                         ly.addView((View) views.get(z));
                     }
-
                     startActivity(i);
-
-
-
         }
         else if(item.getItemId() == R.id.btnOptionsToAll){
-            Toast.makeText(getApplicationContext(),"Replied to all!",Toast.LENGTH_SHORT).show();
+            Intent ii = new Intent(getBaseContext(), CreateEmailActivity.class);
+            ii.putExtra("subject11", message.getSubject());
+            ii.putExtra("content11", message.getContent());
+            SharedPreferences prefForUser = getApplicationContext().getSharedPreferences("MailPref", 0);
+            String loggedInUserEmail = prefForUser.getString("email", "");
+            if(message.getTo().contains(loggedInUserEmail)){
+                message.getTo().replace(loggedInUserEmail, "");
+                ii.putExtra("to11", message.getTo());
+            }
+            ii.putExtra("from11", message.getFrom());
+            Date datum = message.getDateTime();
+            ii.putExtra("date11", message.toISO8601UTC(datum));
+
+            ly=findViewById(R.id.linear_layout_attachment);
+
+            LayoutInflater layoutInflator = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            List views = new ArrayList();
+            if(message.getAttachments() != null) {
+                for (Attachment a : message.getAttachments()) {
+                    View view = layoutInflator.inflate(R.layout.attacment_row, null);
+
+                    ImageView imgView = view.findViewById(R.id.icon_attachment);
+                    imgView.setImageResource(R.drawable.icon_attachment);
+                    //ii.putExtra("att11", a.getName());
+                    ii.putExtra("att11", a);
+                    ii.putExtra("img", R.drawable.icon_attachment);
+
+                }
+
+                for(int z = 0; z<views.size(); z++) {
+                    ly.addView((View) views.get(z));
+                }
+            }
+            startActivity(ii);
         }
 
         else
