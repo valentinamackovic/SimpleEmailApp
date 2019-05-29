@@ -11,6 +11,8 @@ public class MailService {
 
     private static Retrofit retrofit;
     //public static final String BASE_URL = "http://192.168.43.219:8080";
+    //public static final String BASE_URL = "http://192.168.43.219:8080";
+      //public static final String BASE_URL = "http://192.168.0.12:8080";
     public static final String BASE_URL = "http://192.168.0.12:8080";
    // public static final String BASE_URL = "http://192.168.0.14:8080";
 

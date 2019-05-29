@@ -80,7 +80,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         SharedPreferences prefTheme = context.getSharedPreferences("ThemePref", 0);
         SharedPreferences prefForUser = context.getSharedPreferences("MailPref", 0);
         loggedInUserEmail = prefForUser.getString("email", "");
-        Toast.makeText(getApplicationContext(), loggedInUserEmail, Toast.LENGTH_LONG).show();
         if(!prefTheme.getBoolean("dark_mode", false)){
             setTheme(R.style.AppThemeLight);
         }else{
@@ -98,6 +97,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        showProgressDialog();
 
         drawer = findViewById(R.id.drawer_layout);
 
@@ -243,30 +244,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
         super.onResume();
 
-//        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
-//        userId = uPref.getInt("loggedInUserId",-1);
-//        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-//        Call<ArrayList<Message>> call = service.getAllMessages(userId);
-//        call.enqueue(new Callback<ArrayList<Message>>() {
-//            @Override
-//            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
-//                generateEmailsList(response.body());
-//                if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1){
-//                    for(Message m : response.body()) {
-//                        if (m.isUnread())
-//                            notificationDialog(m);
-//                    }
-//                }
-//                else if(numberOfUnreadMessages(response.body())>1){
-//                    notificationDialogForNMessages(numberOfUnreadMessages(response.body()));
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
-//                Toast.makeText(EmailsActivity.this, "Something went wrong...", Toast.LENGTH_SHORT).show();
-//            }
-//        });
 
         FloatingActionButton btnCreate = findViewById(R.id.btnCreateEmailAction);
         btnCreate.setOnClickListener(new View.OnClickListener() {
@@ -481,15 +458,98 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 }
             });
 
-            generateEmailsList(messages);
+            generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
         } else {
             return false;
         }
         return true;
     }
 
-    public void showProgressDialogSearch() {
-        final int THREE_SECONDS = 3*1000;
+    public static ArrayList<Message> filterMessagesToFolder(ArrayList<Message> mess, Folder folder, String inboxutbox){
+        ArrayList<Message> messReturn=new ArrayList<>();
+        if(mess.size()!=0) {
+            for (Message m : mess) {
+                String oneContact=m.getFrom();
+                Log.e("test", "filtiranje poruka from " +oneContact );
+                Log.e("test", "filtiranje poruka to " +m.getTo() );
+                if(oneContact.contains(":"))
+                    oneContact=oneContact.split(":")[1];
+                if (folder == null && oneContact.equals(loggedInUserEmail) && inboxutbox.equals("outbox")) {
+                    messReturn.add(m);
+                }
+                if(m.getTo() != null){
+                    if (folder == null && inboxutbox.equals("inbox") && (m.getTo().contains(loggedInUserEmail) )) {
+
+                        messReturn.add(m);
+                    }
+                }
+                if(m.getBcc() != null){
+                    if (folder == null && inboxutbox.equals("inbox") && m.getBcc().contains(loggedInUserEmail)) {
+
+                        messReturn.add(m);
+                    }
+                }
+
+            }
+//          proizvoljni folderi ---------------------------------------------------------
+//          TRENUTNO SAMO COPY
+            if(folder!=null) {
+                String word=folder.getWord();
+                Rule ruleForFolder=folder.getRule();
+                ArrayList<Message> messRemove=new ArrayList<>();
+                for(Message n: mess ){
+                    if(ruleForFolder.condition== Condition.TO){
+                        if(n.getTo().toLowerCase().contains(word.toLowerCase()))
+                            if(ruleForFolder.operation== Operation.COPY)
+                                messReturn.add(n);
+                            else if(ruleForFolder.operation== Operation.MOVE){
+                                messReturn.add(n);
+                                messRemove.add(n);
+                            }else
+                                messRemove.add(n);
+                    }
+                    else if(ruleForFolder.condition== Condition.CC){
+                        if(word != null){
+                            if(n.getCc().toLowerCase().contains(word.toLowerCase()))
+                                if(ruleForFolder.operation== Operation.COPY)
+                                    messReturn.add(n);
+                                else if(ruleForFolder.operation== Operation.MOVE){
+                                    messReturn.add(n);
+                                    messRemove.add(n);
+                                }else
+                                    messRemove.add(n);
+                        }
+                    }
+                    else if(ruleForFolder.condition== Condition.FROM){
+                        if(n.getFrom().toLowerCase().contains(word.toLowerCase()))
+                            if(ruleForFolder.operation== Operation.COPY)
+                                messReturn.add(n);
+                            else if(ruleForFolder.operation== Operation.MOVE){
+                                messReturn.add(n);
+                                messRemove.add(n);
+                            }else
+                                messRemove.add(n);
+                    }
+                    else if(ruleForFolder.condition== Condition.SUBJECT){
+                        if(n.getSubject().toLowerCase().contains(word.toLowerCase()))
+                            if(ruleForFolder.operation== Operation.COPY)
+                                messReturn.add(n);
+                            else if(ruleForFolder.operation== Operation.MOVE){
+                                messReturn.add(n);
+                                messRemove.add(n);
+                            }else
+                                messRemove.add(n);
+                    }
+                }
+                EmailsActivity.messages.removeAll(messRemove);
+                mess.removeAll(messRemove);
+            }
+        }
+        return messReturn;
+    }
+
+    public void showProgressDialog() {
+        final int TIME = 1500;
         final ProgressDialog dlg = new ProgressDialog(this);
         dlg.setMessage("Searching");
         dlg.setCancelable(false);
@@ -498,7 +558,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             public void run() {
                 dlg.dismiss();
             }
-        }, THREE_SECONDS);
+        }, TIME);
     }
 
     @Override
@@ -511,8 +571,16 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                showProgressDialogSearch();
 
+
+
+
+                return false;
+            }
+
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
 
                 SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
                 int userId = uPref.getInt("loggedInUserId",-1);
@@ -536,13 +604,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
                     }
                 });
-                return false;
-            }
-
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
 
                 return false;
             }

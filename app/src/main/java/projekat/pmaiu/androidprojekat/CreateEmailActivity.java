@@ -543,63 +543,101 @@ public class CreateEmailActivity extends AppCompatActivity {
         return true;
     }
 
+    public boolean validation(){
+        boolean pass=true;
+        String message="";
+        EditText to = findViewById(R.id.autocomplete_to);
+        EditText cc = findViewById(R.id.autocomplete_cc);
+        EditText bcc = findViewById(R.id.autocomplete_bcc);
+
+        if(!to.getText().toString().contains("@")){
+            pass=false;
+            message+="Email is not valid! \n";
+        }
+        else if(!cc.getText().toString().contains("@")){
+            pass=false;
+            message+="Email is not valid! \n";
+        }
+        else if(!bcc.getText().toString().contains("@")){
+            pass=false;
+            message+="Email is not valid! \n";
+        }
+        else if(!to.getText().toString().contains(".")){
+            pass=false;
+            message+="Email is not valid! \n";
+        }
+        else if(!cc.getText().toString().contains(".")){
+            pass=false;
+            message+="Email is not valid! \n";
+        }
+        else if(!bcc.getText().toString().contains(".")){
+            pass=false;
+            message+="Email is not valid! \n";
+        }
+
+        if(!message.equals(""))
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        return  pass;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.btnCreateEmailSend) {
-            final EditText txtTo = findViewById(R.id.autocomplete_to);
-            final String to = txtTo.getText().toString();
-            final EditText txtSubject = findViewById(R.id.txt_email_subject_input);
-            final String subject = txtSubject.getText().toString();
-            EditText txtCc = findViewById(R.id.autocomplete_cc);
-            String cc = txtCc.getText().toString();
-            EditText txtBcc = findViewById(R.id.autocomplete_bcc);
-            String bcc = txtBcc.getText().toString();
-            EditText txtContent = findViewById(R.id.txt_email_content_input);
-            String content = txtContent.getText().toString();
+            if(validation()) {
+                final EditText txtTo = findViewById(R.id.autocomplete_to);
+                final String to = txtTo.getText().toString();
+                final EditText txtSubject = findViewById(R.id.txt_email_subject_input);
+                final String subject = txtSubject.getText().toString();
+                EditText txtCc = findViewById(R.id.autocomplete_cc);
+                String cc = txtCc.getText().toString();
+                EditText txtBcc = findViewById(R.id.autocomplete_bcc);
+                String bcc = txtBcc.getText().toString();
+                EditText txtContent = findViewById(R.id.txt_email_content_input);
+                String content = txtContent.getText().toString();
 
-            Message m = new Message();
-            m.setTo(to);
-            m.setSubject(subject);
-            m.setCc(cc);
-            m.setBcc(bcc);
-            m.setContent(content);
-            m.setDateTime(new Date());
-            m.setId(0);
-            m.setFrom(EmailsActivity.loggedInUserEmail);
-            m.setAttachments(attachments);
+                Message m = new Message();
+                m.setTo(to);
+                m.setSubject(subject);
+                m.setCc(cc);
+                m.setBcc(bcc);
+                m.setContent(content);
+                m.setDateTime(new Date());
+                m.setId(0);
+                m.setFrom(EmailsActivity.loggedInUserEmail);
+                m.setAttachments(attachments);
 
 //            SharedPreferences pref = getApplicationContext().getSharedPreferences("MailPref", 0);
 //            String ime = pref.getString("username", "emptyVal");
 //            String email = pref.getString("email", "emptyVal");
 //            m.setFrom(ime + "," + email);
 
-            if (to.equals("")) {
-                Toast.makeText(CreateEmailActivity.this, "Please enter who you are sending to!", Toast.LENGTH_SHORT).show();
-            } else if (subject.equals("")) {
-                Toast.makeText(CreateEmailActivity.this, "Please enter subject of email!", Toast.LENGTH_SHORT).show();
-            }
-            else if (content.equals("")) {
-                Toast.makeText(CreateEmailActivity.this, "Please enter content of email!", Toast.LENGTH_SHORT).show();
-            }else {
-                SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
-                int userId = uPref.getInt("loggedInUserId", -1);
-                IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-                Call<Message> createMessage = service.createMessage(m, userId);
-                createMessage.enqueue(new Callback<Message>() {
-                    @Override
-                    public void onResponse(Call<Message> call, Response<Message> response) {
-                        Toast.makeText(getApplicationContext(), "Email has been sent!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(CreateEmailActivity.this, EmailsActivity.class));
-                        finish();
+                if (to.equals("")) {
+                    Toast.makeText(CreateEmailActivity.this, "Please enter who you are sending to!", Toast.LENGTH_SHORT).show();
+                } else if (subject.equals("")) {
+                    Toast.makeText(CreateEmailActivity.this, "Please enter subject of email!", Toast.LENGTH_SHORT).show();
+                } else if (content.equals("")) {
+                    Toast.makeText(CreateEmailActivity.this, "Please enter content of email!", Toast.LENGTH_SHORT).show();
+                } else {
+                    SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+                    int userId = uPref.getInt("loggedInUserId", -1);
+                    IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+                    Call<Message> createMessage = service.createMessage(m, userId);
+                    createMessage.enqueue(new Callback<Message>() {
+                        @Override
+                        public void onResponse(Call<Message> call, Response<Message> response) {
+                            Toast.makeText(getApplicationContext(), "Email has been sent!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(CreateEmailActivity.this, EmailsActivity.class));
+                            finish();
 
-                    }
+                        }
 
-                    @Override
-                    public void onFailure(Call<Message> call, Throwable t) {
-                        Toast.makeText(CreateEmailActivity.this, "Something went wrong, please try again.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<Message> call, Throwable t) {
+                            Toast.makeText(CreateEmailActivity.this, "Something went wrong, please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
+                }
             }
         }
         else if(item.getItemId() == R.id.btnCreateEmailCancel)
