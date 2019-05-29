@@ -70,7 +70,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     public static ArrayList<Message> messages;
     Context context;
     public static String loggedInUserEmail;
-    List<Folder> folders;
+    public static List<Folder> folders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,17 +123,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                             @Override
                             public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
                                 messages=response.body();
-//                                getFoldersForUser(userId);
-//
-//                                for(Folder f : folders){
-//                                    ArrayList<Message> messagesForFolder=new ArrayList<>();
-//                                    if(f.getName()!="Inbox" && f.getName()!="Outbox"&&f.getName()!="Drafts"){
-//                                        messagesForFolder.addAll(EmailsActivity.filterMessagesToFolder(EmailsActivity.messages,f, "" ));
-//                                        f.setMessages(messagesForFolder);
-//                                    }
-//                                }
-//                           generateEmailsList(response.body());
-                                generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
+                                generateEmailsList(messages);
+
                                 if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1 && !active){
                                     for(Message m : response.body()) {
                                         if (m.isUnread())
@@ -151,24 +142,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                             }
                         });
                     }
-                }, 0,20 , TimeUnit.SECONDS);
+                }, 0,45 , TimeUnit.SECONDS);
        // Integer.parseInt(syncTimeStr);
-    }
-
-    private void getFoldersForUser(int userId){
-        folders=new ArrayList<>();
-        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-        Call<List<Folder>> call = service.getAllFolders(userId);
-        call.enqueue(new Callback<List<Folder>>() {
-            @Override
-            public void onResponse(Call<List<Folder>> call, Response<List<Folder>> response) {
-                folders=response.body();
-            }
-
-            @Override
-            public void onFailure(Call<List<Folder>> call, Throwable t) {
-            }
-        });
     }
 
     private int numberOfUnreadMessages(ArrayList<Message> messages){
@@ -574,7 +549,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     public void showProgressDialog() {
         final int TIME = 1500;
         final ProgressDialog dlg = new ProgressDialog(this);
-        dlg.setMessage("Loading");
+        dlg.setMessage("Searching");
         dlg.setCancelable(false);
         dlg.show();
         new Handler().postDelayed(new Runnable() {
