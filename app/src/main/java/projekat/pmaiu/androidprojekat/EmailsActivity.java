@@ -80,6 +80,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         SharedPreferences prefTheme = context.getSharedPreferences("ThemePref", 0);
         SharedPreferences prefForUser = context.getSharedPreferences("MailPref", 0);
         loggedInUserEmail = prefForUser.getString("email", "");
+        Toast.makeText(getApplicationContext(), loggedInUserEmail, Toast.LENGTH_LONG).show();
         if(!prefTheme.getBoolean("dark_mode", false)){
             setTheme(R.style.AppThemeLight);
         }else{
@@ -130,7 +131,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 //                                        f.setMessages(messagesForFolder);
 //                                    }
 //                                }
-//                                generateEmailsList(response.body());
+//                           generateEmailsList(response.body());
                                 generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
                                 if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1 && !active){
                                     for(Message m : response.body()) {
@@ -522,10 +523,19 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 if (folder == null && oneContact.equals(loggedInUserEmail) && inboxutbox.equals("outbox")) {
                     messReturn.add(m);
                 }
-                if (folder == null && inboxutbox.equals("inbox") && (m.getTo().contains(loggedInUserEmail) || m.getBcc().contains(loggedInUserEmail) || m.getCc().contains(loggedInUserEmail))) {
+                if(m.getTo() != null){
+                    if (folder == null && inboxutbox.equals("inbox") && (m.getTo().contains(loggedInUserEmail) )) {
 
-                    messReturn.add(m);
+                        messReturn.add(m);
+                    }
                 }
+                if(m.getBcc() != null){
+                    if (folder == null && inboxutbox.equals("inbox") && m.getBcc().contains(loggedInUserEmail)) {
+
+                        messReturn.add(m);
+                    }
+                }
+
             }
 //          proizvoljni folderi ---------------------------------------------------------
 //          TRENUTNO SAMO COPY
