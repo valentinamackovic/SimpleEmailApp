@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -79,17 +80,27 @@ public class CustomListAdapterEmails extends BaseAdapter {
         } else {
             textViewFrom.setTypeface(textViewFrom.getTypeface(), Typeface.NORMAL);
             textViewFrom.setTypeface(textViewSubject.getTypeface(), Typeface.NORMAL);
+
         }
 
         String from = (String) currentMessage.getFrom();
 
         if (from != null) {
-            txtContactLetter.setText(String.valueOf(from.charAt(0)));
+            txtContactLetter.setText(String.valueOf(from.charAt(0)).toUpperCase());
         } else {
             from = "Draft";
             txtContactLetter.setText("!");
         }
-        textViewFrom.setText(from.split(":")[0]);
+
+
+
+
+
+        if(from.split(":")[0].length() > 10){
+            textViewFrom.setText(from.split(":")[0].substring(0, 10) + "...");
+        }else{
+            textViewFrom.setText(from.split(":")[0]);
+        }
 
         String subject = (String) currentMessage.getSubject();
         textViewSubject.setText(subject);

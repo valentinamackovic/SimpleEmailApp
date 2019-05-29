@@ -64,6 +64,7 @@ public class EmailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Log.e("intent","u email");
+
     }
 
     @Override
@@ -177,8 +178,7 @@ public class EmailActivity extends AppCompatActivity {
                 ly.addView((View) views.get(z));
             }
         }
-
-        int userId = uPref.getInt("loggedInUserId",-1);
+        
 
         if(message.isUnread()){
             readMessage(userId, message.getId());
