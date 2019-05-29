@@ -72,69 +72,53 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        generateFoldersList(EmailsActivity.folders);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                if (adapter.getCount() > 0) {
-                    Folder value = (Folder) adapter.getItem(position);
-                    Intent i = new Intent(FoldersActivity.this, FolderActivity.class);
-                    i.putExtra("folder", value);
-                    startActivity(i);
-                } else {
-                    Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-        });
     }
 
     Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
-//            try {
-//                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//                String syncTimeStr = pref.getString("refresh_rate", "0");
-//                mInterval= TimeUnit.MINUTES.toMillis(Integer.parseInt(syncTimeStr));
-//
-//                Toast toast = Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT);
-//                toast.show();
-//
-//                SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
-//                int userId = uPref.getInt("loggedInUserId",-1);
-//
-//                IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
-//                Call<List<Folder>> call = service.getAllFolders(userId);
-//                call.enqueue(new Callback<List<Folder>>() {
-//                    @Override
-//                    public void onResponse(Call<List<Folder>> call, Response<List<Folder>> response) {
-//                        generateFoldersList(response.body());
-//                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                            @Override
-//                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//
-//                                if (adapter.getCount() > 0) {
-//                                    Folder value = (Folder) adapter.getItem(position);
-//                                    Intent i = new Intent(FoldersActivity.this, FolderActivity.class);
-//                                    i.putExtra("folder", value);
-//                                    startActivity(i);
-//                                } else {
-//                                    Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
-//                                    toast.show();
-//                                }
-//                            }
-//                        });
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<List<Folder>> call, Throwable t) {
-//                        Toast.makeText(FoldersActivity.this, "Empty folder-adapter", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            } finally {
-//                mHandler.postDelayed(mStatusChecker, mInterval);
-//            }
+            try {
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                String syncTimeStr = pref.getString("refresh_rate", "6000");
+                mInterval= TimeUnit.MINUTES.toMillis(Integer.parseInt(syncTimeStr));
+
+                Toast toast = Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT);
+                toast.show();
+
+                SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+                int userId = uPref.getInt("loggedInUserId",-1);
+
+                IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+                Call<List<Folder>> call = service.getAllFolders(userId);
+                call.enqueue(new Callback<List<Folder>>() {
+                    @Override
+                    public void onResponse(Call<List<Folder>> call, Response<List<Folder>> response) {
+                        generateFoldersList(response.body());
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                                if (adapter.getCount() > 0) {
+                                    Folder value = (Folder) adapter.getItem(position);
+                                    Intent i = new Intent(FoldersActivity.this, FolderActivity.class);
+                                    i.putExtra("folder", value);
+                                    startActivity(i);
+                                } else {
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Empty contact-adapter", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Folder>> call, Throwable t) {
+                        Toast.makeText(FoldersActivity.this, "Empty folder-adapter", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } finally {
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
         }
     };
 
