@@ -79,10 +79,10 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         public void run() {
             try {
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                String syncTimeStr = pref.getString("refresh_rate", "6000");
+                String syncTimeStr = pref.getString("refresh_rate", "1500");
                 mInterval= TimeUnit.MINUTES.toMillis(Integer.parseInt(syncTimeStr));
 
-                Toast toast = Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), "Syncing f...", Toast.LENGTH_SHORT);
                 toast.show();
 
                 SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);

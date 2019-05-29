@@ -409,6 +409,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         call.enqueue(new Callback<ArrayList<Message>>() {
             @Override
             public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+                messages=response.body();
+                generateEmailsList(messages);
             }
 
             @Override

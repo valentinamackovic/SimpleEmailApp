@@ -75,10 +75,10 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
         public void run() {
             try {
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                String syncTimeStr = pref.getString("refresh_rate", "0");
+                String syncTimeStr = pref.getString("refresh_rate", "1500");
                 mInterval= TimeUnit.MINUTES.toMillis(Integer.parseInt(syncTimeStr));
 
-                Toast toast = Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), "Syncing c...", Toast.LENGTH_SHORT);
                 toast.show();
 
                 SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
