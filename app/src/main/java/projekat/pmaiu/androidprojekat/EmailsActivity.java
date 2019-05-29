@@ -70,7 +70,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     public static ArrayList<Message> messages;
     Context context;
     public static String loggedInUserEmail;
-    List<Folder> folders;
+    public static List<Folder> folders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
