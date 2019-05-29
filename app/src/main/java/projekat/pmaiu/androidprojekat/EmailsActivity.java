@@ -122,17 +122,19 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                             @Override
                             public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
                                 messages=response.body();
-//                                getFoldersForUser(userId);
-//
-//                                for(Folder f : folders){
-//                                    ArrayList<Message> messagesForFolder=new ArrayList<>();
-//                                    if(f.getName()!="Inbox" && f.getName()!="Outbox"&&f.getName()!="Drafts"){
-//                                        messagesForFolder.addAll(EmailsActivity.filterMessagesToFolder(EmailsActivity.messages,f, "" ));
-//                                        f.setMessages(messagesForFolder);
-//                                    }
-//                                }
+                                List<Folder> foldersForUser=getFoldersForUser(userId);
+
+                                Log.e("test", "userId" + userId);
+                                Log.e("test", "folderi" + folders.size());
+                                for(Folder f : foldersForUser){
+                                    ArrayList<Message> messagesForFolder=new ArrayList<>();
+                                    if(!f.getName().equals("Inbox") && !f.getName().equals("Outbox") && !f.getName().equals("Drafts")){
+                                        messagesForFolder.addAll(EmailsActivity.filterMessagesToFolder(EmailsActivity.messages,f, "" ));
+                                        f.setMessages(messagesForFolder);
+                                    }
+                                }
 //                           generateEmailsList(response.body());
-                                generateEmailsList(filterMessagesToFolder(messages,null, "inbox" ));
+
                                 if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1 && !active){
                                     for(Message m : response.body()) {
                                         if (m.isUnread())
@@ -154,20 +156,23 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
        // Integer.parseInt(syncTimeStr);
     }
 
-    private void getFoldersForUser(int userId){
+    private List<Folder> getFoldersForUser(int userId){
         folders=new ArrayList<>();
         IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
         Call<List<Folder>> call = service.getAllFolders(userId);
         call.enqueue(new Callback<List<Folder>>() {
             @Override
             public void onResponse(Call<List<Folder>> call, Response<List<Folder>> response) {
+                Log.e("test","u folderu "+ response.body());
                 folders=response.body();
+                Log.e("test","u folderu 2"+ folders);
             }
 
             @Override
             public void onFailure(Call<List<Folder>> call, Throwable t) {
             }
         });
+        return folders;
     }
 
     private int numberOfUnreadMessages(ArrayList<Message> messages){
@@ -515,26 +520,27 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         ArrayList<Message> messReturn=new ArrayList<>();
         if(mess.size()!=0) {
             for (Message m : mess) {
+
                 String oneContact=m.getFrom();
                 Log.e("test", "filtiranje poruka from " +oneContact );
                 Log.e("test", "filtiranje poruka to " +m.getTo() );
                 if(oneContact.contains(":"))
                     oneContact=oneContact.split(":")[1];
-                if (folder == null && oneContact.equals(loggedInUserEmail) && inboxutbox.equals("outbox")) {
+                if (  oneContact.equals(loggedInUserEmail) && inboxutbox.equals("outbox")) {
                     messReturn.add(m);
                 }
                 if(m.getTo() != null){
-                    if (folder == null && inboxutbox.equals("inbox") && (m.getTo().contains(loggedInUserEmail) )) {
+                    if (  inboxutbox.equals("inbox") && (m.getTo().contains(loggedInUserEmail) )) {
                         messReturn.add(m);
                     }
                 }
                 if(m.getBcc() != null){
-                    if (folder == null && inboxutbox.equals("inbox") && m.getBcc().contains(loggedInUserEmail)) {
+                    if (  inboxutbox.equals("inbox") && m.getBcc().contains(loggedInUserEmail)) {
                         messReturn.add(m);
                     }
                 }
                 if(m.getCc() != null){
-                    if (folder == null && inboxutbox.equals("inbox") && m.getCc().contains(loggedInUserEmail)) {
+                    if ( inboxutbox.equals("inbox") && m.getCc().contains(loggedInUserEmail)) {
                         messReturn.add(m);
                     }
                 }
@@ -546,7 +552,9 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 String word=folder.getWord();
                 Rule ruleForFolder=folder.getRule();
                 ArrayList<Message> messRemove=new ArrayList<>();
-                for(Message n: mess ){
+                for(Message n: messages ){
+                    Log.e("test", "iz liste u klasi "+ messages.get(0));
+                    Log.e("test", "iz poslatih mess "+ n);
                     if(ruleForFolder.condition== Condition.TO){
                         if(n.getTo().toLowerCase().contains(word.toLowerCase()))
                             if(ruleForFolder.operation== Operation.COPY)
@@ -592,6 +600,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 }
                 EmailsActivity.messages.removeAll(messRemove);
                 mess.removeAll(messRemove);
+                if(folder.getMessages()!=null)
+                    folder.setMessages(mess);
             }
         }
         return messReturn;
