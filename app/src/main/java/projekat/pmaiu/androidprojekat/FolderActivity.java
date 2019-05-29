@@ -56,20 +56,7 @@ public class FolderActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         Folder folder = (Folder) i.getSerializableExtra("folder");
-        if(folder.getName().equals("Outbox")){
-            Log.e("TEST", "u outbox u folderact");
-            adapter = new CustomListAdapterEmails(this, EmailsActivity.filterMessagesToFolder(EmailsActivity.messages,null, "outbox" ));
-        }
-        else if(folder.getName().equals("Inbox")){
-             adapter = new CustomListAdapterEmails(this, EmailsActivity.filterMessagesToFolder(EmailsActivity.messages,null, "inbox" ));
-        }
-        else {
-            Log.e("TEST", "u else u folderact");
-            ArrayList<Message> messagesForFolder=new ArrayList<>();
-            messagesForFolder.addAll(EmailsActivity.filterMessagesToFolder(EmailsActivity.messages,folder, "" ));
-            folder.setMessages(messagesForFolder);
-            adapter = new CustomListAdapterEmails(this, folder.getMessages());
-        }
+        adapter = new CustomListAdapterEmails(this, folder.getMessages());
         listView = findViewById(R.id.folder_list_view_emails);
         if(adapter.getCount() > 0){
             listView.setAdapter(adapter);
