@@ -244,6 +244,33 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
         super.onResume();
 
+        SharedPreferences uPref = getApplicationContext().getSharedPreferences("MailPref", 0);
+        userId = uPref.getInt("loggedInUserId",-1);
+        IMailService service = MailService.getRetrofitInstance().create(IMailService.class);
+        Call<ArrayList<Message>> call = service.getAllMessages(userId);
+        call.enqueue(new Callback<ArrayList<Message>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+                messages=response.body();
+                generateEmailsList(messages);
+
+                if(response.body().size()>0 && numberOfUnreadMessages(response.body())==1 && !active){
+                    for(Message m : response.body()) {
+                        if (m.isUnread())
+                            notificationDialog(m);
+                    }
+                }
+                else if(numberOfUnreadMessages(response.body())>1 && !active){
+                    notificationDialogForNMessages(numberOfUnreadMessages(response.body()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+                Toast.makeText(EmailsActivity.this, "Something went wrong...", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         FloatingActionButton btnCreate = findViewById(R.id.btnCreateEmailAction);
         btnCreate.setOnClickListener(new View.OnClickListener() {

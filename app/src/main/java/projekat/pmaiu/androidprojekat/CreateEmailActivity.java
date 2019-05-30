@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -84,7 +85,7 @@ import service.MailService;
 public class CreateEmailActivity extends AppCompatActivity {
 
     private String[] myContacts;
-    private ArrayList<String> contacts = new ArrayList<>();
+    private static ArrayList<String> contacts = new ArrayList<>();
     private Message draft  = null;
 
     public static final int PICKFILE_RESULT_CODE = 1;
@@ -93,6 +94,8 @@ public class CreateEmailActivity extends AppCompatActivity {
     List views;
     Message messageReplyToAll;
     public static String loggedInUserEmail;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +107,9 @@ public class CreateEmailActivity extends AppCompatActivity {
             setTheme(R.style.AppTheme);
         }
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.activity_create_email);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_create_email_activity);
         setSupportActionBar(toolbar);
@@ -119,10 +125,13 @@ public class CreateEmailActivity extends AppCompatActivity {
         call.enqueue(new Callback<ArrayList<Contact>>() {
             @Override
             public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
+                contacts.clear();
                 for (Contact c: response.body()) {
-                    String contact = c.getFirstName() + " " + c.getLastName() + ": " + c.getEmail();
+                    String contact = c.getFirstName() + " " + c.getLastName() + ", " + c.getEmail();
                     contacts.add(contact);
+
                 }
+
             }
 
             @Override
@@ -130,6 +139,7 @@ public class CreateEmailActivity extends AppCompatActivity {
                 Toast.makeText(CreateEmailActivity.this, "Something went wrong...", Toast.LENGTH_SHORT).show();
             }
         });
+
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>
                 (this, android.R.layout.select_dialog_item, contacts);
@@ -163,10 +173,13 @@ public class CreateEmailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        EditText sd = findViewById(R.id.txt_email_content_input);
+
+
 
         Message draftM = (Message) getIntent().getSerializableExtra("message");
         if(draftM != null && draftM.isDraft()){
-            MultiAutoCompleteTextView txtTo = findViewById(R.id.autocomplete_to);
+            EditText txtTo = findViewById(R.id.autocomplete_to);
             MultiAutoCompleteTextView txtCc = findViewById(R.id.autocomplete_cc);
             MultiAutoCompleteTextView txtBcc = findViewById(R.id.autocomplete_bcc);
             EditText txtSubject = findViewById(R.id.txt_email_subject_input);
@@ -216,21 +229,24 @@ public class CreateEmailActivity extends AppCompatActivity {
         Attachment att2 = (Attachment) getIntent().getSerializableExtra("att1");
         EditText toReply = findViewById(R.id.autocomplete_to);
         toReply.setText(to2);
+        toReply.setSelection(toReply.getText().length());
+        Toast.makeText(getApplicationContext(), to2, Toast.LENGTH_LONG).show();
+
         if(att2 !=null &&  content2 != null && to2 != null && date2 != null && subject2 != null) {
             txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + to2 + "     " +
                     "                               " +  "              " + "Date: " + "   " + date2 +
                     "   " +
                     "------------------------------------------------------------------------ "
                     + " " + content2 + " "   +att2.getName());
-
             txtSubject.setText("Re: " + subject2);
+
         }
         else if(att2 ==null &&  content2 != null && to2 != null && date2 != null && subject2 != null) {
             txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + to2 + "     " +
                     "                               " +  "              " + "Date: " + "   " + date2 +
                     "   " +
                     "------------------------------------------------------------------------ "
-                    + " " + content1 );
+                    + " " + content2 );
 
             txtSubject.setText("Re: " + subject2);
         }
@@ -241,8 +257,13 @@ public class CreateEmailActivity extends AppCompatActivity {
         String date3 = getIntent().getStringExtra("date11");
         String subject3 = getIntent().getStringExtra("subject11");
         Attachment att3 = (Attachment) getIntent().getSerializableExtra("att11");
-        EditText toReplyAll = findViewById(R.id.autocomplete_to);
-        toReplyAll.setText(to3);
+        MultiAutoCompleteTextView toReplyAll = findViewById(R.id.autocomplete_to);
+        if(to3 != null){
+            toReplyAll.setText(to3);
+        }
+
+
+
         ImageView image = (ImageView) findViewById(R.id.icon_attachment);
         if(att3 !=null &&  content3 != null && to3 != null && date3 != null && subject3 != null) {
             txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + from3 + "     " +
@@ -266,12 +287,15 @@ public class CreateEmailActivity extends AppCompatActivity {
         Intent i = getIntent();
         messageReplyToAll = (Message)i.getSerializableExtra("msgReplyAll");
         if(messageReplyToAll!=null){
-            txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + messageReplyToAll.getFrom() + "     " +
-                    "                               " +  "              "+ "Date: " + "   " + messageReplyToAll.getDateTime() +
-                    "   " +
-                    "--------------------------------------------------------------------- "
-                    + " " + messageReplyToAll.getContent() + " " );
-            EditText replyToAll = findViewById(R.id.autocomplete_to);
+            if(messageReplyToAll.getContent() != null){
+                txtContent.setText("----------------------Replied message---------------------- " + " " + "From: " + "  " + messageReplyToAll.getFrom() + "     " +
+                        "                               " +  "              "+ "Date: " + "   " + messageReplyToAll.getDateTime() +
+                        "   " +
+                        "--------------------------------------------------------------------- "
+                        + " " + messageReplyToAll.getContent() + " " );
+            }
+
+            MultiAutoCompleteTextView replyToAll = findViewById(R.id.autocomplete_to);
 //            if(messageReplyToAll.getCc()!=null)
 //                replyToAll.setText(removeLoggedInUserEmail(messageReplyToAll.getCc()));
 //            else if(messageReplyToAll.getBcc()!=null)
@@ -280,6 +304,8 @@ public class CreateEmailActivity extends AppCompatActivity {
                 replyToAll.setText(removeLoggedInUserEmail(messageReplyToAll.getTo()));
                 Log.e("test", messageReplyToAll.getTo());
         }
+
+
     }
 
     public String removeLoggedInUserEmail(String emails){
@@ -546,17 +572,20 @@ public class CreateEmailActivity extends AppCompatActivity {
     public boolean validation(){
         boolean pass=true;
         String message="";
-        EditText to = findViewById(R.id.autocomplete_to);
-        EditText cc = findViewById(R.id.autocomplete_cc);
-        EditText bcc = findViewById(R.id.autocomplete_bcc);
+        MultiAutoCompleteTextView to = findViewById(R.id.autocomplete_to);
+        MultiAutoCompleteTextView cc = findViewById(R.id.autocomplete_cc);
+        MultiAutoCompleteTextView bcc = findViewById(R.id.autocomplete_bcc);
 
         if(!to.getText().toString().contains("@")){
             pass=false;
             message+="Email is not valid! \n";
         }
         else if(!cc.getText().toString().contains("@")){
-            pass=false;
-            message+="Email is not valid! \n";
+            if(!cc.getText().toString().equals("")){
+                pass=false;
+                message+="Email is not valid! \n";
+            }
+
         }
         else if(!bcc.getText().toString().contains("@")){
             pass=false;
@@ -584,19 +613,35 @@ public class CreateEmailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.btnCreateEmailSend) {
             if(validation()) {
-                final EditText txtTo = findViewById(R.id.autocomplete_to);
+                MultiAutoCompleteTextView txtTo = findViewById(R.id.autocomplete_to);
                 final String to = txtTo.getText().toString();
                 final EditText txtSubject = findViewById(R.id.txt_email_subject_input);
                 final String subject = txtSubject.getText().toString();
-                EditText txtCc = findViewById(R.id.autocomplete_cc);
+                MultiAutoCompleteTextView txtCc = findViewById(R.id.autocomplete_cc);
                 String cc = txtCc.getText().toString();
-                EditText txtBcc = findViewById(R.id.autocomplete_bcc);
+                MultiAutoCompleteTextView txtBcc = findViewById(R.id.autocomplete_bcc);
                 String bcc = txtBcc.getText().toString();
                 EditText txtContent = findViewById(R.id.txt_email_content_input);
                 String content = txtContent.getText().toString();
 
                 Message m = new Message();
-                m.setTo(to);
+
+                String[] toArray = to.split(",");
+
+                if(toArray.length != 1){
+                    StringBuilder sb = new StringBuilder();
+                    for(int i = 0 ; i < toArray.length; i++){
+                        if(toArray[i].contains("@")){
+                            sb.append(toArray[i]);
+                            sb.append(",");
+                        }
+                    }
+                    m.setTo(sb.toString());
+                }else{
+                    m.setTo(to);
+                }
+
+
                 m.setSubject(subject);
                 m.setCc(cc);
                 m.setBcc(bcc);
@@ -676,10 +721,10 @@ public class CreateEmailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        EditText txtTo = findViewById(R.id.autocomplete_to);
+        MultiAutoCompleteTextView txtTo = findViewById(R.id.autocomplete_to);
         EditText txtSubject = findViewById(R.id.txt_email_subject_input);
-        EditText txtCc = findViewById(R.id.autocomplete_cc);
-        EditText txtBcc = findViewById(R.id.autocomplete_bcc);
+        MultiAutoCompleteTextView txtCc = findViewById(R.id.autocomplete_cc);
+        MultiAutoCompleteTextView txtBcc = findViewById(R.id.autocomplete_bcc);
         EditText txtContent = findViewById(R.id.txt_email_content_input);
 
         Message message = new Message();
